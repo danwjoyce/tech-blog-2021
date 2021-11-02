@@ -1,0 +1,734 @@
+---
+title: Clinical Decision Making Part One
+author: 'Dan W Joyce'
+date: '2020-07-22'
+output:
+  blogdown::html_page:
+    number_sections: true
+    
+header-includes: \usepackage{amsmath,caption}
+
+categories: [clinical decision support, decision theory]
+tags:
+  - risk
+  - decision support
+  - thresholds
+  - decision rules
+  - positive predictive value
+  - negative predictive value
+  - decision curve analysis
+image:
+  caption: ''
+  focal_point: ''
+
+bibliography: [./risk-dec.bib]
+---
+
+```{r 'setup', include = FALSE, message=FALSE, cache = FALSE}
+rm( list = ls() )
+library(knitr)
+library(kableExtra)
+library(ggplot2)
+library(ggExtra)
+library(gridExtra)
+library(latex2exp)
+library(pROC)
+library(caret)
+options(knitr.table.format = "html") 
+
+# globals for presentation
+basictheme <- theme_minimal() + 
+  theme(axis.title = element_text(size = 14),
+        axis.text = element_text(size = 12),
+        plot.title = element_text(size = rel(1.25), face = "bold", hjust = 0.5 ))
+
+```
+
+
+In clinical decision making for serious but rare events, there has been discussion about how to use predictive models as tools in decision making.  
+
+One example is in decision making for assessment and treatment in people at risk of suicide.  A systematic review @kessler2019suicide of "suicide prediction models" cites the very real concern that the low positive predictive value (PPV) of current state-of-the-art models renders them at least clinically useless and at worst obviously dangerous.  Most published models, however, attempt to predict the absolute risk of suicide based on some feature data (i.e. covariates, independent variables or predictors) for individuals -- that is, these models attempt to identify people at risk of suicide.  A central tennet of Kessler *et al*'s argument is that **net benefit** -- rather than positive predictive value -- is the appropriate decision-theoretic framework and in effect, predictive models might be better used as tools for screening out cases (of course, their argument and analysis is far more detailed but this is what I'm focusing on here).  Kessler *et al* describe how to improve the clinical utility of suicide prediction models by embedding them in a clinical triaging system and using thresholds for intervening (or not) derived from [decision curve analysis](https://www.mskcc.org/departments/epidemiology-biostatistics/biostatistics/decision-curve-analysis) [@vickers2006decision, @Vickers2016]. 
+
+Kessler *et al*'s proposal is that if there is a high prevalence of *negative* cases in routine clinical practice, then such a staged triaging system would enable scarce (and often, intrusive) clinical resources to be directed towards cases which are uncertain.  In this post, we consider positive and negative predictive value, net benefit as well as examining a sequential triage model of clinical decision support.  
+
+# Predictive Values 
+With an assumed representative sample of a population, let $Y$ be the output of the decision rule/system, and $E$ be whether or not the event occurred:
+
+  * $Y = 1$ represents the decision that a case is **positive**, and $Y = 0$ represents a **negative** decision
+  * $E = 1$ represents the serious event **occuring**, $E = 0$ that it did not
+
+Consider the following hypothetical confusion matrix for a decision system on a representative validation sample of 1000 people:
+```{r echo = FALSE}
+cm <- matrix( c(900, 10,
+                80,  10), nrow = 2, ncol = 2, byrow = TRUE 
+              )
+
+
+rownames(cm) <- c("0","1")
+colnames(cm) <- c("0","1")
+kable(cm) %>%
+  # kable_styling(bootstrap_options = "condensed", full_width = FALSE) %>% 
+  kable_styling(full_width = FALSE) %>% 
+  add_header_above(c(" " = 1, "Event (E)" = 2)) %>%
+  pack_rows("Decision (Y)", 1, 2) %>%
+  column_spec(1:2, width = "6em") %>%
+  add_indent(c(1, 2))
+```
+
+There are 20 serious events in 1000 cases.  The model gives a correct decision for 900/980 negative events (true negatives, TN) and decides that 80 negative cases are in fact positve (false positives; FP).  The model performs poorly on decisions with positive cases; it decides 10/20 positive events are positive (true positives, TP) and makes the potentially catastrophic decision that 10/20 positives are in fact negatives (false negatives, FN). 
+
+```{r echo = FALSE}
+TP <- cm[2,2]
+TN <- cm[1,1]
+FP <- cm[2,1]
+FN <- cm[1,2]
+prev <- 20/1000
+sens <- TP / (TP+FN)
+spec <- TN / (TN+FP)
+PPV  <- sens * prev / ( sens * prev + (1-spec) * (1-prev) )
+NPV  <- (spec * (1-prev)) / ((1-sens)*prev + spec*(1-prev))
+```
+
+So, we find that :
+
+  * Sensitivity = $\Pr(Y = 1 \mid E = 1)$ = $TP/(TP+FN)$ = `r round( sens, 3)`; the probability that the decision was positive, given the event was positive 
+  * Specificity = $\Pr(Y = 0 \mid E = 0)$ = $TN/(TN+FP)$ = `r round( spec, 3)`; the probability that the decision was negative, given the event was negative 
+  * The prevalence of the serious event is `r prev`
+
+As noted in the Altman and Bland classic [@altman-pred-values1994], "the whole point of a diagnostic test is to use it to make a diagnosis, so we need to know the probability that the test will give the correct diagnosis" and sensitivity and specificity of the test (here, the decision rule) aren't sufficient.  
+
+The important point is, in a clinical situation, we are interested in the conditional probabilities $\Pr(E \mid Y)$ (the probability of the event given the decision rule output).
+
+However, we only have the conditionals $\Pr(Y \mid E )$ and conditional probabilities do not commute so $\Pr( Y \mid E) \neq \Pr( E \mid Y)$.  Failure to recognise this difference is the [prosecutor's fallacy](https://en.wikipedia.org/wiki/Prosecutor%27s_fallacy) or the fallacy of the [transposed conditional](https://rationalwiki.org/wiki/Confusion_of_the_inverse) [@blitzstein2019introduction] Chapter 2.8.
+
+We will need to enumerate the probabilities of other conditions (i.e. states of $E$ and $Y$), so:
+
+  * $\Pr(Y = 1 \mid E = 0)$ is the false positive rate, or 1-specificity = $1-\Pr(Y=0 \mid E=0)$ = $FP/(FP+TN)$ = `r round( 1-spec, 3)`
+  * $\Pr(Y = 0 \mid E = 1)$ is the false negative rate, or 1-sensitivity = $1-\Pr(Y=1 \mid E=1)$ = $FN/(FN+TP)$ = `r round( 1-sens, 3)`
+
+## Deriving PPV and NPV
+The definition of [conditional probability](https://en.wikipedia.org/wiki/Conditional_probability) means that, for the conditions **we want**, we can state:
+$$
+  \Pr(E \mid Y) = \frac{\Pr(E,Y)}{\Pr(Y)}
+$$
+Or, by rearranging:
+$$
+  \Pr(E,Y) = \Pr(E \mid Y) \Pr(Y)
+$$
+Applying the same argument for the conditionals **we have** $\Pr(Y \mid E)$ (sensitivity and specificity):
+
+$$
+  \Pr(Y,E) = \Pr(Y \mid E) \Pr(E)
+$$
+
+The **joint probability** of two events are commutative (unlike conditionals) therefore $\Pr(E,Y) = \Pr(Y,E)$ and we can equate:
+$$
+  \Pr(E \mid Y) \Pr(Y) = \Pr(Y \mid E) \Pr(E)
+$$
+Noting again that we are interested in $\Pr(E \mid Y)$ we can solve:
+$$
+  \Pr(E \mid Y) = \frac{\Pr(Y \mid E) \Pr(E)}{\Pr(Y)}
+$$
+This is Bayes formula.
+
+## Example Calculation {#sec-calc-PPV-NPV}
+Using our example above, here's want we want, and what we have available:
+$$
+\Pr(E=1 \mid Y=1) = \frac{ \overbrace{\Pr( Y=1 \mid E=1)}^\text{sensitivity} \overbrace{\Pr(E=1)}^\text{prevalence} } 
+                    { \underbrace{\Pr(Y=1)}_\text{prob. of +ve decision} }
+$$
+We can calculate the denominator $\Pr(Y=1)$, the unconditional probability of a positive decision, using the [law of total probability](https://en.wikipedia.org/wiki/Law_of_total_probability): 
+$$
+\begin{aligned}
+\Pr(Y=1) =& \overbrace{\Pr( Y=1 \mid E=1)}^\text{sensitivity} \overbrace{\Pr(E=1)}^\text{prevalence} + \\
+         &\underbrace{\Pr( Y=1 \mid E=0)}_\text{1-specificity} \underbrace{\Pr(E=0)}_\text{1-prevalence}
+\end{aligned}
+$$
+
+The calculation step-by-step is:
+
+  1. Compute the denominator $\Pr(Y=1) = 0.5 \times 0.02 + (1-0.918) \times (1-0.02) = 0.09$
+  2. Substitute sensitivity and prevalence in the numerator:
+  
+  $$
+  \Pr(E=1 \mid Y=1) = \frac{ \overbrace{0.5}^\text{sensitivity} \times \overbrace{0.02}^\text{prevalence} } 
+                    { \underbrace{0.09}_\text{prob. of +ve decision} } = 0.11
+  $$
+Which delivers the **positive predictive value**.
+
+We can similarly derive the **negative predictive value**:
+
+$$
+\Pr(E=0 \mid Y=0) = \frac{ \overbrace{\Pr( Y=0 \mid E=0)}^\text{specificity} \overbrace{\Pr(E=0)}^\text{1-prevalence} } 
+                    { \underbrace{\Pr(Y=0)}_\text{prob. of -ve decision} }
+$$
+And our denominator in this case:
+$$
+\begin{aligned}
+  \Pr(Y=0) =& \overbrace{\Pr( Y=0 \mid E=1)}^\text{1-sensitivity} \overbrace{\Pr(E=1)}^\text{prevalence} + \\
+            & \underbrace{\Pr( Y=0 \mid E=0)}_\text{specificity} \underbrace{\Pr(E=0)}_\text{1-prevalence}
+\end{aligned}
+$$
+Plugging in the numbers:
+
+  1. Compute the denominator $\Pr(Y=0) = (1-0.5) \times 0.02 + 0.918 \times (1-0.02) = 0.91$
+  2. Substitute specificity and prevalence in the numerator:
+
+ $$
+  \Pr(E=0 \mid Y=0) = \frac{ \overbrace{0.918}^\text{specificity} \times \overbrace{0.98}^\text{1-prevalence} } 
+                    { \underbrace{0.91}_\text{prob. of -ve decision} } = 0.987
+  $$
+
+
+This hypothetical decision system is useful for correctly deciding on negative cases, but performs poorly on identifying positive cases. 
+
+# Simulation
+Now suppose that we have two (or more) clinical tests to help identify patients at risk for a relatively rare but serious event; for example, $X_1$ is a relatively cheap and easy-to-administer instrument or questionnaire.  $X_2$ is a semi-structured interview or clinical examination which is time consuming, requires expertise to administer and is therefore significantly more costly than $X_1$.  
+
+Further, we have a development sample of 5000 people for which we have the results for $X_1$, $X_2$ and we know who in this sample experienced the serious event.
+
+We next build a model that attempts to predict the rare, serious event ($Y = 1$) on the basis of a patient's $X_1$ results and denote this $y = F_{X_1}(x)$.  Note, no claim is made that this model is well designed.
+
+Assume the somewhat luxurious position that we have a further 5000 validation cases from the same population -- so we can examine the model's performance on data it was not 'trained' on. 
+
+```{r echo = FALSE}
+d <- readRDS("./data-decision-making/validation-set-model-predictions.rds")
+```
+
+Let's look at the calibration of the model on the validation sample:
+
+```{r echo=FALSE}
+calibrateLowess <- function( obs, pred, ref.level, break.levels ) {
+  # Computes calibration curve, but using lowess scatterplot smoother
+  # break.levels, here, is used as the fraction of points used to 
+  # to compute the smoother "span"
+  #
+  # Arguments: 
+  #     obs -- vector of actual events/outcomes (usually, 0 or 1)
+  #     pred -- vector of predictions from a model (usually, a continuous value)
+  #     ref.level -- set to 1 or 0 for the cases in obs that are positive
+  #     break.levels -- the smoothing parameter
+  # 
+  # Returns:
+  #   returns one value for Pred.Y (the x-axis of the calibration curve) 
+  #   corresponding to one point in the P.Y (observed probability)
+  
+  f.val <- 1/break.levels
+  
+  bin.obs <- ifelse( obs == ref.level, 1, 0 )
+  calib.low <- as.data.frame( lowess( pred, bin.obs, iter = 0, f = f.val ) )
+
+  calib.df <- data.frame( P.Y     = calib.low$y,
+                          Pred.Y  = calib.low$x
+  )  
+  
+  return( calib.df )
+}
+```
+
+```{r echo = FALSE, warning=FALSE, fig.align='center', out.width="70%"}
+calib.df.x1 <- calibrateLowess( d$actual.Y, d$predicted.Y_x1, ref.level = 1, break.levels = 2 )
+
+ggplot( ) +
+  coord_fixed( xlim = c(0.0, 1.0), ylim = c(0, 1.0), ratio = 1.0 ) +
+  scale_y_continuous(breaks = c(0, 0.25, 0.5, 0.75, 1.0), limits = c(0, 1.0), expand = c(0,0) ) +
+  scale_x_continuous(breaks = c(0.25, 0.5, 0.75, 1.0), limits = c(0, 1.0), expand = c(0,0) ) +
+  xlab("\nModel Predicted Probability") +
+  ylab("Actual Probability \n") + 
+
+  # the perfect calibration line
+  annotate(x = 0.0, xend=1.0, y=0, yend=1.0, colour="black", lwd=0.75, geom="segment" ) +
+  # the calibration curve
+  geom_line( data = calib.df.x1, 
+             mapping = aes( x = Pred.Y, y = P.Y ), alpha = 1.0, colour = "#999999", linetype = "dashed", size = 1.0 ) +
+  ggtitle(TeX("Model $F_{X_1}")) +
+  basictheme
+
+```
+
+It's important to note that:
+
+  * the **model** $F_{X_1}$ delivers a prediction in the form of a continuous estimate of the absolute probability of the serious event *given* the screening instrument $X_1$.
+  * there is **no decision rule** here; so we can't discuss PPV or NPV
+  * the model is poorly calibrated: which is unsurprising given the serious event is rare -- in the 5000 validation samples there were `r length( which( d$actual.Y == 1 ) )` serious events ($E = 1$) representing a small prevalence of `r length( which( d$actual.Y == 1 ) ) / 5000`
+  * the model appears to **under estimate** the probability of a serious event; for example, if the model predicts a probability of a serious event of 0.25, the actual probability is closer to 0.5. 
+  
+We can repeat the same analysis for the other, more costly instrument $X_2$; as for the cheaper instrument, we train a model $F_{X_2}$ and then we have access to a validation sample on which we can examine the calibration:
+
+
+```{r echo = FALSE, warning=FALSE, fig.align='center', out.width="70%"}
+calib.df.x2 <- calibrateLowess( d$actual.Y, d$predicted.Y_x2, ref.level = 1, break.levels = 2 )
+
+ggplot( ) +
+  coord_fixed( xlim = c(0.0, 1.0), ylim = c(0, 1.0), ratio = 1.0 ) +
+  scale_y_continuous(breaks = c(0, 0.25, 0.5, 0.75, 1.0), limits = c(0, 1.0), expand = c(0,0) ) +
+  scale_x_continuous(breaks = c(0.25, 0.5, 0.75, 1.0), limits = c(0, 1.0), expand = c(0,0) ) +
+  xlab("\nModel Predicted Probability") +
+  ylab("Actual Probability \n") + 
+
+  # the perfect calibration line
+  annotate(x = 0.0, xend=1.0, y=0, yend=1.0, colour="black", lwd=0.75, geom="segment" ) +
+  # the calibration curve
+  geom_line( data = calib.df.x2, 
+             mapping = aes( x = Pred.Y, y = P.Y ), alpha = 1.0, colour = "#999999", linetype = "dashed", size = 1.0 ) +
+  ggtitle(TeX("Model $F_{X_2}")) +
+  basictheme
+
+```
+Again, not great calibration.  
+
+
+# Decision Rules {#sec-decision-rules}
+Returning to the idea that Kessler *et al* discussed, how can we design a decision rule that makes use of these two tests ?
+
+## ROC Curves {#sec-ROC-curve}
+A common approach to designing a decision rule is to vary a threshold over the output of $F_{X_1}$ and plot the ROC curve; then, find an "optimal" threshold that maximises the sensitivity/specificity tradeoff.  
+
+```{r echo = FALSE, warning=FALSE, fig.align='center', out.width="70%"}
+roc.x1 <- roc( d$actual.Y, d$predicted.Y_x1 )
+df.roc.x1 <- data.frame( sens = roc.x1$sensitivities, spec = roc.x1$specificities  )
+# plot.roc( roc.x1 )
+thresh.x1 <- coords(roc.x1, "best", best.method = "youden", transpose = FALSE)
+
+ggplot( ) +
+  coord_fixed( xlim = c(0.0, 1.0), ylim = c(0, 1.0), ratio = 1.0 ) +
+  scale_y_continuous(breaks = c(0, 0.25, 0.5, 0.75, 1.0), limits = c(0, 1.0), expand = c(0,0) ) +
+  scale_x_reverse(breaks = rev(c(0.25, 0.5, 0.75, 1.0)), limits = c(1.0, 0.0), expand = c(0,0) ) +
+  geom_line( data = df.roc.x1, aes( x = spec, y = sens ) ) +
+  annotate("segment", x = thresh.x1["specificity"], y = 0,
+                      xend = thresh.x1["specificity"], yend = thresh.x1["sensitivity"], colour = "red" ) +
+  annotate("segment", x = 1.0, y = thresh.x1["sensitivity"],
+                       xend = thresh.x1["specificity"], yend = thresh.x1["sensitivity"], colour = "red" ) +
+  annotate("label", x = thresh.x1["specificity"] - 0.25, y = thresh.x1["sensitivity"] - 0.1, 
+           label = paste0("Threshold = ", round( thresh.x1["threshold"], 3 ) ) ) +
+  ylab("Sensitivity\n") +
+  xlab("\nSpecificity") +
+  ggtitle(TeX("Model $F_{X_1}")) +
+  basictheme
+
+```
+
+The confusion matrix for the decision rule with the threshold = `r round( thresh.x1["threshold"], 3 )` shown in the ROC curve above is:
+
+```{r echo = FALSE}
+cm <- as.matrix( confusionMatrix(
+  factor( ifelse( d$predicted.Y_x1 >= thresh.x1["threshold"], 1, 0 ) ),
+  factor( d$actual.Y ), positive = "1"
+)$table )
+
+kable(cm) %>%
+  kable_styling(full_width = FALSE) %>% 
+  add_header_above(c(" " = 1, "Event (E)" = 2)) %>%
+  pack_rows("Decision (Y)", 1, 2) %>%
+  column_spec(1:2, width = "6em") %>%
+  add_indent(c(1, 2))
+```
+
+```{r echo = FALSE}
+TP <- cm[2,2]
+TN <- cm[1,1]
+FP <- cm[2,1]
+FN <- cm[1,2]
+prev <- length( which( d$actual.Y == 1 ) ) / 5000
+sens <- TP / (TP+FN)
+spec <- TN / (TN+FP)
+PPV  <- sens * prev / ( sens * prev + (1-spec) * (1-prev) )
+NPV  <- (spec * (1-prev)) / ((1-sens)*prev + spec*(1-prev))
+```
+
+The usual measures:
+
+  * Sensitivity = `r round( sens, 4)`
+  * Specificity = `r round( spec, 4)`
+
+We can compute the *more* clinically relevant probabilties as follows (as for Section \@ref(sec-calc-PPV-NPV)):
+
+  * Positive predictive value: $\Pr( E = 1 \mid Y = 1 )$ = `r round( PPV, 3 )`
+  * Negative predictive value: $\Pr( E = 0 \mid Y = 0 )$ = `r round( NPV, 3 )`
+
+Critically, however, false negatives (`r FN`) are catastrophic here because the event, although rare, is serious (i.e. the death of a patient); but $X_1$ is correctly identifying a high number (`r TN`) of negative cases correctly.
+
+As discussed [here](https://danwjoyce.netlify.app/post/loss-functions-and-posteriors/) and more persuasively [here](https://www.fharrell.com/post/backwards-probs/) sensitivity and specificity do not take account of the loss or utility of the decision and neither do PPV and NPV.    
+
+```{r echo = FALSE}
+cm.2 <- cm
+# addition false negative
+cm.2[1,2] <- cm.2[1,2] + 1
+cm.2[2,2] <- cm.2[2,2] - 1
+# event numbers
+n.e1 <- sum( cm.2[ ,2 ] )
+sens.2 <- cm.2[2,2] / n.e1
+
+cm.3 <- cm
+# addition true positive
+cm.3[2,2] <- cm.3[2,2] + 1
+cm.3[1,2] <- cm.3[1,2] - 1
+
+sens.3 <- cm.3[2,2] / n.e1
+
+```
+
+To understand why this neglect of utility (or loss) is important, take the above confusion matrix and then assume the decision rule declares one additional **false negative**, so that:
+
+  * the number of **false negatives** (FN) = `r cm.2[1,2]` 
+  * the *actual* number of positive events is of course, unchanged at `r n.e1`
+  * so conversely, the **true positive** rate drops by one so TP = `r cm.2[2,2]`
+  * the revised **sensitivity** is then `r round( sens.2, 4)` -- a decrease in decision rule performance of `r round( sens, 4) - round( sens.2, 4)`
+  
+Reverse the experiment, so that the decision rule improves marginally and declares one additional **true positive**:
+
+  * the number of **true positives** increases by one, TP = `r cm.3[2,2]`
+  * the number of **false negatives** decreases by one, FN = `r cm.3[1,2]` 
+  * the revised **sensitivity** is then `r round( sens.3, 4)` -- an increase in decision rule performance of `r round( sens.3, 4) - round( sens, 4)`
+
+The change in performance (the "score") for one additional correct or incorrectly classified positive case is symmetric and of the order $1/N$, where $N$ is the sample size.
+
+Clearly, an **additional false negative** should penalise the overall performance score *differently* than the reward for an additional true positive. 
+
+Optimising the threshold (decision rule) by maximising the sensitivity-specificity tradeoff (e.g. using the [Yourdon J statistic](https://en.wikipedia.org/wiki/Youden%27s_J_statistic)) is not the only method of choosing the threshold and we might for example, choose a decision rule that favours performance of different cells of the confusion matrix.  A decision theoretic framework like **net benefit** allows one systematic treatment.
+
+# Decision Curve Analysis
+Here, we are trying to implement a decision rule whereby a patient is triaged to a more costly "test" ($X_2$) on the basis of a more available or less costly test $X_1$. 
+
+We can adopt a decision-theoretic approach (see previous posts [here](https://danwjoyce.netlify.app/post/decisions-and-loss-functions/)) and design a loss (conversely, a utility) function for a decision rule (threshold).
+
+Assume that we continue to insist on a "hard" decision rule that decides, on the basis of $F_{X_1}$, whether to further investigate (triage to $X_2$) or, decide that the serious event is unlikely so no further follow-up is necessary and the patient can be discharged.
+
+In this situation, we can construct the confusion matrix below:
+
+```{r echo = FALSE}
+cm <- matrix( c("TN", "FN",
+                "FP", "TP"), nrow = 2, ncol = 2, byrow = TRUE 
+              )
+
+rownames(cm) <- c("0","1")
+colnames(cm) <- c("0","1")
+kable(cm) %>%
+  kable_styling(full_width = FALSE) %>% 
+  add_header_above(c(" " = 1, "Event (E)" = 2)) %>%
+  pack_rows("Decision (Y)", 1, 2) %>%
+  column_spec(1:2, width = "6em") %>%
+  add_indent(c(1, 2))
+```
+
+And then assign a loss to each cell e.g. the loss for a true negative is $L_{TN}$, for a false negative $L_{FN}$ and so on.
+
+For a given decision rule (here, the decision rule can be equated with the threshold value $\tau$ over $F_{X_1}$) we can compute the **expected loss**:
+$$
+  L( \tau ) = \frac{1}{N} \left( \#TN \cdot L_{TN} + \#FN \cdot L_{FN} + \#FP \cdot L_{FP} + \#TP \cdot L_{TP} \right)
+$$
+
+where $\#TN$ is the number of true negatives under the decision rule $\tau$ etc. and $N$ is the sample size.  We then systematically vary $\tau$ and choose our final decision rule on the basis of minimum loss.
+
+The difficulty is that it is often hard to quantify losses (or value, utility) either absolutely or relatively for each cell of the confusion matrix -- the example of Kessler *et al* examines predictive models for suicide, where a false negative would be catastrophic; is the loss incurred for a false negative 10, 100 or 1000 times 'worse' than a true negative ?
+
+An alternative, proposed by [@vickers2006decision,@Vickers2016], is to first set up a decision tree representing decisions to intervene / not intervene for the combinations shown in the standard confusion matrix. We then assume that the loss of **not intervening** when we should (a **false negative**) is fixed at unity and the loss of a **false positive** is defined relative to this for a given threshold $\tau$.  After some algebra, the loss attributable to a **false positive** is:
+$$
+\frac{\tau}{1-\tau}
+$$
+Then, the **net benefit** of a decision rule (value of $\tau$) is then:
+$$
+NB(\tau) = \frac{\#TP}{N} - \frac{\#FP}{N} \left( \frac{\tau}{1-\tau} \right)
+$$
+In this equation, true positives are weighted one, and false positives weighted $\tau /( 1-\tau)$.  As the cost of a false positive is a function of the threshold we can deduce the relative costs. For example, if $\tau = 1/3$, the cost of a false positive is half the cost of a true positive.
+
+A **decision curve** is then the plot of $NB(\tau)$ against $\tau$ as follows:
+
+```{r echo = FALSE}
+tau.range <- seq(0,1,by = 0.005)
+m <- data.frame(
+  Threshold = tau.range,
+  TP = rep(NA,length(tau.range)),
+  TN = rep(NA,length(tau.range)),
+  FN = rep(NA,length(tau.range)),
+  FP = rep(NA,length(tau.range)),
+  All.Pos.TP = rep(NA,length(tau.range)),
+  All.Pos.FP = rep(NA,length(tau.range))
+)
+
+# extract a simple form of the predictions / output from F_{X1}
+actual.Y <- factor( d$actual.Y, levels = c("0","1") )
+
+for( i in 1:length( tau.range ) ) {
+  # apply decision rule at tau.range[i]
+  this.pred <- factor( ifelse( d$predicted.Y_x1 >= tau.range[i], 1, 0 ), levels = c("0","1") )
+  this.CM <- caret::confusionMatrix( this.pred, actual.Y )$table
+  # extract confusion matrix values
+  m$Threshold[i] <- tau.range[i]
+  m$TP[i] <- this.CM[2,2]
+  m$TN[i] <- this.CM[1,1]
+  m$FN[i] <- this.CM[1,2] 
+  m$FP[i] <- this.CM[2,1]
+}
+
+# compute net benefit
+N <- length( actual.Y )
+m$NB <- (m$TP/N) - ( (m$FP/N) * (m$Threshold / (1-m$Threshold) ) )
+# add in the "intervene on all" values (i.e. assume everyone is positive)
+m$NB.all.pos <- (length( which( d$actual.Y == 1 ) )/N) - ( (length( which( d$actual.Y == 0 ) )/N) * (m$Threshold / (1-m$Threshold) ) )
+
+# the point at which NB departs from NB from assuming all positive
+NB.depart <- m$Threshold[ which( round( m$NB.all.pos, 2) < round( m$NB, 2) )[1] - 1 ]
+```
+
+```{r echo = FALSE, warning=FALSE, fig.align='center', out.width="70%"}
+# base.dec.curve <- ggplot() + 
+#   geom_line( data = m, aes( x = Threshold, y = NB ), size = 1 ) +
+#   geom_line( data = m, aes( x = Threshold, y = NB.all.pos ), linetype = "dashed" ) +
+#   geom_hline( yintercept = 0, colour = "grey20" ) + 
+#   xlab(TeX("$\\tau")) +
+#   ylab(TeX("$NB(\\tau)")) +
+#   coord_cartesian( xlim = c(0.0, 0.6), ylim = c(-0.05,0.05) ) +
+#   basictheme
+
+zoom.dec.curve <- ggplot() + 
+  geom_line( data = m, aes( x = Threshold, y = NB ), size = 1 ) +
+  geom_line( data = m, aes( x = Threshold, y = NB.all.pos ), linetype = "dashed" ) +
+  geom_hline( yintercept = 0, colour = "grey20" ) + 
+  geom_vline( xintercept = thresh.x1["threshold"], colour = "red" ) +
+  geom_vline( xintercept = NB.depart, colour = "red", linetype = "dashed" ) +
+  xlab(TeX("$\\tau")) +
+  ylab(TeX("$NB(\\tau)")) +
+  coord_cartesian( xlim = c(0.0, 0.1), ylim = c(-0.025,0.05) ) +
+  basictheme
+
+# grid.arrange( base.dec.curve, zoom.dec.curve, nrow = 1, ncol = 2 )
+zoom.dec.curve
+```
+
+The solid black line is the net benefit of the model $F_{X_1}$ at each threshold level.  The grey horizontal line (at $NB(\tau) = 0$) is the net benefit of assuming all patients are negative. The black dotted line is the net benefit of the decision rule: "assume all patients are positive and intervene" which is of course wasteful, but offers comparison to the net benefit of each decision rule $\tau$.   The red solid vertical line shows the threshold located by maximising the sensitivity/specificity tradeoff in Section \@ref(sec-ROC-curve).  Finally, the red dashed line identifies the threshold at which net benefit departs (exceeds) the "assume all positive" line.
+
+The region for which $NB(\tau)$ is greater than zero are the thresholds for which the model outperforms "assume all patients are negative".  An advantage of decision curve analysis is that one can vary $\tau$ and see the relationship between the model performance and a default strategy of assuming everyone requires intervention -- the point at which the black solid line departs from the black dotted line.  
+
+Of note, decision curve analysis is not intended to be a method of locating a threshold; in fact, @vickers2006decision discuss the method in the context of shared decision making where the clinician *and* patient's prefence for the relative cost of a false positive are factored into deciding the utility of a decision to intervene. 
+
+However, as an experiment, let's choose a threshold at the point where the net benefit departs from the default "assume all patients are positive and intervene" -- shown as the red dotted line in the right panel at `r NB.depart`.  This results in zero false negatives (serious errors), 240 true positives, 506 true negatives and 4252 false positives.
+
+To put this in the context of a sequential triage model, 4252 patients who are actually negative would be triaged for the $X_2$ assessment.  
+
+# Sequential Triage
+
+```{r echo = FALSE, warning=FALSE}
+grid.delta <- 0.02
+thresh.grid  <- expand.grid( seq( 0, 1, by = grid.delta ), seq( 0, 1, by = grid.delta ) )
+
+m <- data.frame(
+  Threshold = thresh.grid,
+  X1.TP = rep(NA,nrow(thresh.grid)),
+  X1.TN = rep(NA,nrow(thresh.grid)),
+  X1.FN = rep(NA,nrow(thresh.grid)),
+  X1.FP = rep(NA,nrow(thresh.grid)),
+
+  N2 = rep(NA,nrow(thresh.grid)),
+  N2.neg = rep(NA,nrow(thresh.grid)),
+  N2.pos = rep(NA,nrow(thresh.grid)),
+  
+  X2.TP = rep(NA,nrow(thresh.grid)),
+  X2.TN = rep(NA,nrow(thresh.grid)),
+  X2.FN = rep(NA,nrow(thresh.grid)),
+  X2.FP = rep(NA,nrow(thresh.grid)),
+
+  Total.Safety = rep(NA,nrow(thresh.grid)),
+  Total.Eff = rep(NA,nrow(thresh.grid))
+)
+
+colnames(m)[1] <- "Threshold.X1"
+colnames(m)[2] <- "Threshold.X2"
+
+N1 <- nrow(d)
+N1.pos <- length( which( d$actual.Y == 1 ) )
+N1.neg <- length( which( d$actual.Y == 0 ) )
+
+for( i in 1:nrow(m) ) {
+  
+  this.pred.x1 <- factor( ifelse( d$predicted.Y_x1 >= m$Threshold.X1[i], 1, 0 ), levels = c("0","1" ) )
+  this.CM.x1   <- table( this.pred.x1, factor( d$actual.Y, levels = c("0","1" ) ) )
+  
+  m$X1.TP[i] <- this.CM.x1[2,2]
+  m$X1.TN[i] <- this.CM.x1[1,1]
+  m$X1.FN[i] <- this.CM.x1[1,2]
+  m$X1.FP[i] <- this.CM.x1[2,1]
+
+  # triage onto X2
+  triage.to.X2 <- which( this.pred.x1 == 1 )
+  subset.X2    <- d[ triage.to.X2, ]
+  m$N2[i]      <- nrow(subset.X2)
+  m$N2.pos[i]       <- length( which( subset.X2$actual.Y == 1 ) )
+  m$N2.neg[i]       <- length( which( subset.X2$actual.Y == 0 ) )
+
+  # with the subset triaged to X2
+  this.pred.x2 <- factor( ifelse( subset.X2$predicted.Y_x2 >= m$Threshold.X2[i], 1, 0 ), levels = c("0","1" ) ) 
+  this.CM.x2   <- table( this.pred.x2, factor( subset.X2$actual.Y, levels = c("0","1" ) ) )
+  
+  m$X2.TP[i] <- this.CM.x2[2,2]
+  m$X2.TN[i] <- this.CM.x2[1,1]
+  m$X2.FN[i] <- this.CM.x2[1,2]
+  m$X2.FP[i] <- this.CM.x2[2,1]
+}
+
+m$Total.Safety <- 1 - (m$X1.FN + m$X2.FN) / (2*N1.pos - m$X1.FN)
+m$X1.Efficiency <- (m$X1.TN + m$X1.TP) / N1
+m$X2.Efficiency <- ifelse( m$N2 > 0, (m$X2.TN + m$X2.TP) / m$N2, 1)
+m$Total.Eff <- 0.5 *(m$X1.Efficiency + m$X2.Efficiency)
+
+
+```
+
+```{r echo = FALSE, warning=FALSE, fig.align='center', out.width="100%"}
+knitr::include_graphics("/img/triage-model.png")
+```
+
+The proposal Kessler *et al* put forward is a sequential triage model; above, we have sketched (schematically) the two-stage approach described here.  
+
+Here, $\mathcal{P}_1$ is the total sample (of size $N_1$, containing $N^{+ve}_{1}$ and $N^{-ve}_{1}$ positive and negative cases respectively) who have been assessed using $X_1$ and a decision made on the basis of the prediction $F_{X_1}$ and decision rule $\tau_1$.  Cases are then discharged on the basis of the decision; of those discharged, **serious errors** and **appropriate discharges** are analogous to the number of false negative $\#FN_{X_1}$ and true negative $\#TN_{X_1}$ decisions respectively.
+
+Those identified as likely positive by the decision $\tau_1$ form the triaged subset $\mathcal{P}_2$ of size $N_2$, who proceed to the more resource intensive assessment $X_2$.  A similar decision system $F_{X_2}$ with rule $\tau_2$ then either discharges or (in this example) recommends admission to hospital.  
+
+Note that:
+
+  * $N_2 = N^{+ve}_2 + N^{-ve}_2$ -- the size of triaged set $\mathcal{P}_2$ depends on the number of *actually* positive and negative cases triaged.
+  * In the sequential arrangement, $\mathcal{P}_2$ *depends* on the performance of $X_1$.  For example, if a case is incorrectly discharged at $X_1$, then $X_2$ does not have an opportunity to 'correct' that error, so: $N^{+ve}_{2} = N^{+ve}_{1} - \#FN_{X_1}$.
+
+With this in mind, we now attempt to define measures of performance in terms **safety** and **efficiency**
+
+## Safety
+
+From the discussion in Section \@ref(sec-calc-PPV-NPV), decision systems with favourable NPV (but poor PPV) might be helpful in screening out candidates at $X_1$ and triaging suspected positive cases to $X_2$.
+
+We define a **safe** decision system as having these properties:
+
+  * at each stage (i.e. at $X_1$ and $X_2$), anyone with a **high** or **uncertain** probability of being positive is appropriately triaged
+  * serious errors are **minimised** by *not* discharging people inappropriately, which means it should minimise **false negatives**
+
+We'll define the **total safety** of the system as a function of the number of serious errors made by both $F_{X_1}$ and $F_{X_2}$:
+$$
+\begin{aligned}
+  S_{Total}(\tau_1, \tau_2) &= 1 - \frac{\#FN_{X_1}+\#FN_{X_2}}{N^{+ve}_{1}+N^{+ve}_{2}} \\
+                            &= 1 - \frac{\#FN_{X_1}+\#FN_{X_2}}{N^{+ve}_{1}+(N^{+ve}_{1} - \#FN_{X_1})} \\
+                            &= 1 - \frac{\#FN_{X_1}+\#FN_{X_2}}{2N^{+ve}_{1} - \#FN_{X_1}}
+\end{aligned}
+$$
+As a concrete example (with respect to the diagram above and using the same validation set used in the decision curve and ROC analysis above):
+
+  * $\mathcal{P}_1$ is of size $N_1$ = 5000 with $N^{+ve}_1$ = 240 actual positive and $N^{-ve}_1$ = 4760 actual negative cases
+
+After administering $X_1$, using the threshold $\tau_1 = 0.10$ for $F_{X_1}$ results in:
+
+  * 80 serious errors or inappropriate discharges equal to false negatives, $\#FN_{X_1}$
+  * 4321 appropriate discharges -- equal to the true negatives, $\#TN_{X_1}$
+  * Resulting in $N_2$ = 599 cases triaged into $\mathcal{P_2}$ equating to the sum of false and true positive cases (i.e. those declared positive by $F_{X_1}$ with $\tau$ = 0.10)
+  * Of these 599 cases, $N^{+ve}_2$ = 160 and $N^{-ve}_2$ = 439
+  
+Now, let's assume $\tau_2 = 0.36$, for $F_{X_2}$ applied to $\mathcal{P}_2$. We arrive at:
+  
+  * 57 serious errors, equating to $\#FN_{X_2}$
+  * 430 appropriate discharges, the true negatives $\#TN_{X_2}$
+  * Resulting in $N_3$ = 112 cases which will be admitted, consisting of $N^{+ve}_3$ = 103 actually positive cases (appropriate admissions) and $N^{-ve}_3$ = 9 actually negative cases (inappropriate admissions)
+  
+Substituting these numbers in the equation above for safety:
+
+$$
+\begin{aligned}
+  S_{Total}(\tau_1, \tau_2) &= 1 - \frac{\#FN_{X_1}+\#FN_{X_2}}{2N^{+ve}_{1} - \#FN_{X_1}} \\
+                            &= 1 - \frac{80 + 57}{480 - 80} \\
+                            &= 0.6575
+\end{aligned}
+$$
+If the decisions made by $F_{X_1}$ and $F_{X_2}$ resulted in no serious errors, we would have zero false negatives and $S_{Total}$ would attain a maximum of one.
+
+## Efficiency
+
+Now consider efficiency defined as the **ratio** of useful **product** to **resource** consumed.
+
+Here, the denominator -- resource consumption -- is as follows:
+
+  * all patients $N_1$ will have $X_1$ administered and be passed through the prediction model $F_{X_1}$, so resource consumed is $N_1$
+  * a subset of patients declared positive by the decision rule $\tau_1$ are triaged to $\mathcal{P}_2$ which is composed of $N^{+ve}_2$ and $N^{-ve}_2$ actual positive and negative cases respectively
+  * all patients in $\mathcal{P}_2$ are administed $X_2$ -- so resource consumed is $N_2$
+  
+The numerator -- useful product -- needs elaboration.  First consider the efficiency of $\tau_1$, which will be perfectly efficient if all actual negative cases are discharged (and *do not* end up in $\mathcal{P_2}$) and all positive cases are triaged.  
+
+$$
+  E_{X_1}( \tau_1 ) = \frac{\#TP_{X_1} + \#TN_{X_1}}{N_1}
+$$
+Which attains a maximum efficiency of one when $\#TN_{X_1} = N^{-ve}_{1}$ and $\#TP_{X_1} = N^{+ve}_{1}$ (recall that $N_1 = N^{+ve}_1 + N^{-ve}_2$)
+
+A similar definition holds for $X_2$ :
+
+$$
+  E_{X_2}( \tau_2 ) = \frac{\#TP_{X_2} + \#TN_{X_2}}{N_2}
+$$
+And we allow $X_1$ and $X_2$ to contribute equally to a total efficiency in the range $[0,1]$ defined as:
+$$
+  E_{Total}( \tau_1, \tau_2 ) = \frac{1}{2} \left[ E_{X_1}( \tau_1 ) + E_{X_2}( \tau_2 )  \right]
+$$
+
+## Performance of Sequential Triage
+
+
+```{r echo = FALSE, warning=FALSE}
+
+p.Safety <- ggplot() + 
+        # geom_tile(data = m, aes(x = Threshold.X1, Threshold.X2, fill = X2.Safety ) ) +  
+        geom_tile(data = m, aes(x = Threshold.X1, Threshold.X2, fill = round( Total.Safety, 1) ) ) +  
+        scale_fill_gradient(low = "#f7fcf5", high = "#00441b", na.value = "red") +
+        coord_cartesian(xlim = c(0.0, 0.4), ylim=c(0.0, 0.5)) +
+        xlab(TeX("$\\tau_1")) +
+        ylab(TeX("$\\tau_2")) +
+        basictheme +
+        theme( legend.position = "top", legend.direction = "horizontal", legend.title = element_blank() )
+
+p.Eff <- ggplot() + 
+        # geom_tile(data = m, aes(x = Threshold.X1, Threshold.X2, fill = X2.Efficiency ) ) +
+        geom_tile(data = m, aes(x = Threshold.X1, Threshold.X2, fill = round( Total.Eff, 1) ) ) +
+        scale_fill_gradient(low = "#000000", high = "#ffffff", na.value = "red") +
+        coord_cartesian(xlim = c(0.0, 0.4), ylim=c(0.0, 0.5)) +
+        xlab(TeX("$\\tau_1")) +
+        ylab(TeX("$\\tau_2")) +
+        basictheme +
+        theme( legend.position = "top", legend.direction = "horizontal", legend.title = element_blank() )
+
+```
+
+
+
+```{r echo = FALSE, warning=FALSE, fig.align='center', out.width="90%"}
+
+p.Safety <- p.Safety +
+  annotate("segment", x = 0.05, xend = 0.05, y = 0.0, yend = 0.15, colour = "red", size = 1.5 ) +
+  annotate("segment", x = 0, xend = 0.05, y = 0.15, yend = 0.15, colour = "red", size = 1.5 ) 
+
+p.Eff <- p.Eff +
+  annotate("segment", x = 0.05, xend = 0.05, y = 0.0, yend = 0.15, colour = "red", size = 1.5 ) +
+  annotate("segment", x = 0, xend = 0.05, y = 0.15, yend = 0.15, colour = "red", size = 1.5 ) 
+
+
+grid.arrange( p.Safety, p.Eff, nrow = 1, ncol = 2)
+```
+
+```{r echo = FALSE, warning=FALSE}
+# locate maximum efficiency in the region tau_1 < 0.05 and tau_2 < 0.15
+
+max.eff <- max( m$Total.Eff[ which( m$Threshold.X1 <= 0.05 & m$Threshold.X2 < 0.15 ) ] )
+
+```
+
+The plots show safety (left) and efficiency (right) in contours of size 0.1.  So, if $\tau_1$ is less than around 0.05 and $\tau_2$ is less than approximately 1.5, the sequential triage system has overall safety > 0.9.  
+
+However, the tension is that: for the same range of decision thresholds, the efficiency can reach a maximum of `r round( max.eff, 3 )` but this results in upto 31 serious errors.
+
+
+# Concluding Remarks
+
+A few observations:
+
+  1. There is no clear way of robustly setting the decision rules $\tau_1$ and $\tau_2$ based on performance measures for sequential triage unless one is prepared to accept that efficiency and safety trade-off
+  2. Using decision curve analysis **properly** invites setting the decision threshold according to a tradeoff that rightly involves how much risk the patient and clinician want to take: i.e. net benefit provides a weight to false positives (harm attributable to intervening when it is unnecessary) as a function of the decision threshold. 
+  3. The analyses above were all conducted on the improbably ideal situation where a) we had 5000 exemplars to train a system on, both with measurements/assessments $X_1$ and $X_2$ b) we had access to another 'batch' of 5000 exemplars to validate the model on which we attempt to define performance and optimise the system's performance
+  4. When deploying this system, at best, patients arrive in small batches or singularly (certainly not in clusters of 100s or 1000s) -- the above analyses are then at best, informative for an actuarial or economic analysis if we were *forced* to choose a decision rule to evaluate the triage system's performance
+
+By their very nature, predictions $F_{X_1}$ and $F_{X_2}$ are probabilistic and discrete thresholds coerce these uncertain forecasts into definitive decisions.  It seems unlikely that in the case of rare, serious events anyone would rely on a decision support system that gave discrete answers (and indeed, decision curve analysis emphasises the role of clinician expertise and patient preference in deciding on the intervention threshold)
+
+
+# References
+

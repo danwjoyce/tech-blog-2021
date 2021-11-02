@@ -1,0 +1,665 @@
+---
+title: "Clinical State: Part One - Dynamical Systems"
+author: "Dan W Joyce"
+date: 2019-05-12T18:00:00+01:00
+
+output:
+  blogdown::html_page:
+    number_sections: true
+
+header-includes: \usepackage{amsmath}
+image:
+  caption: ''
+  focal_point: ''
+categories: [clinical state, trajectories, dynamical systems]
+# slug: trajectories-part-one
+# substitle: Dynamical Systems
+tags: [state, modelling]
+bibliography: [./traj.bib]
+---
+
+
+```{r setup, include=FALSE}
+rm( list = ls() )
+
+reqd.packages <- c("ggplot2", 
+                   "ggrepel",
+                   "reshape2",
+                   "latex2exp", 
+                   "deSolve", 
+                   "kableExtra",
+                   "minpack.lm",
+                   "gridExtra",
+                   "pracma",
+                   "viridis")
+
+
+# to install required packages
+todo.packages <- reqd.packages[!(reqd.packages %in% installed.packages()[,"Package"])]
+if(length(todo.packages) > 0) install.packages(todo.packages)
+
+lapply(reqd.packages, require, character.only = TRUE)
+
+knitr::opts_chunk$set(echo = TRUE)
+
+
+# globals for presentation
+dwjtheme <- theme_minimal() + 
+  theme(axis.title = element_text(size = 14),
+        axis.text = element_text(size = 12),
+        plot.title = element_text(size = rel(1.25), face = "bold", hjust = 0.5 ))
+
+# get some data
+d <- as.data.frame( read.csv( "ex-data.csv") )
+```
+
+In this series of blogposts, we look at some models of clinical state.  The motivation is to document exploratory work with a colleague (Nick Meyer, who runs the [SleepSight](https://sleepsight.org/) study) as we try and apply some theoretical ideas -- for example [@nelson2017moving; @scheffer2009early] -- to 'real-life' data.  This problem is interesting because the psychiatric literature more often than not uses an aggregate measure of either state or trajectory, and sometimes, there is no distinction made between the person's clinical state, a measurement of this state and an 'outcome'.  As examples, most will be familiar with measuring the total (aggregate) score over some scale or instrument (e.g. HAMD in depression, PANSS in psychotic disorders).  Often, we measure this at two time-points -- such as before and after treatment -- and describe the outcome as a change in this aggregated score.  Sometimes, we plot a time-series of these total scores, and call this a trajectory.  However, this results in a loss of information (see [here](http://www.danwjoyce.com/clinical-state-models)) and is driven by the requirement to be compatible with standard (or perhaps more accurately, off-the-shelf) procedures for analysing such data (i.e. defining a discrete 'response' / 'no-response' univariate outcome for investigating the efficacy/effectiveness of an intervention).
+
+# Basics
+Throughout, we will assume that there are measurements of clinical state, obtained by some instrument, usually with some noise added.  Further, for the purposes of this post, we assume that there is some latent process being measured by these instruments and we use clinical symptoms as a concrete example (but the principles generalise to anything that can be measured and taken to represent state). For pedagogical reasons, the easiest example is to consider just two dimensions - for example, in psychosis, we might measure the positive and negative symptom burden.  
+
+To begin, take a time-ordered set of measurements for positive ($P$) and negative ($N$) symptoms respectively:
+
+$$
+\begin{aligned}
+P &= (29,24,17, \ldots, 12, 11) \\
+N &= (26,24,19, \ldots, 22, 25)
+\end{aligned}
+$$
+
+Graphically, this looks like:
+
+```{r echo = FALSE, fig.align='center', out.width="70%"}
+# demonstration of state space
+p1 <- c( 29, 24, 17, 15, 14, 14, 12, 11 )
+n1 <- c( 26, 24, 19, 22, 24, 25, 22, 25)
+
+df <- data.frame( P = p1,
+                   N = n1,
+                   time = seq(1,8, by = 1)
+)
+
+scaleFUN <- function(x) sprintf("%.0f", x)
+
+# plot one dimensional versions
+p.pos <- ggplot( df, aes( x = time, y = P) ) +
+  geom_point(size = 4, color = "#7570b3") +
+  geom_path(color = "#7570b3") +
+  xlab("\nTime") +
+  ylab("Positive Sx\n") +
+  dwjtheme +
+  theme(legend.position="none")
+
+p.neg <- ggplot( df, aes( x = time, y = N) ) +
+  geom_point(size = 4, color = "#1b9e77") +
+  geom_path( color = "#1b9e77" ) +
+  xlab("\nTime") +
+  ylab("Negative Sx\n") +
+  dwjtheme +
+  theme(legend.position="none")
+
+grid.arrange( p.pos, p.neg, ncol = 2, respect = TRUE)
+```
+
+Individually, we can see that positive symptoms generally decrease over time, but the negative symptoms 'oscillate'.  Next we define a native **state space** where instead of treating the two sequences as independent, we form a vector $x(t) = (p_t, n_t)$ with $p_t \in P$ and $n_t \in N$:
+
+$$
+\begin{aligned}
+x(t) &= \big[ (29,26), (24,24), (17,19), \ldots,(12,22), (11,25)   \big]
+\end{aligned}
+$$
+So, if we want the state at $t=7$ we get $x(7) = (12,22)$ and similarly, $x(2) = (24,24)$.  Each of these states is naturally a point in two dimensions, visualised as a plane: 
+
+```{r echo = FALSE, fig.align='center', out.width="70%"}
+ggplot( df, aes( x = P, y = N ) ) +
+  geom_point(size = 4, color = "#d95f02") +
+  geom_label_repel( aes( x = P, y = N, label = time), nudge_y = -0.05, nudge_x = 0.8, direction = "both" ) +
+  geom_path( color = "#d95f02" ) +
+  scale_y_continuous(labels=scaleFUN, limits = c(18,27) ) +
+  scale_x_continuous(labels=scaleFUN, limits = c(8,33) ) +
+  xlab("\nPositive Sx") +
+  ylab("Negative Sx\n") +
+  dwjtheme +
+  theme(legend.position="none")
+```
+
+In this example, the state space is a finite plane (two-dimensional) which contains *all possible* configurations of $(P,N)$, and a single time-ordered sequence of states (numbered 1 through 8, in orange) shows the state **trejectory** for a single person.  We can equip this state space with a [metric](https://en.wikipedia.org/wiki/Metric_space) that imports mathematical tools for notions such as the distance between two states.  This means we can model the patient's trajectory in this **native** state space (preserving information) and only when we absolutely need to, apply mathematical tools to reduce this multi-dimensional representation to a convenient form that enables us to e.g. inspect change or build statistical models.  
+
+# Dynamical System Approach
+As a starting point, [@nelson2017moving] consider and survey some theoretical proposals for moving toward dynamic (instead of static) models of the *onset* of disorders -- notably, they review dynamical systems and network models.  Similarly, [@mason2017mood] explore a model of how mood oscillations occur in bipolar disorder and their proposal is superifically similar to a dynamical system with periodic behaviour.  The influential work of [@scheffer2009early] is also relevant: if one can identify a latent process with a dynamical systems formulation, then a whole theory of **critical transitions** can be mobilised to explain how perturbations from the system's equilibirum can 'break' the inherent stability of a system leading to a catastrophic change (i.e. relapse).  Our starting point here is how *operationalize* these ideas.  
+
+Here, we assume that underlying the measured clinical state is some process which behaves according to a putative model.  The example used here, and in the literature, is of **damped oscillators**.  A physical analogy helps: imagine a mass attached to a fixed point by a spring.  At rest, this system is in equilibrium.  If the mass is pulled or pushed (displaced) by a certain amount, the system is moved from equilibrium and  will 'bounce' up and down with a frequency and amplitude determined by the amount of displacement, the 'stiffness' of the spring and any 'damping' introduced by the viscosity of the medium.  This has been proposed as a model of e.g. mood dysregulation [@odgers2009capturing] and symptom trajectory is modelled using a [damped oscillator](https://en.wikipedia.org/wiki/Harmonic_oscillator) that is fit to data using for example, regression [@boker2002method].
+
+To begin, we denote the clinical state at time $t$ by $x(t)$ (note this is a uni- rather than multi-variate state representation, so for example, consider only the 'negative symptoms' plot above).  For more discussion of models of damped oscillators, see [@hayek2003] for an applied physical systems discussion, and for a helpful mathematical tutorial, [Chapter 2.4]({https://www.jirka.org/diffyqs/}) of [@Lebl2019diff]. 
+
+A general damped oscillator is described by a linear second-order ordinary differential equation (ODE):
+
+$$
+\frac{d^2x}{dt^2} - \zeta \frac{dx}{dt} - \eta x = 0
+$$
+
+With coefficient $\zeta$ modelling the 'decay' of the oscillations, and $\eta$ describing the 'frequency' of oscillations.
+
+To simplify the presentation, we use 'dot' notation where $\ddot{x}$ and $\dot{x}$ are the second and first derivatives respectively: 
+$$
+\ddot{x}(t) - \zeta \dot{x}(t) - \eta x(t) = 0
+$$
+
+Rearranging for the second-order term:
+$$
+\ddot{x}(t) = \zeta \dot{x}(t) + \eta x(t)
+$$
+Generally, we only have access to numerical data that we suppose is generated from an underlying damped oscillator process; so we use [numerical differentiation](https://en.wikipedia.org/wiki/Numerical_differentiation) to obtain the [locally-linear](https://en.wikipedia.org/wiki/Linear_approximation) approximation to the derivatives of $x$. 
+
+```{r echo = FALSE}
+LocalLinearGradient <- function( F ) {
+  # compute local linear numerical approximation to gradient of F with window +/- 1
+  N <- length(F)
+  dF <- rep(NA, N)  
+  for( i in 2:(N-1) ) {
+    dF[i] <- ( F[i+1] - F[i-1] ) / 2
+  }
+  # boundary cases
+  dF[1] <- (F[2] - F[1])
+  dF[N] <- (F[N] - F[N-1])
+  return( dF )
+}
+```
+
+To use ODEs as our model, we need to be able to solve them (for example, for fitting and then reconstructing the model for a given set of data).  To use off-the-shelf ODE solvers, we need to convert the second order ODE into two first-order equations by writing substitutions:
+
+$$
+\begin{aligned}
+  y_1 &= x \\
+  y_2 &= \dot{x} = \dot{y_1} \\
+\end{aligned}
+$$
+So :
+$$
+\begin{aligned}
+  \dot{y_2} &= \zeta y_2 + \eta y_1 \\
+  \dot{y_1} &= y_2
+\end{aligned}
+$$
+
+The analytic solution for this system is well understood and depends on the parameters $\zeta$ and $\eta$ -- there are three solutions for $x(t)$ depending on whether the system is damped, under-damped or critically damped -- [@Lebl2019diff] gives a helpful tutorial.  However, as we won't know the parameters in advance, we need to use numerical methods (an ODE solver) reassured that we can plug in any set of parameters to construct and visualise $x(t)$.
+
+# Simulated Example
+
+
+```{r echo = FALSE}
+# Direct implementation
+OscDiffEq <- function (t, y, params) {
+  zeta <- params["zeta"]
+  eta  <- params["eta"]
+  list(
+          c( y[2],
+             zeta * y[2] + eta * y[1]
+          )
+  )
+}
+
+actual.zeta <- -0.1
+actual.eta  <- -0.5
+
+params <- c( zeta = actual.zeta, eta = actual.eta )
+times <- seq(1,100, by = 1)
+yini <- c(y1 = 5, y2 = -2.5)
+soln <- ode(y = yini, func = OscDiffEq, times = times, parms = params)
+
+# keep y1 and y2 (the second and first derivative respectively)
+ex.osc <- data.frame(
+            X  = soln[,"y1"], # + rnorm( n, 0, 0.25),
+            dX = soln[,"y2"],
+            Time = soln[,"time"]
+)
+```
+We generate some simulated data with the following parameters:
+
+  * $\zeta$ = `r actual.zeta` (the 'damping' or 'amplification')
+  * $\eta$ = `r actual.eta` (the 'frequency' of oscillations)
+  * initial displacement ('baseline') value $x(0)$ = `r yini["y1"]` and initial 'velocity' $\dot{x}(0)$ = `r yini["y2"]`
+
+```{r echo = FALSE,fig.align='center', out.width="70%"}
+ggplot( ex.osc, aes( x = Time, y = X ) ) +
+  geom_point( colour = "gray50", size = 4 ) + 
+  geom_line( colour = "gray50" ) +
+  ylab(TeX("x(t)")) +
+  xlab(TeX("t")) + 
+  ggtitle("Simulated Data: Damped") +
+  dwjtheme
+```
+
+To emphasise how the system looks when amplifying (rather than damping) the oscilations, we invert the sign: $\zeta$ = `r - actual.zeta` resulting in:
+
+```{r echo = FALSE, fig.align='center', out.width="70%"}
+params <- c( zeta = 0.05, eta = -0.5 )
+times <- seq(1,100, by = 1)
+yini <- c(y1 = 5, y2 = -2.5)
+soln <- ode(y = yini, func = OscDiffEq, times = times, parms = params)
+
+# keep y1 and y2 (the second and first derivative respectively)
+ex.ampl <- data.frame(
+            X  = soln[,"y1"], # + rnorm( n, 0, 0.25),
+            dX = soln[,"y2"],
+            Time = soln[,"time"]
+)
+
+ggplot( ex.ampl, aes( x = Time, y = X ) ) +
+  geom_point( colour = "gray50", size = 4 ) + 
+  geom_line( colour = "gray50" ) +
+  ylab(TeX("x(t)")) +
+  xlab(TeX("t")) + 
+  ggtitle("Simulated Data: Amplifying") +
+  dwjtheme
+```
+
+# Model Fitting
+The modelling approach from [@boker2002method] -- used in [@odgers2009capturing] -- is to treat $\ddot{x}$ as the dependent variable in a linear regression model with independent variables $\ddot{x}$ and $x$.    We note that [@boker2002method] intends for their method to fit a population-level model -- that is, extracting a common $\zeta$ and $\eta$ for a group of people's trajectories such that "When a stable interrelationship between a variable and its own derivatives occurs, the variable is said to exhibit intrinsic dynamics" [@boker2002method].  We'll only consider fitting to a single individual here. 
+
+The steps are as follows.
+
+## Compute Gradients
+
+Using numerical approximation, and the simulated damped oscillator data, the columns are `x` = $x(t)$, `dx1` = $\dot{x}$  and `dx2` = $\ddot{x}$:
+
+```{r echo = FALSE}
+# compute numerical derivatives
+df <- data.frame(
+        Time = seq(1,nrow( ex.osc ) ),
+        # state x(t)
+        x    = ex.osc$X,
+        # first derivative (velocity)
+        dx1  = LocalLinearGradient( ex.osc$X ),
+        # second derivative (acceleration)
+        dx2  = LocalLinearGradient( LocalLinearGradient( ex.osc$X ) )
+      )
+```
+```{r echo = FALSE}
+kable(df[1:8,], digits = 5 ) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F)
+```
+
+## Estimate Parameters
+```{r echo = FALSE}
+X <- cbind( df$dx1, df$x )
+colnames(X) <- c("dx1","x")
+Y <- df$dx2
+beta <- solve( t(X) %*% X ) %*% t(X) %*% Y
+zeta.hat  <- as.numeric( beta[1,1] )
+eta.hat <- as.numeric( beta[2,1] )
+
+# compile a table
+params.table <- matrix( c( zeta.hat, actual.zeta,
+                           eta.hat, actual.eta ), 
+                nrow = 2, 
+                ncol = 2,
+                byrow = TRUE
+                )
+
+colnames(params.table) <-c("Estimated","Actual")
+rownames(params.table) <- c("Zeta","Eta")
+```
+
+We can quickly and easily estimate using the 'regression' approach, which will be an ordinary least squares solution.  The resulting point estimates $\hat{\zeta}$ and $\hat{\eta}$, are displayed below, alongside the actual parameters (i.e. for the simulated damped oscillator above):
+
+```{r echo = FALSE}
+kable(params.table, digits = 3 ) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F)
+```
+
+## Reconstruct Time Series
+The final step is to visualise the resulting model by numerically integrating the ODEs again, but this time, using the estimated $\hat{\zeta}$ and $\hat{\eta}$ to 'reconstruct' the time series $\hat{x}(t)$ and compare with the original:
+
+```{r echo = FALSE, fig.align='center', out.width="70%"}
+  
+params <- c( zeta = zeta.hat, eta = eta.hat )
+times <- seq(1,100, by = 1)
+yini <- c(y1 = df$x[1], y2 = df$dx1[1])
+soln <- ode(y = yini, func = OscDiffEq, times = times, parms = params)
+
+df$recon.x <- soln[,"y1"]
+
+ggplot() +
+  geom_point( data = df, aes( x = Time, y = x ), colour = "gray50", size = 4 ) + 
+  geom_line( data = df, aes( x = Time, y = x ), colour = "gray50" ) +
+
+  geom_point( data = df, aes( x = Time, y = recon.x ), colour = "red", size = 2 ) + 
+  geom_line( data = df, aes( x = Time, y = recon.x ), colour = "red" ) +
+  
+  ylab(TeX("x(t)")) +
+  xlab(TeX("t")) + 
+  ggtitle("Simulated Data + Fit") +
+  dwjtheme
+
+```
+
+The time series resulting from the estimated model parameters (shown in red) is predictably different -- and there are at least two systematic reasons for this:
+
+  1. The numerical approximation of the true derivatives is systematically over or under-estimating the 'true' derivatives
+  2. These errors are propogated further by obtaining (essentially) an ordinary-least-squares point estimate of the parameters from the data
+  
+The estimates $\hat{\zeta}$ and $\hat{\eta}$ are derived from these numerical derivatives, so unsuprisingly they are close (but significantly) different from the 'theoretical' or known $\zeta$ and $\eta$. We can quantify the mean square error between the reconstructed and original time series:
+
+$$
+\text{MSE} \left( \hat{x}(t), x(t) \right) = \frac{1}{N} \sum_{t}  \big[ \hat{x}(t)-x(t) \big]^2
+$$
+
+where $N$ is the number of time points in the original $x(t)$.  The MSE is then `r round( (1/length(ex.osc$X)) * sum( (ex.osc$X - df$recon.x)^2 ),4 )`.  This is useful as a baseline for what follows. 
+
+
+# Estimating Parameters by Non-Linear Least Squares Optimisation
+
+Using an ordinary least squares solution for $\ddot{x}(t) \sim \dot{x}(t) + x(t)$ -- we obtained a relatively poor estimate for $\hat{\zeta}$ and $\hat{\eta}$, and this was reflected in the MSE for the reconstructed (versus original) time series. A more traditional method would be to use a non-linear [optimisation algorithm](https://en.wikipedia.org/wiki/Optimization_problem) to search the parameter space of $(\zeta, \eta)$, so we try using the [Levenberg-Marquardt](https://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm) (LM) method.  This method finds an estimate for $(\hat{\zeta}, \hat{\eta})$ by minimising an [objective function](https://en.wikipedia.org/wiki/Loss_function), which in our case, are the values of the parameters that minimise the sum of squares of the deviations (essentially, the MSE). Like many optimisation methods, we run the risk of locating local (rather than global) minimum -- that is, an estimate of $(\hat{\zeta}, \hat{\eta})$ which minimises the MSE, but where if we were to 'explore' the surface of the MSE over a broader range of parameters values, a better (more global) minimum might be found.  
+
+The LM algorithm is iterative, proceding by gradually refining the estimates $(\hat{\zeta}, \hat{\eta})$ from an initial, user specified 'first estimate'.  If this first "guess" is close to the global minimum the algorithm is more likely to converge to the global solution.  It therefore makes sense to use domain knowledge to establish a plausible starting point for the LM search.  In our case, we will start the search by initialising the parameter estimate to be negative real numbers which corresponds to our expectation that we will be observing a damped (rather than amplifying) oscillator.
+
+As we only have two parameters to estimate, we can manually evaluate the MSE by systematically varying $(\hat{\zeta}, \hat{\eta})$ over a coarse grid of values to get an idea of what the error surface looks like, and further, we can then extract the best estimate (as we will have evaluated the error at each combination of $(\hat{\zeta}, \hat{\eta})$).
+
+
+```{r echo = FALSE}
+ComputeResid <- function(current.params, initial.values, times, observed ){
+ # Known initial values for the ODEs -- these could be extracted from and remain
+ # constant for any individual -- time series data
+ 
+ # solve ODE for the current set of parameters
+ soln <- ode( y = initial.values,
+          times=times,
+          func=OscDiffEq,
+          parms=current.params)
+ 
+ # compute and return residuals between output from ODE and actual observed data in df (== ex.osc)
+ return( soln[,"y1"]-observed )
+}
+
+```
+
+```{r echo = FALSE, fig.align='center', out.width='110%'}
+ManualSearch <- function( param.grid, N, initial.values, times, observed ) {
+  param.grid$MSE <- NA
+  for( i in 1:nrow( param.grid ) ) {
+      param.grid$MSE[i] <- (1/N) * sum( ComputeResid( c( zeta = param.grid$grid.zeta[i], 
+                                                         eta = param.grid$grid.eta[i] ),
+                                                      initial.values, 
+                                                      times, 
+                                                      observed)^2
+                                      )    
+  }
+  return( param.grid )
+}
+
+# number of points in time series
+N <- nrow( df )
+
+# for the coarse grid
+coarse.param.grid <- expand.grid( grid.zeta = seq(-1.0, 0, by = 0.05), 
+                           grid.eta = seq(-1.0, 0, by = 0.05) )
+
+coarse.est <- ManualSearch( coarse.param.grid, N,
+                            initial.values = c(y1 = 5, y2 = -2.5),
+                            times = seq(1,100, by = 1),
+                            observed = df$x 
+)
+
+
+# and for a fine grid, near the minimum found by coarse grid evaluation
+fine.param.grid <- expand.grid( grid.zeta = seq(-0.15, -0.05, by = 0.005),
+                           grid.eta = seq(-0.55, -0.45, by = 0.005) )
+
+fine.est <- ManualSearch( fine.param.grid, N,
+                          initial.values = c(y1 = 5, y2 = -2.5),
+                          times = seq(1,100, by = 1),
+                          observed = df$x 
+)
+
+
+
+min.zeta <- fine.est$grid.zeta[ which.min( fine.est$MSE ) ]
+min.eta  <- fine.est$grid.eta[ which.min( fine.est$MSE ) ]
+
+scaleFUN <- function(x) sprintf("%.2f", x)
+
+p.coarse <- ggplot( coarse.est, aes( x = grid.zeta, y = grid.eta, fill = MSE ) ) + geom_tile() + 
+                    scale_fill_viridis_c() + 
+                    annotate( "point", x = min.zeta, y = min.eta, size = 4, colour = "white") +
+                    geom_hline( yintercept = min.eta, colour = "white" ) +
+                    geom_vline( xintercept = min.zeta, colour = "white" ) +
+                    ggtitle("Coarse Grid") +
+                    labs( y = expression(eta),
+                          x = expression(zeta) ) +
+                    scale_y_continuous(labels=scaleFUN) +
+                    scale_x_continuous(labels=scaleFUN) +
+                    coord_fixed() + 
+                    dwjtheme
+
+p.fine <- ggplot( fine.est, aes( x = grid.zeta, y = grid.eta, fill = MSE ) ) + geom_tile() + 
+                    scale_fill_viridis_c() + 
+                    annotate( "point", x = min.zeta, y = min.eta, size = 4, colour = "white") +
+                    geom_hline( yintercept = min.eta, colour = "white" ) +
+                    geom_vline( xintercept = min.zeta, colour = "white" ) +
+                    ggtitle("Fine Grid") +
+                    labs( y = expression(eta),
+                          x = expression(zeta) ) +
+                    scale_y_continuous(labels=scaleFUN) +
+                    scale_x_continuous(labels=scaleFUN) +
+                    coord_fixed() +
+                    dwjtheme
+
+grid.arrange( p.coarse, p.fine, ncol = 2 )
+
+```
+
+On the left, we see that the error surface on a coarse grid over [-1,0] in steps of 0.05 for $(\zeta,\eta)$ shows that the error is very large around $(0,0)$ but otherwise appears 'flat'.  The white lines and dot show the parameter values for the minimum MSE -- but at this coarse resolution, we can not see the shape of the error surface near the optimum solution.  The panel on the right shows the error surface 'zoomed' for $\hat{\zeta} \in [-0.15,-0.05]$ and $\hat{\eta} \in [-0.55,-0.45]$, (note the difference in the MSE scale) and we can see that best esimates are $\hat{\zeta} = -0.1$ and $\hat{\eta} = -0.5$. 
+
+This brute-force method gives us the correct answer, and allows a visualisation of the error surface we expect the LM algorithm to search iteratively.  We now compare with the LM solution setting our "initial guess" to $\hat{\zeta} = -1$ and $\hat{\eta} = -1$ which corresponds to the bottom-right of the parameter space above.
+
+
+```{r echo = FALSE}
+# where to start the parameter search
+initial.estimate.zeta <- -1.0
+initial.estimate.eta  <- -1.0
+params <- c( zeta = initial.estimate.zeta, eta = initial.estimate.eta )
+
+# fitting
+nls.fit <- nls.lm(par=params,fn=ComputeResid,
+                  initial.values = c(y1 = 5, y2 = -2.5),
+                  times = seq(1,100, by = 1),
+                  observed = df$x 
+                  )
+
+nls.est.zeta <- as.numeric( nls.fit$par["zeta"] )
+nls.est.eta  <- as.numeric( nls.fit$par["eta"] )
+
+```
+
+And find:
+
+  * $\hat{\zeta}$ = `r round( nls.est.zeta, 4 )`
+  * $\hat{\eta}$ = `r round( nls.est.eta, 4 )`
+
+
+Finally, we reconstruct the original time-series to compare:
+
+```{r echo = FALSE, fig.align='center', out.width="70%"}
+params <- c( zeta = nls.est.zeta, eta = nls.est.eta )
+times <- seq(1,100, by = 1)
+yini <- c(y1 = df$x[1], y2 = df$dx1[1])
+soln <- ode(y = yini, func = OscDiffEq, times = times, parms = params)
+
+df$LM.recon.x <- soln[,"y1"]
+
+ggplot() +
+  geom_point( data = df, aes( x = Time, y = x ), colour = "gray50", size = 4 ) + 
+  geom_line( data = df, aes( x = Time, y = x ), colour = "gray50" ) +
+
+  geom_point( data = df, aes( x = Time, y = LM.recon.x ), colour = "red", size = 2 ) + 
+  geom_line( data = df, aes( x = Time, y = LM.recon.x ), colour = "red" ) +
+  
+  ylab(TeX("x(t)")) +
+  xlab(TeX("t")) + 
+  ggtitle("Simulated Data + LM Fit") +
+  dwjtheme
+
+```
+
+A much better fit, with an MSE approaching `r round( (1/nrow(df)) * sum( (df$X - df$LM.recon.x)^2 ),8 )`. 
+
+# Some Real Data
+So far, we've been using 'ideal' simulated data where there is no measurement error and the underlying (hypothetical) damped oscillating process is in a one-one correspondence with the time series $x(t)$.  Here, we use some data on daily self-reported symptoms from Nick Meyer's [SleepSight](https://sleepsight.org/) study.  Nick's data is a natural fit for the state-space models espoused at the start, but to apply a dynamical system model, we need to start small (with one variable).  We pick one symptom (self-reported sleep duration) for an examplar participant, and then scale and center the data, before detrending (i.e. removing any linear 'drift' in the time series).  We then add a [lowess](https://en.wikipedia.org/wiki/Local_regression) smoother (shown in red) to try and expose any underlying pattern:
+
+```{r echo=FALSE, fig.align='center', out.width="70%"}
+time.sample <- seq(1,nrow(d), by = 1)
+df <- data.frame( time = time.sample,
+                  x = scale( d$Sleep.Duration[ time.sample ], center = TRUE, scale = TRUE )
+)
+
+# residualise:
+df$x <- detrend( df$x, 'linear' )
+
+df$smooth <- lowess( x = df$time, y = df$x, f = 1/5)$y
+
+ggplot( df ) +
+  geom_point(aes( x = time, y = x), size = 1, color = "#1b9e77") +
+  geom_path( aes( x = time, y = x), color = "#1b9e77" ) +
+  geom_path( aes( x = time, y = smooth), colour = "red") +
+  xlab("\nTime") +
+  ylab("Sleep Duration\n") +
+  dwjtheme +
+  theme(legend.position="none")
+
+
+```
+
+Note the somewhat periodic behaviour but there is no clear frequency or progression of damping of oscillations, so it is unlikely that a 'pure' damped oscillator will fit.  Nonetheless, we use the LM method to try and fit a damped oscillator:
+
+```{r echo = FALSE, fig.align='center', out.width="70%"}
+
+# Compute numerical approximations of gradients
+# - first deriv
+df$dx1 <- LocalLinearGradient( df$smooth )
+# - second deriv
+df$dx2 <- LocalLinearGradient( LocalLinearGradient( df$smooth ) )
+
+# where to start the parameter search
+initial.estimate.zeta <- -1.0
+initial.estimate.eta  <- -1.0
+params <- c( zeta = initial.estimate.zeta, eta = initial.estimate.eta )
+
+# fitting
+nls.fit <- nls.lm(par=params,fn=ComputeResid, 
+                  initial.values = c(y1 = df$smooth[1], y2 = df$dx1[1]), 
+                  times = df$time,
+                  observed = df$smooth)
+
+
+# reconstruct
+soln <- ode(y = c(y1 = df$smooth[1], y2 = df$dx1[1]), 
+                  func = OscDiffEq, 
+                  times = df$time, 
+                  parms = c( zeta = as.numeric( nls.fit$par["zeta"] ), 
+                             eta =  as.numeric( nls.fit$par["eta"] ) )
+)
+
+df$recon.X <- soln[,"y1"]
+
+ggplot() +
+   geom_point( data = df, aes( x = time, y = smooth ), colour = "gray50", size = 2 ) + 
+   geom_line( data = df, aes( x = time, y = smooth ), colour = "gray50" ) +
+ 
+   geom_point( data = df, aes( x = time, y = recon.X ), colour = "red", size = 2 ) + 
+   geom_line( data = df, aes( x = time, y = recon.X ), colour = "red" ) +
+   
+   ylab(TeX("x(t)")) +
+   xlab(TeX("t")) + 
+   ggtitle("Sleep Data + LM Fit") +
+   dwjtheme
+
+
+```
+
+Resulting in a poorly fitting model.  One way to understand this is that to look at the **phase plane** for the system.  First, take our first simulated oscillator:
+
+```{r echo = FALSE, fig.align='center', out.width="70%"}
+actual.zeta <- -0.1
+actual.eta  <- -0.5
+
+params <- c( zeta = -0.1, eta = -0.5 )
+times <- seq(1,100, by = 0.5)
+soln.1 <- ode(y = c(y1 = 5, y2 = -2.5), func = OscDiffEq, times = times, parms = params)
+soln.2 <- ode(y = c(y1 = 2, y2 = 1.5), func = OscDiffEq, times = times, parms = params)
+
+# keep y1 and y2 (the second and first derivative respectively)
+ex.osc <- data.frame(
+            X.1  = soln.1[,"y1"], # + rnorm( n, 0, 0.25),
+            dX.1 = soln.1[,"y2"],
+            X.2  = soln.2[,"y1"],
+            dX.2 = soln.2[,"y2"],
+            Time = soln.1[,"time"]
+)
+
+p.x <- ggplot( ex.osc ) +
+        geom_line( aes( x = Time, y = X.1 ), colour = "#984ea3" ) +
+        geom_line( aes( x = Time, y = X.2 ), colour = "#ff7f00" ) +
+        annotate("point", x = 1, y = 5, size = 4, colour = "#984ea3") +
+        annotate("point", x = 1, y = 2.5, size = 4, colour = "#ff7f00") +
+        ylab(TeX("x(t)")) +
+        xlab(TeX("t")) + 
+        ggtitle("Simulated Data: Damping") +
+        dwjtheme
+
+p.phase <- ggplot( ex.osc ) +
+        geom_path( aes( x = X.1, y = dX.1 ), colour = "#984ea3" ) +
+        geom_path( aes( x = X.2, y = dX.2 ), colour = "#ff7f00" ) +
+        annotate("point", x = ex.osc$X.1[1], y = ex.osc$dX.1[1], size = 4, colour = "#984ea3") +
+        annotate("point", x = ex.osc$X.2[1], y = ex.osc$dX.2[1], size = 4, colour = "#ff7f00") +
+        ylab("dx(t)") +
+        xlab("x(t)") + 
+        ggtitle("Phase Plane: Damping") +
+        dwjtheme
+
+grid.arrange( p.x, p.phase, ncol = 2)
+
+```
+On the left, we have $x(t)$ on the vertical axis as time progresses.  On the right, we plot $\dot{x}(t)$ on the vertical and $x(t)$ on the horizontal axes (using the 'mass on a spring' analogy, we are looking at the relationship between the velocity and displacement).  The purple line is our original oscillator, and the orange line the *same* system ($\zeta$ and $\eta$), but with *different* initial values (i.e. the initial state is $x(t) = 2$ with initial 'velocity' $\dot{x}(t) = 1.5$).  The right panel shows the phase plane -- the evolution of the $x(t)$ and $\dot{x}(t)$ over time.  Notice how (despite different initial values) the two damped oscillators converge to a stable [attractor](https://en.wikipedia.org/wiki/Attractor) in the middle (which corresponds to the equilibrium state of the system around as $t \rightarrow 100$). 
+
+If we look at the behaviour of the real (sleep duration) data using the numerical derivatives:
+```{r echo = FALSE, fig.align='center', out.width="70%"}
+
+p.x <- ggplot( df ) +
+        geom_line( aes( x = time, y = smooth ), colour = "black" ) +
+        geom_point( aes( x = time, y = smooth, colour = time ) ) +
+        scale_color_gradientn( colours = viridis( nrow(df) ) ) +
+        annotate("point", x = 0, y = df$smooth[1], size = 4, colour = "black") +
+        ylab(TeX("x(t)")) +
+        xlab(TeX("t")) + 
+        ggtitle("Real Data") +
+        dwjtheme +
+        theme(legend.position = "none")
+
+
+p.phase <- ggplot( df ) +
+        geom_path( aes( x = smooth, y = dx1 ), colour = "black" ) +
+        geom_point( aes( x = smooth, y = dx1, colour = time ) ) +
+        scale_color_gradientn( colours = viridis( nrow(df) ) ) +
+        annotate("point", x = df$smooth[1], y = df$dx1[1], size = 4, colour = "black") +
+        ylab("dx(t)") +
+        xlab("x(t)") + 
+        ggtitle("Phase Plane") +
+        dwjtheme +
+        theme(legend.position = "none")
+
+grid.arrange( p.x, p.phase, ncol = 2)
+
+```
+
+The colour gradient shows time so we can compare the left and right panels: we can see that while the system tends towards a region around $x(t) = 0.2$ and $\dot{x}(t) = 0$, it is not stable and the trajectory diverges rather than converging (in contrast to the simulated damped oscillator).  The difference in behaviours shown by the phase planes for the real data and the idealised, simulated data (from an actual damped oscillator) tell us why the model fit was so poor.
+
+# Directions
+
+The dynamical systems framework is appealing because it provides a model for a latent process which might underly measured / observed data.  It requires a model (e.g. a damped oscillator) and a method to fit the data.  If the model fits the data, we then import a whole theory that enables us to understand and test the qualitative properties of the model -- for example, in terms of stability, attractors and critical transitions [@scheffer2009early].  
+
+The examples used in this post are all linear systems but there is evidently more complexity to the real data we examined -- bluntly, a single damped oscillator cannot model the dynamics of self-reported sleep in our application (and it might be naive to assume that it would).  As we alluded to at the start, we would prefer to treat individual variables as components of a larger system -- and we have not explored this here (in part, because systems of *coupled* oscillators require a more sophisticated analysis), instead focusing on principles and how they apply to data.  
+
+In future posts, we'll try different approaches that inherit the ideas of state spaces, but attempt to model them without such strong assumptions about the dynamics.
+
+# References

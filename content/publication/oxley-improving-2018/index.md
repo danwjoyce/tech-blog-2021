@@ -1,0 +1,13 @@
+---
+title: "Improving the quality of physical health monitoring in CAMHS for children and adolescents prescribed medication for ADHD."
+date: 2018-01-01
+publishDate: 2020-04-05T21:13:10.146700Z
+authors: ["Cristal Oxley", "Omer S. Moghraby", "Rani Samuel", "Dan W. Joyce"]
+publication_types: ["2"]
+abstract: "Attention deficit hyperactivity disorder (ADHD) is a common neurodevelopmental disorder characterised by a persistent, pervasive pattern of inattention, impulsivity and hyperactivity. Stimulant medication such as methylphenidate has an established evidence base in the treatment of children and adolescents with ADHD. However, it is also associated with a risk of side effects which may include decreased appetite, increased blood pressure and possible reduced growth. Monitoring physical health in children and adolescents prescribed medication for  ADHD is a key clinical responsibility and includes a number of parameters as outlined in the National Institute for Health and Care Excellence Guidelines. Ascertaining the centiles of physical observations is essential to put these into developmental context and accurately inform treatment decisions. This quality improvement project aimed to improve physical health monitoring in children and adolescents prescribed stimulant medication for ADHD within a large specialist urban inner-city Child and Adolescent Mental Health Service (CAMHS) in South London and Maudsley NHS Foundation Trust. Baseline data were obtained to establish the quality of physical monitoring including blood pressure, height, weight and centiles. Targeted interventions included the development of a novel web-based application designed to calculate and record centiles. We report an improvement in total proportion compliance with physical health monitoring from 24% to 75%. The frequency of recording baseline blood pressure centiles increased from 0% to 62%; recording baseline height centiles increased from 37% to 81% and  recording baseline weight centiles increased from 37% to 81%. Improvement in the  delivery of high-quality care was achieved and sustained through close collaboration with clinicians involved in the treatment pathway in order to elicit and respond effectively to feedback for improvement and codevelop interventions which were highly effective within the clinical system. We believe  this model to be replicable in other CAMHS services and ADHD clinics to improve the delivery of high-quality clinical care."
+featured: false
+publication: "*BMJ open quality*"
+tags: ["decision-making", "healthcare quality improvement", "medication safety", "patient safety", "quality improvement"]
+doi: "10.1136/bmjoq-2017-000213"
+---
+

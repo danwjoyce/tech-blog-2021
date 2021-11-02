@@ -1,0 +1,13 @@
+---
+title: "When Deploying Predictive Algorithms, Are Summary Performance Measures Sufficient?"
+date: 2020-01-01
+publishDate: 2020-04-05T17:39:34.007652Z
+authors: ["Dan W. Joyce", "John Geddes"]
+publication_types: ["2"]
+abstract: "The last decade’s growth in artificial intelligence, machine learning, and statistical methods for high-dimensional data has driven a zeitgeist of prediction (or forecasting) in medicine and psychiatry. Algorithms for prediction require a model that is governed by parameters whose values are estimated from exemplar training cases. Estimation (or training) of parameters ingrains uncertainty into the resulting algorithm arising from model assumptions in addition to bias and error in the data. The trained algorithm’s proficiency is tested on separate validation cases (not seen during training) and summarized as representative of the expected performance when used for making predictions about actual patients. The trained model yields a continuous score that is proportional to the probability of some outcome, commonly a diagnosis or the occurrence of an event. Most often, this continuous score is compared with an operating threshold (or cutoff) that implicitly defines a dichotomizing decision rule because this is compatible with summary measures of performance (SMP) such as the area under the receiver operating characteristic curve (AUROC), sensitivity/specificity, and balanced accuracy. Sometimes, the continuous scores are instead summarized as the Brier score, ranging from 0 (perfect) to 1 (worst). In this Viewpoint, we discuss an important but neglected issue: summary measures of performance obscure uncertainty in the algorithm’s predictions that may be relevant when deployed for clinical decision-making."
+featured: true
+publication: "*JAMA Psychiatry*"
+url_pdf: "https://doi.org/10.1001/jamapsychiatry.2019.4484"
+doi: "10.1001/jamapsychiatry.2019.4484"
+---
+

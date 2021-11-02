@@ -1,0 +1,204 @@
+---
+title: "Routines and Workflow: Adaptations around the Electronic Health Record"
+author: Dan W. Joyce
+date: '2019-06-26'
+slug: routines-and-the-ehr
+categories: [electronic health records, workflows, practices]
+
+output:
+  blogdown::html_page:
+    number_sections: true
+
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-05-08T21:23:37+01:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+
+The motivation for this post is a series of discussions I've had with colleagues over the past few weeks involving the potential for electronic health/medical records (EHRs or EMRs) for improving clinical care and their utility for research.  All of these conversations have been in the context of how we use clinical data to better record and understand patient's state, trajectories, treatments/interventions, adverse events and outcomes.  In this post, I discuss an example of how EHRs are used in a workflow for clinical practice and highlight opportunities for improving EHRs.  
+
+From my perspective, a central theme is how given a set of available tools (including an EHR), my workflow in clinical practice includes **work-arounds** and **routines** analogous to what Herbert Simon called ["satisficing"](https://en.wikipedia.org/wiki/Satisficing) -- finding satisfactory (often sub-optimal) solutions to account for the realities of the environment.   
+
+# Introduction
+There were some dominant themes emerging from discussions with colleagues around the use of EHRs:
+
+  * clinical records contained in the EHR represent a kind of **ground-truth** e.g. about clinical states, trajectories, diagnoses and treatments
+  * that free-text records in the EHR contain **sufficient signal (relative to noise)** and that we can develop research tools which can reliably extract usable research content, for example, using natural language processing (by both rule-based as well as statistical/probabilistic methods)
+  * that **structured data** in the EHR is routinely collected and can be considered more reliable than free-text -- this includes demographics, coded diagnostic data, structured psychometric instruments/questionnaires/scales and patient-reported outcome measures as well as service utilisation data (e.g. general practitioner contacts, temporal event data representing contact with services such as admissions to hospital)
+  * **non-native data** (e.g. generated outside the EHR) data is repositoried in the EHR (e.g. clinic letters, admission/discharge summaries) by being uploaded and represent a further source of clinical data
+
+One important and recurring theme in each conversation was that clinician workflow and the situated practice of clinical use of EHRs was unexplored.  This is important because workflow (importantly, the work-arounds that clinicians find and use) impacts on the content of the EHR.  Below, I describe my current workflow with an EHR that I use every day and highlight some of the problems arising and opportunities for developing EHRs in a way that actively assists clinical recording and decision making.  
+
+EHRs are supposed to be an improvement on paper medical records -- my experience suggests this is absolutely true -- but there are new problems that emerge from how these systems are embedded in and used by clinical teams.  As a preview, my principle complaint with EHRs is that they often default to being a [document-oriented database](https://en.wikipedia.org/wiki/Document-oriented_database) but without any of the query, retrieval or data-modelling sophistication. They end up being a 'dumping ground' for recording every kind of clinical activity, in part I suspect, because of their medico-legal status.  
+
+Over the past decade, I've used 13 different systems (excluding more narrow-functionality, specialty-specific systems e.g. for radiology): 
+
+  * three different commercial, proprietary EHR systems designed for secondary care in psychiatry/mental health
+  * three different commercial, proprietary EHRs for acute (general, secondary care) hospitals
+  * four different emergency department EHRs for acute hospitals (each commercial and proprietary)
+  * two "custom" EHRs built in-house for two different secondary care, acute hospitals
+  * a single proprietary primary care (general practice) EHR
+  
+Common to the my experience and use of **all** of these EHRs, is I have to find a workflow and set of practices around these systems and this has remained relatively constant: All of the intellectual work is done using applications **separate** from the actual EHR because:
+
+  * generally, none of the EHRs provide tools for the kinds of **information processing** that I need in clinical practice (more below)
+  
+  * I have not used **any** EHR that seamlessly inter-operates with another -- for example, if I want to combine radiology, pathology and my clinical notes, I have to copy-and-paste between applications hoping that data displayed in each application can be made compatible by exchanging it via a **lowest common denominator** or minimal common exchange format -- which is invariably plain, free-text.
+  
+  * One consequence of the above is that clinicians tend to treat the EHR as a data repository (particularly, for the free-text and non-native format storage) and as a medico-legal document (i.e. if you haven't recorded some activity as an entry on the EHR, then it didn't happen)
+  
+  * none of the EHRs that I've used is **engineered to be reliable enough** that I can trust it -- for example, my current EHR runs as a web application -- but appears to only be guaranteed (tested) to work on a single browser platform; it either crashes frequently (often losing draft or in-progress work) or 'times out' my connection (for governance and information security reasons, because I've been inactive for a period of around 15 minutes) without a robust draft/auto-save facility. 
+
+# Example Workflow
+Over the years, I've developed a workflow which is optimal for me **given** the above constraints.  My hope is to highlight how these represent work-arounds for the problems highlighted above.  The context here is a weekly out-patient clinic; people attending the clinic are a combination of new referrals (for example, from GPs or other clinicians in secondary care) and people being followed-up in treatment.
+
+Typically, there are between 6 and 8 patients in a 4 hour clinic; people who are new or I've not met before are often given 45 minutes to 1 hour appointments and people attenting for 'check up' or treatment monitoring are usually given 30 minute appointments.
+
+## For New Patients
+As I describe this process, I'll keep a running total the number of unique applications and instances/windows for these applications that I need. 
+
+For people new to the clinic (or that I've not met before):
+
+  1. I'm going to need access to my personal library of prescribing guidelines, literature and instruments/scales/ questionnaires.  I open the file system browser and navigate to my networked storage.  I prefer to do web browsing using a different browser to one our EHR runs on, so I launch this often navigating straight to the British National Formulary (BNF) so it's easily available to me.  That's **two applications** off the bat.
+
+  2. I launch the EHR (open the default web-browser, navigate to the EHR link) and my goal is to establish a history of the person's contact with services and to try and understand what the historical and current difficulites are.  So we now have **three applications** open and running.
+  
+My EHR is a multi-tabbed web application where the main display panel reflects the currently-selected tab.  The EHR is organised (roughly) into 
+
+  * structured data (outcomes, questionnaires, psychometric scales/instruments; diagnostic coding; demographics)
+  * the "Correspondence" section/tab which acts as a repository for any non-native data (scanned documents/letters; investigations including bloods, ECGs, radiology reports from systems not compatible with the EHR; admission/discharge summaries usually in an office application format; email correspondence) 
+  * the free-text "Clinical Notes" section where most clinical activity is recorded and (importantly) replicates information from the two other sections  
+  
+I usually avoid the tabs for "Clinical Notes" and go straight to a menu at the top of the EHR application where I can opt for the main panel to show me the entire record of these free-text entries.  As this free-text record often replicates and brings together in a single location much of the data recorded in different tabs I prefer to use this as a starting point. I read the free-text entries in chronological order -- as the first point of contact/referral is recorded at the end of this document I read from the bottom-up.  Of note, this is **less time consuming** than clicking to read each entry individually in the default list format for the "Clinical Notes".  Also, when reading a single note/entry individually, the EHR application displays formatting meta-data (e.g. numbered or unordered lists) as *plain* text, without intepretation or formatting for display.  Most importantly, I can exploit the browser's free-text search facility to e.g. quickly navigate to keywords like "medication", "ecg", "bloods" -- because the EHR web application doesn't have a search facility.   
+
+  3. I launch another instance of the EHR browser window so I can have access to **other tabs** in parallel; notably, I want the "Correspondence" tab which contains scanned documents (usually PDFs, sometimes bitmapped TIFF or GIF images arising from scanned paper documents) including the original referral letter.  Often, ECGs are scanned and placed here also.  So I open a PDF reader so I can view these.  We're at **three applications** and for the EHR application, **two instances or windows**.
+  
+  4. I open another browser window, and navigate to our pathology system (a separate web application) where I can find the most recent blood tests, letters from other specialties, radiology reports and records of admissions or clinic attendances to other local acute general hospitals.  I use a separate login identity and password because this system is operated by another NHS Trust.  This brings us to **four applications** and **two instances** for the EHR
+  
+  5. While I'm reviewing these notes, I open a word processor, and start making brief notes summarising the salient points from the EHR.  This "main clinic document" is the center-piece of my workflow.  I also copy and paste the NHS number from the EHR (a person's *mostly* unique identifier across the NHS), which is formatted as numeric data with the format "XXX XXX XXXX" -- then I edit out the whitespace because to copy-paste the NHS number to the pathology system, it expects a single, uninterrupted string of numerals.  This is more efficient than trying to search the pathology system on name, date of birth etc.  Now we have **five applications** and **two instances**.
+  
+On average, for each clinic appointment, I'm spending between 15 minutes to an hour (for very complex cases) working with this workflow by quick-tabbing (ALT+Tab) between applications/windows, making notes, navigating the EHR, copy-pasting, looking up results and so on.  
+
+The **focus** of this information gathering exercise is the word processor document (the "main clinic document"), where I'm collating together all information that has direct utility for the forthcoming clinic appointment for that patient.  
+
+Importantly, I'm copying and pasting information from the pathology application, the EHR and PDF reader (when the documents are not bitmapped, scanned images -- where in these cases I have to retype the data).  I have my word processor set to default to 'paste as plain text' to avoid formatting problems when e.g. copying tabulated data from the pathology web application to my evolving clinical notes for the clinic appointment.   
+
+I'll keep this workflow 'open' and repeat the process for each person to be seen in clinic.  As I proceed, the "main clinic document" is a single, growing document which contains page-separated summaries for every person to be seen.  For each person, this typically takes the form of: the person's recent history with health services, referral details, history of and presenting complaint/current difficulites, a history of their investigations/test results to date (or pending), relevant medical history, medications history, side-effects/history of adverse reactions or allergies, personal / social circumstances and some of my initial thoughts about issues that need addressing in clinic, outstanding investigations and an initial management plan.  Most of this information is gathered from the free-text "Clinical Notes" function of the EHR, navigated using the free-text search facility provided by the browser.
+
+## For 'Known' Patients
+
+The above workflow is modified for a person I've met before:
+
+  1. Instead of reading the entire set of clinical notes from the earliest to the most recent entry, I'll still request the EHR displays all clinical notes, but read from the top (most recent).  I'll review what has happened since I last met with this person for example, notes from social workers, occupational therapists, psychologists, pharmacists, care coordinators.
+  
+  2. In the second of the EHR browser instances, I'll look in "Correspondence" where I'll locate my **last clinic letter**.  I'll open this letter which launches another document window in the word processor application.  From here, I'll copy the 'proforma' part of the letter (which contains demographics, clinicians involved in their care, medication lists and diagnoses) and paste into my evolving "main clinic document".  I'll also copy the last "Plan" we made so I can refer to and update it with any progress notes.  Finally, I'll also copy and paste the last mental state examination and the list of "early warning signs" (for relapse) which are contained in the clinic letter so I can refer to these during the clinic appointment. 
+
+  3. When relevant, I'll switch to the browser window containing the EHR "Clinical Notes" and summarise any investigations which any of the team have placed in the free-text record.  This might be, for example, entries summarising blood results planned from the last appointment, imaging or other assessments that help formulation/diagnosis or will influence management.  Sometimes, I'll go to the separate browser running the pathology web application if I can't locate information or it's summarised too briefly for example, when someone has checked some bloods and written "Bloods checked, NAD" as a placeholder to record the activity rather than the results themselves.  
+  
+  4. Also, when relevant or required, I'll need to look at the "Correspondence" tab to see written communication from other teams or specialties and make notes in the main clinic document so it's all available in one place during the clinic appointment.  It's worth noting that very often, email correspondence between appointments with other professionals are copied into the "Clinical Notes" free-text to formally record the outcomes of inter-professional or agency working.
+  
+  5. Finally, I'll usually open a spreadsheet application and open an existing (or create a new) spreadsheet for each person where I've previously completed quetionnaires or instruments (usually, these are clinician and patient-reported structured data which can't be easily managed inside the EHR because they aren't 'standard forms').   These are most often structured, quantitative data on depressive/affective symptoms, tools like the Scale for Assessment of Negative Symptoms (SANS), PANSS and cognitive tests/screening.  These spreadsheets are all located on my personal Trust-based secure storage for compliance with information governance.  
+  
+In total, to prepare for a clinic I'll have **six applications** running.
+
+
+# Before and During A Clinic
+
+I might tidy up my desktop environment a bit before clinic -- for example, closing the PDF reader, one or two browser instances and so on.  Before the clinic gets started, I'll have a separate **calender application** open (our EHR provides a calender / scheduling tool, but it's not used by clinicians or the administration team) -- this shows me the timing for the clinic, and should reflect same order as the "main clinic document" in my word processor.  I'll also print any hardcopies of materials I'll need for each patient (for example, I'll get any mandatory or useful clinical questionnaires printed) -- we don't have tools for electronic administration of the clinical instruments and questionnaires I commonly use.
+
+During clinic, with the person's permission, I'll make short-hand notes about important issues directly into the main clinic document as we go along.  I'll also record the plans / changes to management we agree in clinic including any planned investigations, appointments with other members of the team and important communication to their GP.  I'll collate paperwork completed during the clinic for entry later on (there's not enough time between appointments).  However, between appointments, in the calender application I'll often put in calender reminders / events to prompt me to follow up parts of the plan made during the previous appointment.
+
+# After A Clinic
+
+Typically, I'll go back to the start of the main clinic document, and for each person, complete the following steps to arrive at a summative document which will form the basis of a clinic letter to other professionals and 'double up' as a record to go in the EHR "Clinical Notes" free-text:
+
+  1. Collate any paperwork (quetionnaires, scales) and manually enter these into a spreadsheet which captures historical and current measures that are important.  For example, the person's currently reported depression symptoms inventory, results from brief cognitive tests and so on.  
+  
+  2. I'll complete the mental state examination (MSE) for each person seen by expanding on the notes I made during clinic.  While doing this, I compare this to the previous MSE (which are usually pasted in the main clinic document) for that person -- noting any important changes.  I'll end the MSE with an 'impression' which summarises important information on the current MSE and often, highlighting changes with respect to previous MSEs.
+  
+  3. The first part of the clinic letter is then written; summarising the last time / duration since the person was seen and   a narrative description including any issues brought to clinic by the patient, recent issues/events I've collated from reading the EHR notes (for example, I might highlight any recent investigations). The latter part of the letter will summarise any quantitative (structured) information usually from my spreadsheet-based data -- for example, I might note the current salient items in a symptoms inventory commenting on changes from any previous measures.  
+  
+  4. The letter concludes with an updated plan, noting any actions to be completed (by whom and when) from this clinic appointment and highlighting anything that remains pending from previous clinic plans.
+
+By the end of this process, I usually have between one and three pages of information which will include the clinic letter and then:
+
+  5. I will send the letter content for each patient via email to the team's administrators, who will format, electronically sign and place the relevent letter heads onto the document.  They also direct the correspondence out by post or email to the patient and any clinicians indicated in the 'cc' list.  The administrators will also upload the finalised letter to the "Correspondence" section of a patient's EHR.  This often happens within 24-48 hours depending on how many clinicians are requesting help with administration as well as when the clinic finishes (often, for an afternoon clinic, the post-clinic work will take place after office hours).
+  
+  6. I copy the text of the letter into the EHR "Clinical Notes" -- while, strictly, this should be redundant (as the administrators will evenutally place it on "Correspondence") it is often necessary for contemporaneous recording; for example, should the patient be seen out of hours in a crisis by other clinicians.  Often, in doing this, I use the minimal common exchange format -- plain text -- because I can't trust the EHR to format information beyond this.  I can't use graphical or tabular data reliably.  
+  
+This process is repeated for each person seen in clinic.  It requires **four separate applications** (word processor, spreadsheet, web browser for the EHR and an email/calender application).  Notice how the intellectual and administrative parts of this work are independent of the EHR; the main clinic document is the focal point, and the other applications allow for collating and summarising data and communicating the output of this process with other team members (notably, the administration team).  Only at the end of this process does the EHR factor in as a repository for a document.
+
+
+# Time Costs
+
+For the pre-clinic workup:
+
+  * To prepare for a clinic where everyone is new, I'll need between 2 and 4 hours.  At the end of this, I'll have one document (in the word processor) containing all the relevant information for each patient.
+
+  * When their's a mixture of new and known people, the cumulative information contained in previous clinic letters helps reduce the time -- but it comes in around 2 hours on average.
+  
+For the post-clinic work:
+
+  * Depending on complexity, I can write and compare MSEs in around 10-20 minutes for each person.  It's worth noting that the MSE should contain enough information to facilitate my comparison / estimate of change as well as communicate with other professionals.
+  
+  * The remainder of the letter takes a further 10-15 minutes.
+  
+  * In total, for a four-hour clinic, there's an average of between 2-4 hours of post-clinic work.
+  
+# Core Components of the Workflow
+
+## Central 'Working Space'
+This role is fulfilled by the "main clinic document" in the word processing application that collects together information from at least two locations in the EHR (most often, the free-text "Clinical Notes" and the "Correspondence" repository), a separate pathology system and previous clinic letters.  
+  
+It is required because:
+
+  * the EHR does not provide a facility to collate information together from multiple sources in a "workspace" or scratch-pad that can be used to display, edit, synthesise information and to begin formulating a record of the clinical encounter. For example, I can't ask the EHR to display my last MSE so I can conveniently compare to the current clinic MSE. Very often, the important clinical information is the **change** in the clinic MSE **relative** to the last recorded MSE.  
+  
+In an ideal world, I'd like the MSE to be a structured record from which a 'narrative' version (for the clinic letter) can be generated -- this would reduce the time spent (redundantly) re-typing the same thing over and over.
+
+  * the EHR's method of recording medications or interventions trialled is cumbersome to the point no-one uses it; instead, the free-text "Clinical Notes" become the primary source of information -- it is, of course, unstructured and subject to idiosyncratic recording between clinicians.  As an example, if I want to compile a history of medications trialled, I have to manually search, using the browser search facility, and copy and paste information to my main clinic document.
+  
+  * clinic letters and the "Correspondence" tab (really, just a repository of anything that is *not* free text in the "Clinical Notes" tab) are the best cumulative source of information for the person's trajectory during treatment -- they contain plans (which evolve), describe change in the person's condition, highlight unmet needs and often contain the clinical reasoning that justifies changes in management. 
+
+  * during clinics, I have **most information in one place** -- I don't have to rely on other web-based applications which are unstable, don't inter-operate or have cumbersome user interfaces to quickly find the information I need prompt access to (i.e. to minimise disruption to the patient's time during the clinic appointment)
+
+  * the EHR is not stable enough to rely upon during clinic appointments or to remain stable for the time after a clinic -- in short, if you don't store your notes in a word processor application, you'll likely loose them before you have a chance to finalise them.
+  
+
+## Spreadsheets for Structured / Quantitative Data
+The EHR I work with can record some structured clinical data (for example, important patient-reported outcome measures (PROMs) have their own structured form-based input), but it's hard to locate and find the facility quickly and most importantly, there is no way of visualising patterns and changes in serial measurements. 
+
+As an example, currently, to use PROMs for audit or research on outcomes, there is a research assistant who manually re-enters the same data into spreadsheets and then uses the spreadsheet application to produce visualisations.  So, for one questionnaire, we have a paper form that is entered onto two systems (the EHR and a standalone spreadsheet), by two separate people simply to visualise, understand trends and compile meaningful outcome data.  The team has to repeat a similar exercise when compiling compliance data for national audits -- our EHR doesn't provide functionality that means we don't have to 'parallel record' this information.
+
+Further, I would have to wait for an EHR implementation team to create a structured form should we decide to use something targetted to a particular clinical population, team/clinic or condition.  
+
+So, the tactical solution of using one's own spreadsheet-based implementation for structured data provides:
+
+  * a familiar user interface for tabular data entry for questionnaires, PROMs and structured clinical instruments
+  * quick and low-cost implementation of tools without waiting for a team to implement in the EHR
+  * a way of visualising patterns / changes over time (imperfectly, because we're really using a generic office application  but it's certainly better than nothing)
+  * some (limited) flexibility in how this data is then migrated to the "main clinic document" to form part of the clinic letter / summary of the clinical encounter
+    
+# The Current Role of the EHR
+As described in my workflow (and this seems familiar to other clinicians I work with):
+
+  * the **focus** of the intellectual and administration work is -- almost exclusively -- the word processing application which acts as a common workspace for the whole operation; for each person seen in clinic, the "main clinic document" summarises recent history (e.g. from previous clinic letters and notes entered onto the free-text "Clinical Notes" tab), previous plans, recent investigation results and acts as the location where this information and the current clinical encounter come together 
+  
+  * the spreadsheet application runs 'parallel' to facilitate structured data collection that *may be provided* in the EHR, but where the utilisation of this data (and exchange of data with the "main clinic document") is not provided for.
+  
+Finally, notice how the EHR enters this workflow at only two points:
+
+  * First, in the pre-clinic workup, where it is used as a source repository for a) recent clinical encounters (which are, mostly, composed using the same word processing application because the EHR is unstable) and b) centralised repository of any clinical documentation or communication between professionals, teams and agencies
+  
+  * Second, right at the end of the workflow, copies of the recent clinical encounter are pasted as a free-text entry (in the "Clinical Notes" tab) and the the clinic letter uploaded to the "Correspondence" tab.
+
+In what I've described here, the EHR functions primarily as a document-based storage facility.  What is notably absent is functionality in the EHR that **supports clinical decision making**.  To compensate, we develop a workflow and supplement functionality from other applications -- more harshly, it's a [kludge](https://en.wikipedia.org/wiki/Kludge).  As a final post-script, notice the frequency with which information and data is **manipulated** and manually **moved between different applications** in an attempt to facilitate the actual clinical encounter.  This is largely because of the EHR-imposed need to have a minimal, common exchange format and that happens to be plain text for the most part.
+
