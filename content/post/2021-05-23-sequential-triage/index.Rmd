@@ -1,5 +1,5 @@
 ---
-title: Clinical Decision Making Part One
+title: Sequential Clinical Decision Making
 author: 'Dan W Joyce'
 date: '2020-07-22'
 output:
@@ -192,7 +192,7 @@ We next build a model that attempts to predict the rare, serious event ($Y = 1$)
 Assume the somewhat luxurious position that we have a further 5000 validation cases from the same population -- so we can examine the model's performance on data it was not 'trained' on. 
 
 ```{r echo = FALSE}
-d <- readRDS("./data-decision-making/validation-set-model-predictions.rds")
+d <- readRDS("./validation-set-model-predictions.rds")
 ```
 
 Let's look at the calibration of the model on the validation sample:
@@ -295,12 +295,12 @@ ggplot( ) +
   scale_y_continuous(breaks = c(0, 0.25, 0.5, 0.75, 1.0), limits = c(0, 1.0), expand = c(0,0) ) +
   scale_x_reverse(breaks = rev(c(0.25, 0.5, 0.75, 1.0)), limits = c(1.0, 0.0), expand = c(0,0) ) +
   geom_line( data = df.roc.x1, aes( x = spec, y = sens ) ) +
-  annotate("segment", x = thresh.x1["specificity"], y = 0,
-                      xend = thresh.x1["specificity"], yend = thresh.x1["sensitivity"], colour = "red" ) +
-  annotate("segment", x = 1.0, y = thresh.x1["sensitivity"],
-                       xend = thresh.x1["specificity"], yend = thresh.x1["sensitivity"], colour = "red" ) +
-  annotate("label", x = thresh.x1["specificity"] - 0.25, y = thresh.x1["sensitivity"] - 0.1, 
-           label = paste0("Threshold = ", round( thresh.x1["threshold"], 3 ) ) ) +
+  annotate("segment", x = as.numeric( thresh.x1["specificity"] ), y = 0,
+                     xend = as.numeric( thresh.x1["specificity"] ), yend = as.numeric( thresh.x1["sensitivity"], colour = "red" ) ) +
+  annotate("segment", x = 1.0, y = as.numeric( thresh.x1["sensitivity"] ),
+                      xend = as.numeric( thresh.x1["specificity"] ), yend = as.numeric( thresh.x1["sensitivity"], colour = "red" ) ) +
+  annotate("label", x = as.numeric( thresh.x1["specificity"] - 0.25 ), y = as.numeric( thresh.x1["sensitivity"] - 0.1 ), 
+            label = paste0("Threshold = ", round( thresh.x1["threshold"], 3 ) ) ) +
   ylab("Sensitivity\n") +
   xlab("\nSpecificity") +
   ggtitle(TeX("Model $F_{X_1}")) +
@@ -312,7 +312,7 @@ The confusion matrix for the decision rule with the threshold = `r round( thresh
 
 ```{r echo = FALSE}
 cm <- as.matrix( confusionMatrix(
-  factor( ifelse( d$predicted.Y_x1 >= thresh.x1["threshold"], 1, 0 ) ),
+  factor( ifelse( d$predicted.Y_x1 >= as.numeric( thresh.x1["threshold"] ), 1, 0 ) ),
   factor( d$actual.Y ), positive = "1"
 )$table )
 
@@ -485,7 +485,7 @@ zoom.dec.curve <- ggplot() +
   geom_line( data = m, aes( x = Threshold, y = NB ), size = 1 ) +
   geom_line( data = m, aes( x = Threshold, y = NB.all.pos ), linetype = "dashed" ) +
   geom_hline( yintercept = 0, colour = "grey20" ) + 
-  geom_vline( xintercept = thresh.x1["threshold"], colour = "red" ) +
+  geom_vline( xintercept = as.numeric( thresh.x1["threshold"] ), colour = "red" ) +
   geom_vline( xintercept = NB.depart, colour = "red", linetype = "dashed" ) +
   xlab(TeX("$\\tau")) +
   ylab(TeX("$NB(\\tau)")) +
@@ -575,7 +575,7 @@ m$Total.Eff <- 0.5 *(m$X1.Efficiency + m$X2.Efficiency)
 ```
 
 ```{r echo = FALSE, warning=FALSE, fig.align='center', out.width="100%"}
-knitr::include_graphics("/img/triage-model.png")
+knitr::include_graphics("./triage-model.png")
 ```
 
 The proposal Kessler *et al* put forward is a sequential triage model; above, we have sketched (schematically) the two-stage approach described here.  

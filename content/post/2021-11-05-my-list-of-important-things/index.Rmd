@@ -1,0 +1,261 @@
+---
+title: Stuff I Always Look Up ...
+author: Dan W. Joyce
+date: '2021-11-05'
+slug: my-list-of-important-things
+categories: [computation, maths]
+tags: [probability, regression]
+subtitle: ''
+summary: ''
+authors: [dwj]
+draft: false
+lastmod: '2021-11-05T22:05:06Z'
+featured: yes
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+
+output:
+  blogdown::html_page:
+    number_sections: true
+    toc: true
+
+header-includes: \usepackage{amsmath}
+
+bibliography: [./biblio.bib]
+
+---
+
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand\ci{\perp\!\!\!\perp}
+
+# Purpose
+This is a living, annotated bibliography of stuff I need to use on a semi-regular basis, always have to look up but in my chaotic file system, can never find.  It also documents some embarrassing truths -- stuff like *"Is variance the square root of standard deviation, or the other way round?"* ... Of course, it's the other way round.
+
+So, point number one: If $\sigma_X$ is the standard deviation of $X$ then:
+$$
+\Var(X) = \sigma^2_X
+$$
+
+# Posterior Predictive Distributions
+I spent a week trying to find a derivation of equation 1.4 on pp.7 of [@gelman2014bayesian], the posterior predictive distribution [@rubin1984bayesianly] of new data $\tilde{y}$ given previously observed data $y$ and a model with parameters $\theta$
+\begin{equation}
+p( \tilde{y} | y ) = \int p\left( \tilde{y} | \theta \right) p\left( \theta | y \right)  d\theta (\#eq:PPD)
+\label{eqn:finalPPD}
+\end{equation} 
+
+There are explanations floating around on the internet, but none I could follow because they skipped steps and left me confused.
+
+We need a few basic laws and definitions from probability theory as follows [@blitzstein2014introduction]:
+
+## Conditional Probability
+For two variables $a$ and $b$:
+\begin{equation}
+p(a | b) = \frac{p(a,b)}{p(b)} (\#eq:condprob)
+\end{equation}
+
+Or re-arranged:
+\begin{equation}
+p(a,b) = p(a | b) p(b) (\#eq:condprob2)
+\end{equation}
+
+And for two variables $a$ and $b$, conditioned on $c$:
+\begin{equation}
+p(a,b | c) = \frac{p(a,b,c)}{p(c)} (\#eq:condprob3)
+\end{equation}
+
+and the re-arrangement:
+\begin{equation}
+p(a,b,c) =  p(a,b | c) p(c)
+\end{equation}
+
+Applying the [chain rule of probability](https://en.wikipedia.org/wiki/Chain_rule_(probability)), $p(a,b,c)$ can also be factorised as *any* of the following:
+\begin{align}
+  p(a,b,c) &= p(b,c|a) p(a) (\#eq:factors1) \\
+          &= p(a,c|b) p(b) (\#eq:factors2) \\
+          &= p(a,b|c) p(c) (\#eq:factors3)
+\end{align}
+
+## Law of Total Probability
+From the joint probability $p(a,b)$, the marginal $p(a)$ is: 
+\begin{equation}
+p(a) = \int p \left( a, b \right) db 
+\end{equation}
+
+And the continuous *law of total probability* is [@blitzstein2014introduction] pp. 289:
+\begin{align}
+p(a) &= \int p \left( a,b \right) db \\
+     &= \int p \left( a|b \right) p( b )db (\#eq:lotp2)
+\end{align}
+
+where we've used equation \@ref(eq:condprob2) to re-write $p \left( a,b \right)$ as $p \left( a|b \right) p( b )$
+
+Adding conditioning on $c$ we obtain [@blitzstein2014introduction] pp. 54:
+\begin{align}
+\label{eqn:lotp_cont}
+p \left( a|c \right) &= \int p \left( a,b | c \right) db \\
+					 &= \int p \left( a|b,c \right) p( b | c ) db (\#eq:lotp-cond)
+\end{align}
+
+## Conditional Independence
+Two variables $a$ and $c$ are *conditionally independent* given a third variable $b$ [@blitzstein2014introduction] pp. 58:
+\begin{equation}
+( a \ci c ) | b \iff p(a,c | b) = p( a | b ) p( c | b) (\#eq:condind1)
+\end{equation}
+
+## Bayes Theorem
+For two variables $a$ and $b$:
+\begin{equation}
+p(a|b) = \frac{p(b|a)p(a)}{p(b)} (\#eq:bayes)
+\end{equation}
+
+## Deriving the PPD
+Starting with the fundamental Bayesian modelling framework:
+
+  1. before observing the data, $y$, the *prior distribution* of the parameters is $p(\theta)$
+  2. we have a *sampling distribution* of the data *given* parameters $p(y|\theta)$
+  3. the joint distribution of $\theta$ and $y$ is $p(\theta, y) = p(\theta)p(y|\theta)$
+  4. we then obtain the *posterior distribution* of the parameters of the model given the observed data: 
+  
+\begin{equation}
+	p(\theta|y) = \frac{p(\theta,y)}{p(y)} = \frac{p(\theta)p(y|\theta)}{p(y)}
+\end{equation}
+
+So, we can think of the posterior distribution $p(\theta|y)$ as the `output' of Bayesian model estimation.  
+
+**Step 1**
+
+We want to obtain a distribution for future values $\tilde{y}$ given the observed (and modelled) data $y$ which is $p(\tilde{y}|y)$ using what we know about the posterior distribution arising from parameter estimation $p(\theta | y)$.  
+
+The first step is to write $p(\tilde{y}|y)$ using the law of total probability (with conditioning): equation \@ref(eq:lotp-cond):
+\begin{equation}
+	p( \tilde{y} | y ) = \int p\left(\tilde{y},\theta | y \right) d\theta (\#eq:step1)
+\end{equation}  
+
+**Step 2**
+
+Re-write the integrand $p\left(\tilde{y},\theta | y \right)$ using equation \@ref(eq:condprob3):
+
+\begin{equation}
+	p( \tilde{y} | y ) = \int \frac{p(\tilde{y},\theta,y)}{p(y)} d\theta (\#eq:step2)
+\end{equation}
+
+**Step 3**
+
+We assert that $\tilde{y}$ is conditionally independent of $y$ *given* the model parameters $\theta$:
+\begin{equation}
+  ( \tilde{y} \ci y ) | \theta \iff p( \tilde{y}, y | \theta) = p( \tilde{y} | \theta ) p( y | \theta) (\#eq:condind-ppd)
+\end{equation}
+
+To make use of the conditional independence $p( \tilde{y}, y | \theta)$, we have to factorise $p(\tilde{y},\theta,y)$ in equation \@ref(eq:step2).  
+
+Let $a = \tilde{y}$, $b = \theta$ and $c = y$; we are seeking a factorisation of $p(a,b,c)$ as $p(a,c|b)$ and inspecting the factorisations \@ref(eq:factors1) through \@ref(eq:factors3) we find that \@ref(eq:factors2) matches:
+
+\begin{align}
+  p(a,b,c) &= p(a,c|b) p(b) \\
+  p( \tilde{y}, \theta, y) &= p( \tilde{y}, y | \theta) p(\theta) (\#eq:factor-cond-ind)
+\end{align}
+
+Substitution \@ref(eq:factor-cond-ind) into \@ref(eq:step2) we have:
+
+\begin{equation}
+p(\tilde{y} | y ) = \int \frac{p(\tilde{y},y | \theta) p(\theta)}{p(y)} d \theta (\#eq:step3a)
+\end{equation}
+
+We make use of the equality from equation \@ref(eq:condind-ppd) i.e. that $p( \tilde{y}, y | \theta) = p( \tilde{y} | \theta ) p( y | \theta)$ and substitute into \@ref(eq:step3a): 
+
+\begin{equation}
+p(\tilde{y} | y ) = \int \frac{ p( \tilde{y} | \theta ) p( y | \theta)  p(\theta)}{p(y)} d \theta (\#eq:step3b)
+\end{equation}
+
+**Step 4**
+
+Recall that we want to make use of the 'output' of parameter estimation, the posterior distribution of the model parameters given the observed data $p(\theta|y)$, and in equation \@ref(eq:step3b) we see the term $p(y|\theta)$.  All we need to do is re-write $p(y|\theta)$ using Bayes rule, equation \@ref(eq:bayes):
+
+\begin{equation}
+p(y|\theta) = \frac{p(\theta|y) p(y)}{p(\theta)}
+\end{equation}
+
+And substitute into equation \@ref(eq:step3b):
+\begin{align}
+p(\tilde{y} | y ) &= \int \frac{ p( \tilde{y} | \theta ) p(\theta|y) p(y)   p(\theta)}{p(y)p(\theta)} d \theta  \\
+                  &= \int p( \tilde{y} | \theta ) p(\theta|y) d \theta (\#eq:step4) \\
+
+\end{align}
+
+... and there we have it, the expression for the PPD, equation \@ref(eq:PPD)
+
+# Sampling and Integration
+This one came from [Chad Scherrer](https://twitter.com/ChadScherrer) who posted a [tweet](https://twitter.com/ChadScherrer/status/1292528021568552962?s=20) about the relationship between integration and sampling and I thought this was a really helpful heuristic.
+
+When I work through examples of Bayesian problems, my first thought is "**how will I code this?**" and Chad's tweet comes to mind, and helpfully, it follows nicely from the posterior predictive distribution example.
+
+To paraphrase Chad's tweet:
+
+  * To sample from $p(y|x)p(x)$ ...
+    1. Sample $x$
+    2. Use the sample of $x$ to sample $y$
+    3. Return $(x,y)$
+    
+
+  * To sample from $\int p(y|x)p(x) dx$ ...
+    1. Sample $x$
+    2. Use the sample of $x$ to sample $y$
+    3. Discard $x$
+    4. Return $y$
+    
+In practice then:  we want to obtain samples from the *posterior predictive distribution* $p(\tilde{y}|y)$ i.e. for some new or unseen $\tilde{x}$.
+
+\begin{equation}
+p(\tilde{y} | y ) = \int p( \tilde{y} | \theta ) p(\theta|y) d \theta 
+\end{equation}
+
+Here's how to proceed.  We've used some Bayesian parameter estimation method (e.g. MCMC or similar) to obtain samples from $p(\theta|y)$ and stored them as $\Theta_S$
+
+We have a function that returns a value $\tilde{y}$ given an input $\tilde{x}$ and parameters $\theta$ such that $\tilde{y} = f(\tilde{x}; \theta)$
+
+For each sample $\theta^{s} \in \Theta_S$ -- one sample from $p(\theta|y)$
+
+  a. Compute $\tilde{y}^s = f(\tilde{x}; \theta^{s})$ -- a sample from $p(\tilde{y}|\theta)$
+  
+  b. Store $\tilde{y}^s$ and throw away $\theta^{s}$
+
+Our resulting collection of $\tilde{y}^s$ are samples from the PPD from which we can then take expected values, quantiles etc.
+
+
+# Logits, Probabilities and Odds
+Can never remember these relations, so wrote them down explicitly for future reference.
+
+## Odds
+If $p_A$ is the probability of event $A$ then:
+
+  1. $\textrm{odds}_A = \frac{1}{(1-p_A)}$
+  2. given the odds, we recover the probability as $p_A = \frac{\textrm{odds}_A}{1+\textrm{odds}_A}$
+  2. the **log odds** are given by $\ln(\textrm{odds}_A) = \ln \left( \frac{1}{1-p_A} \right) = \textrm{logit}(p_A) = \ln(p_A) - \ln(1-p_A)$
+
+So, odds of 1.0 equals a probability $p_A = 0.5$ -- the probability of the event occurring is at chance level.  
+
+## Odds Ratios
+For two events, $A$ and $B$ with probabilities $p_A$ and $p_B$:
+
+  1. $\textrm{odds}_A = \frac{1}{(1-p_A)}$ and $\textrm{odds}_B = \frac{1}{(1-p_B)}$
+  2. the **odds ratio** $\textrm{OR}_{AB} = \frac{\textrm{odds}_A}{\textrm{odds}_B} = \frac{1-p_B}{1-p_A}$
+
+## Logistic Regression 
+In logistic regression applied to clinical situations, we are usually interested in a single "thing" associated with two discrete and mutually-exclusive events (e.g. $A$ = "dying" or $B$ = "not dying") -- the thing either occurs or it does *not* occur.  In these circumstances $p_B = 1 - p_A$.
+
+To convert to the language of regression, denote an outcome $y$ (for example, death, experiencing a side effect, obtaining a positive response to a treatment) then:
+
+  1. the probability that $y$ occurred is $p_y$ (equivalent to $p_A$ in the example above)
+  2. the corresponding probability $y$ **does not**  occur ($¬y$) is $1-p_y$ (equivalent to $p_B$ in the example above)
+  3. the odds of $y$ occurring are $\textrm{odds}_{y} = \frac{1}{(1-p_y)}$ and the odds of $¬y$ are $\textrm{odds}_{¬y} = \frac{1}{1-(1-p_y)} = \frac{1}{p_y}$
+  4. the odds ratio of $y$ and $¬y$ is then $\textrm{OR}_{(y,¬y)} = \frac{p_y}{1-p_y}$ 
+
+
+Further reading: Chapter 13 of [@gelman2020regression] walks through all this with examples and code in R.  On the web, Jay Rotella has a [nice PDF walk through](https://www.montana.edu/rotella/documents/502/Prob_odds_log-odds.pdf) of the same material with elaboration and graphical examples in R. 
+  
+
+
+# References

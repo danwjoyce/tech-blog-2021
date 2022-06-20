@@ -1,5 +1,5 @@
 ---
-bio: I’m interested in how principles from computation can be used to understand clinical state and trajectories and how to augment clinical decision making using data, multivariate statistics and (cautiously) AI and ML.
+bio: I’m interested in how principles from computation can be used to understand things like clinical state, trajectories and how to augment clinical decision making using data, multivariate statistics and (cautiously) AI and ML.
 
 education:
   courses:
@@ -55,4 +55,4 @@ title: Dan W Joyce
 ---
 
 This site is for hosting technical content that won't work on [my home site](https://www.danwjoyce.com).  
-I split my time between clinical work as a consultant psychiatrist and a clinical research fellow at the Department of Psychiatry, where I work on computational methods for modeling clinical state and trajectories with the intention of using these tools to better understand how treatments can be targeted to, or made more effective for, individuals.  This work draws on principles from computation, applied multivariate statistics and artificial intelligence / machine learning.  While I'm generally optimistic about the potential of these approaches, I'm more cautious about the current AI/ML hype. 
+I split my time between clinical work as a consultant psychiatrist and a clinical research fellow at the Department of Psychiatry, where I work on computational methods for modeling clinical state, trajectories and decision support with the intention of using these tools to better understand how treatments and interventions can be targeted to, or made more effective for, individuals.  This work draws on principles from computation, applied multivariate statistics and artificial intelligence / machine learning.  While I'm generally optimistic about the potential of these approaches, I'm more cautious about the current AI/ML hype. 

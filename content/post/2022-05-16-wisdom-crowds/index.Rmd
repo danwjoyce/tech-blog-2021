@@ -1,0 +1,418 @@
+---
+title: Three Heads are Better Than One
+author: Dan W. Joyce
+date: '2022-05-16'
+slug: wisdom-of-crowds
+categories: [computation]
+tags: [mixture of experts]
+subtitle: 'The Wisdom of Crowds and MDTs'
+summary: ''
+authors: [dwj]
+draft: true
+lastmod: '2022-05-15T22:00:06Z'
+featured: yes
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+
+output:
+  blogdown::html_page:
+     number_sections: true
+     toc: true
+
+header-includes: \usepackage{amsmath}
+
+bibliography: [./biblio.bib]
+
+---
+
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand\ci{\perp\!\!\!\perp}
+
+
+```{r setup, include=FALSE}
+rm( list = ls() )
+knitr::opts_chunk$set(echo = TRUE)
+
+## Some globals to control execution of chunks because the simulations are
+## very time consuming
+RUN_SIMS <- FALSE
+
+
+library(ggplot2)
+library(gridExtra)
+library(kableExtra)
+library(latex2exp)
+library(reshape2)
+library(viridisLite)
+
+# globals for presentation
+basictheme <- theme_minimal() + 
+  theme(axis.title = element_text(size = 14),
+        axis.text = element_text(size = 12),
+        plot.title = element_text(size = rel(1.25), face = "bold", hjust = 0.5 ))
+```
+
+```{r, eval = TRUE, echo = FALSE}
+
+buildVotingMatrix <- function(N) {
+  l <- rep(list(0:1), N)
+  V <- expand.grid(l)
+  names(V) <- paste0( "v", seq(1:N) )
+  return(V)
+}
+
+probVotingProfile <- function( v, p ) {
+  pr.v_i <- 1
+  for( i in 1:length( v ) ) {
+    pr.v_i <- pr.v_i *
+                ( p[i]^v[i] ) * ( 1-p[i] )^(1-v[i] )
+  }
+  return( as.numeric( pr.v_i ) )
+}
+
+computeVotingProfileProb <- function( V, p ) {
+  pr.v <- rep(NA, nrow(V))
+  N <- ncol(V)
+  for( i in 1:nrow(V) ) {
+    pr.v[i] <- probVotingProfile( V[i,1:N], p )
+  }
+  
+  return( pr.v ) 
+}
+
+indexMajority <- function( V ) {
+  N <- ncol(V)
+  M <- floor( N/2 ) + 1
+  N.ones <- rowSums( V )
+  return( which( N.ones >= M ) )
+}
+  
+```
+
+
+# Introduction
+Multi-disciplinary teams (MDTs) assemble a group of healthcare professionals with the intention of mobilising different expertise to arrive at a collective decision or solution that is superior (or at least, no worse) than relying on a single individual.  This is related to the [wisdom of crowds](https://en.wikipedia.org/wiki/Wisdom_of_the_crowd) and is not without controversy.  But the question I'm interested in here is: can we **model** and show that under certain circumstances, having more than one expert is better than a single individual?
+
+The related theory can be found in [jury theorems](https://en.wikipedia.org/wiki/Condorcet%27s_jury_theorem) -- albeit within a judicial framing -- and the oldest result is Condorcet's jury theorem dating back to 1785.  Who knew.  
+
+In machine learning, mixture of experts (MoE) architectures and ensemble learning appeal to the same idea: by combining a collection of imperfect decisions, you can arrive at an "overall'' better decision.
+
+Some basics to get us started:
+
+  * a "jury" (or MDT) is a collection of individual voters, tasked with arriving at a decision on some issue and each having a **competence** which is the probability they will vote "yes" (or "guilty" if you prefer), which we'll call $p$ and for now, we'll assume all voters (MDT members) have equal competence.   Naturally, if $p = 0.5$ then each voter is no more useful than tossing a coin to arrive at a decision.
+  
+  * the size of our MDT (jury) $N$ will always be odd-numbered (3, 5, 7e ...) to avoid tied voting
+
+**Condorcet's jury theorem** is:
+
+  * If $p > 0.5$ -- each voter is more competent than chance -- then increasing the size of the jury (MDT) increases the probability that the majority decision is correct. Further, as the size of the team increases, the probability of a correct majority decision tends to 1
+  * For $p \leq 0.5$ -- voters' competence is chance-level or worse -- then increasing the size of the team results in a reduction in the probability of a majority correct decision and in these circumstance, the best team is just a single voter.
+
+
+## Related Literature
+A readable introduction to the analysis and philosophy of jury theorems is given in [@dietrich2019jury] which discusses the flaws and assumptions of the framework.  A proof and connection to statistical hypothesis testing is given by [@young1988condorcet].  For some extensions to the basic Condorcet jury theorem, [@ladha1992condorcet] describes how to model voting without independent voter assumptions (i.e. correlated voting) and the relationship with free speech (a little outside the scope of this blog).  Asymptotic results on designing juries with correlated voting are given in [@kaniovski2011optimal] -- see also [the wikipaedia page](https://en.wikipedia.org/wiki/Condorcet%27s_jury_theorem) -- but we will not rely on these here, rather we'll use simulations to allow flexibility.
+
+# TL;DR -- Yes, Multiple Experts Win
+
+Let's be explicit about the assumptions in the basic Condorcet model [@dietrich2019jury]
+
+  1. Voters are independent (that is, they do not influence one another; there is no "leader" directing the team)
+  2. All voters are equally competent and perform better than chance
+
+
+```{r,eval = TRUE, echo = FALSE, cache = TRUE}
+N.vals <- seq(1,10,by = 2)
+correct.vals <- seq(0.0,1,by = 0.1)
+
+df <- expand.grid( N.vals, correct.vals )
+names( df ) <- c("N","pr.Correct")
+df$majority.prob <- NA
+
+for( i in 1:nrow( df ) ) {
+  # 1. Build all 2^N voting profiles
+  V <- buildVotingMatrix( df$N[i] )
+  # 2. Keep only the voting profiles that result in majorities
+  #    because those that aren't majorities don't contribute to the sum of probabilities in step 5
+  V <- as.data.frame( V[ indexMajority( V ), ] )
+  # 3. define uniform voting probability (competence)
+  p <- rep(df$pr.Correct[i], df$N[i] )
+  # 4. compute probability of each majority voting profile
+  pr.v <- computeVotingProfileProb( V, p )
+  # 5. sum of majority voting profiles' probabilities
+  df$majority.prob[i] <- sum( pr.v )
+}
+
+```
+
+```{r, eval = TRUE, echo = FALSE}
+ggplot( df, aes( x = N, y = majority.prob, colour = as.factor( pr.Correct ) ) ) +
+  geom_line() + basictheme + scale_colour_viridis_d(direction = -1, name = "Competence") +
+  scale_x_continuous( breaks = seq(1,10,by = 2) ) +
+  ylab("Prob. Majority Correct") +
+  xlab("Number of Voters")
+  
+```
+In the figure above, we can see that if the competence of voters is chance ($p = 0.5$) then increasing the number of voters has no effect.  If the competence of voters is $p < 0.5$, adding voters makes the team's probability of a correct majority decision **worse**.  And as Condorcet's jury theorem describes, for voters with above-chance competence, the size of the team increase the probability of a correct majority decision. 
+
+# Mixed Competencies
+Not all members of a team will have the same competencies.  If we keep the rest of the setup the same, but vary the composition (diversity) of the team allowing $p_i$ to be the probability of voting "yes" for voted $i$ -- we have to resort to stochastic simulations.  In the machine learning literature, there is some consensus that ``diversity'' refers to agreement (similarity) between different team members' output -- in [@kuncheva2003measures]
+
+```{r, eval = TRUE, echo = FALSE}
+
+
+```
+
+# Appendix & Details
+## Counting Voting Profiles
+Designate a jury or MDT (e.g. a group of experts) of $N$ people (jurors, team mebers), each delivering a vote $v_{i= \{1 \ldots N\}} \in \{0,1\}$ (e.g. innocent/guilty, no/yes to a decision).
+
+Let $\mathbf{V}^N$ be the set of all possible voting profiles for $N$ jurors with size $| \mathbf{V} | = 2^{N}$
+
+For example, with $N = 3$ jurors, we have the following $2^3 = 8$ possible **voting profiles** as follows:
+
+
+```{r, echo = FALSE}
+V <- buildVotingMatrix(N=3)
+kbl(V) %>% kable_paper(full_width = TRUE)
+
+```
+
+
+Let $\mathbf{v}_j \in \mathbf{V}^N$ be a **voting profile** (i.e. a row in the above table) -- for example, $\mathbf{v}_6 = (1,0,1)$
+
+Define a **majority** as $M = \lfloor N/2 \rfloor + 1$.  For example, for $N = 5$ we require a majority of 3 voters/jurors to vote "yes" ("guilty") or one with the remainder voting "no" ("innocent") or zero.
+
+Then, the number of **majority voting profiles** is:
+
+$$
+\sum_{k = M}^{N}C(N,k)
+$$
+Where $C(N,k)$ is the binomial coefficient or $N$ choose $k$, interpreted as $k$ 'one' votes in a jury of size $N$. 
+
+For a jury of $N = 3$, a majority is $M = \lfloor 3/2 \rfloor + 1 = 2$ and we then require all combinations (rows $\mathbf{v}_j \in \mathbf{V}^N$) that have $k=2$ or $k=3$ jurors voting "one":
+
+
+$$
+\begin{align}
+C(3,2) + C(3,3) \\
+= 3 + 1 \\
+= 4
+\end{align}
+$$
+
+Similarly, for $N=5$ we have:
+
+  * $\mathbf{V}^5$ is the set of all possible voting profiles of size $| \mathbf{V} | = 2^{5} = 32$
+  * with a majority of $M = \lfloor 5/2 \rfloor + 1 = 3$
+  * and $C(5,3) + C(5,4) + C(5,5) = 16$ majority voting profiles
+
+
+## Probability of a Voting Profile
+
+Each voter $v_i$ is assumed independent (i.e. votes without influence from other members) and a realisation of a Bernoulli trial where the probability of voting "one" ("yes", "guilty" etc) is $\Pr(v_i  = 1) = p_i$ and conversely $\Pr(v_i  = 0) = (1-p_i)$
+
+Consequently, the probability of a given voting profile $\mathbf{v}_j$ -- a single row in the table of all possible voting profiles -- is given by:
+
+$$
+  \Pr(\mathbf{v}_j) = \prod_{i=1}^N p_{i}^{v_i} (1-p_{i})^{1-v_i}
+$$
+For example, with three voters, each voting "yes" with probability being $p_i = p = 0.8$, the probability of the voting profile $\mathbf{v_6} = (1,0,1)$ is:
+$$
+\begin{align}
+ 0.8^{1} (1-0.8)^{0} \times 0.8^{0} (1-0.8)^{1} \times 0.8^{1} (1-0.8)^{0} \\
+ = 0.8 \times 0.2 \times 0.8 \\
+ = 0.128
+\end{align}
+$$
+
+Let's now look at the complete table of probabilities of voting profiles for $N=3$:
+
+```{r, echo = FALSE}
+N <- 3
+V <- buildVotingMatrix(N)
+
+# probability of a "yes" vote
+p <- c(0.8,0.8,0.8)
+pr.v <- rep(NA, nrow(V))
+
+for( j in 1:nrow(V) ) {
+  pr.v[j] <- probVotingProfile( V[j,], p )
+}
+
+V$Pr.v <- pr.v
+
+# majority
+M <- floor( N / 2 ) + 1
+
+V$One.Votes <- rowSums( V[,1:N] )
+V$Majority <- ifelse( V$One.Votes >= M, "Yes", "No" )
+
+kbl(V) %>% kable_paper(full_width = TRUE)
+
+```
+
+## Probability of a Majority
+In the literature on jury theorems, the probability of an individual voting "yes" (guilty, etc.) is called the **competence** of the juror -- so clearly, a voter with $p_i = 0.5$ is no better than chance.
+
+From the set of voting profiles $\mathbf{V}^N$ define a subset $\mathbf{V}_M$ of those profiles that are majorities, that is, where the number of "ones" in the voting profile is greater than or equal to $M$:
+$$
+  \mathbf{V}_M = \{ \mathbf{v}_j \in \mathbf{v}^N : \sum_{i=1}^{N} v_i \geq M \}
+$$
+Then the probability of a **majority vote** being correct $\Pr(\mathbf{V}_M)$ is the sum of the probability of each majority voting profile:
+$$
+  \Pr(\mathbf{V}_M)=\sum_{\mathbf{v}_j \in \mathbf{V}_M}^{} \Pr(\mathbf{v_{j}})
+$$
+In our simple $N=3$ example above, $\mathbf{V}_M = \{\mathbf{v}_4, \mathbf{v}_6, \mathbf{v}_7, \mathbf{v}_8\}$ and the resulting probability of a majority is $\Pr(M) = 0.128 + 0.128 + 0.128 + 0.512 = 0.896$.
+
+Notice that $\Pr(\mathbf{V}_M) > p$, showing that the probability of obtaining a majority vote is higher than the probability of an individual juror/voter.
+
+## Simulating Diversity in Competence
+
+```{r}
+
+require( RcppAlgos )
+
+
+diversity <- function( p ) {
+  p.max <- max(p)
+  return( sum( p.max - p ) )
+}
+
+modalVal <- function(x) {
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+systematicDiversityParams <- function(N, p.i.vals){
+  # generate unique UNORDERED tuples of N x p.i.vals
+  params <- as.data.frame( RcppAlgos::comboGeneral( p.vals, N, freqs = rep(N,length(p.i.vals)), repetition = FALSE ) )
+  # diversity
+  c.div <- round( apply( params, 1, diversity ), 2 )
+  # median and mode
+  c.median <- apply( params, 1, median )
+
+  c.p.max <- apply( params, 1, max )
+  # minimum competency in the tuple
+  c.p.min <- apply( params, 1, min )
+  
+  c.sum <- apply( params, 1, sum )
+  c.mean <- rowMeans( params )
+  
+  # measure of unique vals
+  c.uni <- apply( params, 1, function(x) { length( unique(x) ) } )
+
+  
+  params$diversity <- c.div
+  params$p.max <- c.p.max
+  params$p.min <- c.p.min
+  params$median <- c.median
+  params$uni <- c.uni
+  params$mean <- c.mean
+  params$sum <- c.sum
+  
+  # remove any tuple with ZERO diversity
+  params <- params[ -which( params$diversity == 0 ) ,  ]
+  return( params )
+}
+
+```
+
+
+
+```{r}
+N.vals <- c(3,5,7,9,11)
+p.vals <- c(0.5, 0.6, 0.7, 0.8)
+  
+if( RUN_SIMS == TRUE ) { 
+  require(doParallel)
+  require(foreach)
+  
+  cl <- makeCluster(4)
+  registerDoParallel(cl)
+  
+  results <- foreach( i = 1:length(N.vals), .combine = 'c' ) %dopar% {
+    # 1. the number of voters in the team
+    this.N <- N.vals[i]
+    
+    # 2. Build a table of systematically varying competencies for this team size
+    df <- systematicDiversityParams( this.N, p.vals )
+    
+    # 3. allocate some space to store majority probability
+    df$majority.prob <- rep(NA,nrow(df))
+    
+    # 4. Build all 2^N voting profiles
+    V <- buildVotingMatrix( this.N )
+    
+    # 5. Keep only the voting profiles that result in majorities
+    #    because those that aren't majorities don't contribute to the sum of probabilities in step 6 below
+    V <- as.data.frame( V[ indexMajority( V ), ] )
+    
+    # 6. For each list of team voting probabilities / competencies ...
+    for( j in 1:nrow(df) ) {
+      p <- df[j,1:this.N]
+      #  compute probability of each majority voting profile
+      pr.v <- computeVotingProfileProb( V, p )
+      #sum of majority voting profiles' probabilities
+      df$majority.prob[j] <- sum( pr.v )
+    }
+    # return df to foreach  
+    list(df)
+  }
+  
+  stopCluster(cl)
+  save( results, file = "./variable-competence-teams.RData")
+} else {
+  # don't run, instead load old results
+  load( file = "./variable-competence-teams.RData" )
+}
+
+```
+
+```{r}
+
+df <- results[[1]]
+
+ggplot( df, aes( x = mean, y = majority.prob, colour = factor(p.min), group = factor(p.min) ) ) +
+  geom_point() + geom_line() +
+  geom_abline( intercept = 0, slope = 1 ) +
+  # geom_segment( aes( x = p.min, xend = p.max, y = majority.prob, yend = majority.prob ), data = results[[1]] ) +
+  basictheme + 
+
+  ylab("Prob. Majority Correct") +
+  coord_cartesian(
+    xlim = c(0.5, max( df$mean) ),
+    ylim = c(0.5, 1.0 ),
+    expand = TRUE,
+    default = FALSE,
+    clip = "on"
+)
+  
+  
+```
+
+```{r}
+
+df <- results[[1]]
+
+ggplot( df, aes( x = mean, y = majority.prob ) ) + #, colour = factor(p.min), group = factor(p.min) ) ) +
+  geom_point() + geom_segment( aes( x = p.min, xend = p.max, y = majority.prob, yend = majority.prob ), data = results[[1]] ) +
+  geom_abline( intercept = 0, slope = 1 ) +
+  
+  basictheme + 
+
+  ylab("Prob. Majority Correct") +
+  coord_cartesian(
+    xlim = c(0.5, max( df$mean) ),
+    ylim = c(0.5, 1.0 ),
+    expand = TRUE,
+    default = FALSE,
+    clip = "on"
+)
+  
+  
+```
+
+# References
