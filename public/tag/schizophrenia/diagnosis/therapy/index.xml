@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Schizophrenia/diagnosis/therapy | Dan W Joyce</title>
+    <link>/tag/schizophrenia/diagnosis/therapy/</link>
+      <atom:link href="/tag/schizophrenia/diagnosis/therapy/index.xml" rel="self" type="application/rss+xml" />
+    <description>Schizophrenia/diagnosis/therapy</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Schizophrenia/diagnosis/therapy</title>
+      <link>/tag/schizophrenia/diagnosis/therapy/</link>
+    </image>
+    
+    <item>
+      <title>Realising stratified psychiatry using multidimensional signatures and trajectories.</title>
+      <link>/publication/joyce-realising-2017/</link>
+      <pubDate>Sun, 01 Jan 2017 00:00:00 +0000</pubDate>
+      <guid>/publication/joyce-realising-2017/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

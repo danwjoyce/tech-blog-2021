@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Lucy D. Vanes | Dan W Joyce</title>
+    <link>/author/lucy-d.-vanes/</link>
+      <atom:link href="/author/lucy-d.-vanes/index.xml" rel="self" type="application/rss+xml" />
+    <description>Lucy D. Vanes</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Sat, 02 Jan 2021 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Lucy D. Vanes</title>
+      <link>/author/lucy-d.-vanes/</link>
+    </image>
+    
+    <item>
+      <title>Cognitive performance in early, treatment-resistant psychosis patients: Could cognitive control play a role in persistent symptoms?</title>
+      <link>/publication/thomas-2021/</link>
+      <pubDate>Sat, 02 Jan 2021 00:00:00 +0000</pubDate>
+      <guid>/publication/thomas-2021/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Reduced susceptibility to the sound-induced flash fusion illusion in schizophrenia.</title>
+      <link>/publication/vanes-reduced-2016/</link>
+      <pubDate>Tue, 01 Nov 2016 00:00:00 +0000</pubDate>
+      <guid>/publication/vanes-reduced-2016/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

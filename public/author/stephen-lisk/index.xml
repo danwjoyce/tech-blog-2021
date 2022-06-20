@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Stephen Lisk | Dan W Joyce</title>
+    <link>/author/stephen-lisk/</link>
+      <atom:link href="/author/stephen-lisk/index.xml" rel="self" type="application/rss+xml" />
+    <description>Stephen Lisk</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Wed, 01 Jan 2014 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Stephen Lisk</title>
+      <link>/author/stephen-lisk/</link>
+    </image>
+    
+    <item>
+      <title>Eluding the illusion? Schizophrenia, dopamine and the McGurk effect.</title>
+      <link>/publication/white-eluding-2014/</link>
+      <pubDate>Wed, 01 Jan 2014 00:00:00 +0000</pubDate>
+      <guid>/publication/white-eluding-2014/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

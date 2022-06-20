@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Reaction Time/physiology | Dan W Joyce</title>
+    <link>/tag/reaction-time/physiology/</link>
+      <atom:link href="/tag/reaction-time/physiology/index.xml" rel="self" type="application/rss+xml" />
+    <description>Reaction Time/physiology</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Reaction Time/physiology</title>
+      <link>/tag/reaction-time/physiology/</link>
+    </image>
+    
+    <item>
+      <title>Parsing the Roles of the Frontal Lobes and Basal Ganglia in Task Control Using Multivoxel Pattern Analysis.</title>
+      <link>/publication/kehagia-parsing-2017/</link>
+      <pubDate>Tue, 01 Aug 2017 00:00:00 +0000</pubDate>
+      <guid>/publication/kehagia-parsing-2017/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Psychological/*etiology | Dan W Joyce</title>
+    <link>/tag/psychological/etiology/</link>
+      <atom:link href="/tag/psychological/etiology/index.xml" rel="self" type="application/rss+xml" />
+    <description>Psychological/*etiology</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Psychological/*etiology</title>
+      <link>/tag/psychological/etiology/</link>
+    </image>
+    
+    <item>
+      <title>Sexual quality of life in women who have undergone female genital mutilation: a case-control study.</title>
+      <link>/publication/andersson-sexual-2012/</link>
+      <pubDate>Sat, 01 Dec 2012 00:00:00 +0000</pubDate>
+      <guid>/publication/andersson-sexual-2012/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

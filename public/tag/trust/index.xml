@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>trust | Dan W Joyce</title>
+    <link>/tag/trust/</link>
+      <atom:link href="/tag/trust/index.xml" rel="self" type="application/rss+xml" />
+    <description>trust</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Sat, 01 Jun 2013 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>trust</title>
+      <link>/tag/trust/</link>
+    </image>
+    
+    <item>
+      <title>Trust versus paranoia: abnormal response to social reward in psychotic illness.</title>
+      <link>/publication/gromann-trust-2013/</link>
+      <pubDate>Sat, 01 Jun 2013 00:00:00 +0000</pubDate>
+      <guid>/publication/gromann-trust-2013/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Trust versus paranoia: abnormal response to social reward in psychotic illness.</title>
+      <link>/publication/gromann-trust-2013/</link>
+      <pubDate>Sat, 01 Jun 2013 00:00:00 +0000</pubDate>
+      <guid>/publication/gromann-trust-2013/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>To trust or not to trust: the dynamics of social interaction in psychosis.</title>
+      <link>/publication/fett-trust-2012/</link>
+      <pubDate>Thu, 01 Mar 2012 00:00:00 +0000</pubDate>
+      <guid>/publication/fett-trust-2012/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

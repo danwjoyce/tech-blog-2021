@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Publications | Dan W Joyce</title>
+    <link>/publication/</link>
+      <atom:link href="/publication/index.xml" rel="self" type="application/rss+xml" />
+    <description>Publications</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Thu, 02 Dec 2021 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Publications</title>
+      <link>/publication/</link>
+    </image>
+    
+    <item>
+      <title>CHRONOSIG: Digital Triage for Secondary Mental Healthcare using Natural Language Processing - rationale and protocol</title>
+      <link>/publication/joyce-2021-chronosig/</link>
+      <pubDate>Thu, 02 Dec 2021 00:00:00 +0000</pubDate>
+      <guid>/publication/joyce-2021-chronosig/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Refining the Analysis of Multidimensional Psychometric Data: A Geometric Distance Approach</title>
+      <link>/publication/joyce-2021-psychometrics/</link>
+      <pubDate>Mon, 18 Oct 2021 00:00:00 +0000</pubDate>
+      <guid>/publication/joyce-2021-psychometrics/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Changes in daily mental health service use and mortality at the commencement and lifting of COVID-19 ‘lockdown’ policy in 10 UK sites: a regression discontinuity in time design</title>
+      <link>/publication/bakolis2021/</link>
+      <pubDate>Fri, 14 May 2021 00:00:00 +0000</pubDate>
+      <guid>/publication/bakolis2021/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cognitive performance in early, treatment-resistant psychosis patients: Could cognitive control play a role in persistent symptoms?</title>
+      <link>/publication/thomas-2021/</link>
+      <pubDate>Sat, 02 Jan 2021 00:00:00 +0000</pubDate>
+      <guid>/publication/thomas-2021/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>The temporal dynamics of sleep disturbance and psychopathology in psychosis: a digital sampling study</title>
+      <link>/publication/meyer-2021/</link>
+      <pubDate>Fri, 01 Jan 2021 00:00:00 +0000</pubDate>
+      <guid>/publication/meyer-2021/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Examination of the neural basis of psychotic-like experiences in adolescence during processing of emotional faces</title>
+      <link>/publication/papanastasiou-examination-2020/</link>
+      <pubDate>Sun, 01 Mar 2020 00:00:00 +0000</pubDate>
+      <guid>/publication/papanastasiou-examination-2020/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>A symptom combination predicting treatment-resistant schizophrenia – A strategy for real-world clinical practice</title>
+      <link>/publication/ortiz-symptom-2020/</link>
+      <pubDate>Wed, 01 Jan 2020 00:00:00 +0000</pubDate>
+      <guid>/publication/ortiz-symptom-2020/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>When Deploying Predictive Algorithms, Are Summary Performance Measures Sufficient?</title>
+      <link>/publication/joyce-when-2020/</link>
+      <pubDate>Wed, 01 Jan 2020 00:00:00 +0000</pubDate>
+      <guid>/publication/joyce-when-2020/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Exacerbation of Psychosis During the Perimenstrual Phase of the Menstrual Cycle: Systematic Review and Meta-analysis</title>
+      <link>/publication/reilly-exacerbation-2019/</link>
+      <pubDate>Wed, 01 May 2019 00:00:00 +0000</pubDate>
+      <guid>/publication/reilly-exacerbation-2019/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Associations Between Non-neurological Autoimmune Disorders and Psychosis: A Meta-analysis.</title>
+      <link>/publication/cullen-associations-2019/</link>
+      <pubDate>Tue, 01 Jan 2019 00:00:00 +0000</pubDate>
+      <guid>/publication/cullen-associations-2019/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Integration is not necessarily at odds with reductionism.</title>
+      <link>/publication/joyce-integration-2018/</link>
+      <pubDate>Thu, 01 Nov 2018 00:00:00 +0000</pubDate>
+      <guid>/publication/joyce-integration-2018/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Examination of the Neural Basis of Psychoticlike Experiences in Adolescence During Reward Processing.</title>
+      <link>/publication/papanastasiou-examination-2018/</link>
+      <pubDate>Mon, 01 Oct 2018 00:00:00 +0000</pubDate>
+      <guid>/publication/papanastasiou-examination-2018/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Are we failing clinical trials? A case for strong aggregate outcomes.</title>
+      <link>/publication/joyce-are-2018/</link>
+      <pubDate>Mon, 01 Jan 2018 00:00:00 +0000</pubDate>
+      <guid>/publication/joyce-are-2018/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Improving the quality of physical health monitoring in CAMHS for children and adolescents prescribed medication for ADHD.</title>
+      <link>/publication/oxley-improving-2018/</link>
+      <pubDate>Mon, 01 Jan 2018 00:00:00 +0000</pubDate>
+      <guid>/publication/oxley-improving-2018/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Parsing the Roles of the Frontal Lobes and Basal Ganglia in Task Control Using Multivoxel Pattern Analysis.</title>
+      <link>/publication/kehagia-parsing-2017/</link>
+      <pubDate>Tue, 01 Aug 2017 00:00:00 +0000</pubDate>
+      <guid>/publication/kehagia-parsing-2017/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Realising stratified psychiatry using multidimensional signatures and trajectories.</title>
+      <link>/publication/joyce-realising-2017/</link>
+      <pubDate>Sun, 01 Jan 2017 00:00:00 +0000</pubDate>
+      <guid>/publication/joyce-realising-2017/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Reduced susceptibility to the sound-induced flash fusion illusion in schizophrenia.</title>
+      <link>/publication/vanes-reduced-2016/</link>
+      <pubDate>Tue, 01 Nov 2016 00:00:00 +0000</pubDate>
+      <guid>/publication/vanes-reduced-2016/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cognitive and oculomotor performance in subjects with low and high schizotypy: implications for translational drug development studies.</title>
+      <link>/publication/koychev-cognitive-2016/</link>
+      <pubDate>Sun, 01 May 2016 00:00:00 +0000</pubDate>
+      <guid>/publication/koychev-cognitive-2016/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Dysfunctional Striatal Systems in Treatment-Resistant Schizophrenia.</title>
+      <link>/publication/white-dysfunctional-2016/</link>
+      <pubDate>Fri, 01 Apr 2016 00:00:00 +0000</pubDate>
+      <guid>/publication/white-dysfunctional-2016/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Skating on thin ice: pragmatic prescribing for medication refractory schizophrenia.</title>
+      <link>/publication/tracy-skating-2015/</link>
+      <pubDate>Wed, 01 Jul 2015 00:00:00 +0000</pubDate>
+      <guid>/publication/tracy-skating-2015/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Amphetamine sensitisation and memory in healthy human volunteers: a functional magnetic resonance imaging study.</title>
+      <link>/publication/odaly-amphetamine-2014-1/</link>
+      <pubDate>Mon, 01 Sep 2014 00:00:00 +0000</pubDate>
+      <guid>/publication/odaly-amphetamine-2014-1/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Amphetamine sensitization alters reward processing in the human striatum and amygdala.</title>
+      <link>/publication/odaly-amphetamine-2014/</link>
+      <pubDate>Wed, 01 Jan 2014 00:00:00 +0000</pubDate>
+      <guid>/publication/odaly-amphetamine-2014/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Eluding the illusion? Schizophrenia, dopamine and the McGurk effect.</title>
+      <link>/publication/white-eluding-2014/</link>
+      <pubDate>Wed, 01 Jan 2014 00:00:00 +0000</pubDate>
+      <guid>/publication/white-eluding-2014/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Functional magnetic resonance imaging of impaired sensory prediction in schizophrenia.</title>
+      <link>/publication/shergill-functional-2014/</link>
+      <pubDate>Wed, 01 Jan 2014 00:00:00 +0000</pubDate>
+      <guid>/publication/shergill-functional-2014/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Examining belief and confidence in schizophrenia.</title>
+      <link>/publication/joyce-examining-2013/</link>
+      <pubDate>Fri, 01 Nov 2013 00:00:00 +0000</pubDate>
+      <guid>/publication/joyce-examining-2013/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Trust versus paranoia: abnormal response to social reward in psychotic illness.</title>
+      <link>/publication/gromann-trust-2013/</link>
+      <pubDate>Sat, 01 Jun 2013 00:00:00 +0000</pubDate>
+      <guid>/publication/gromann-trust-2013/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Aging effects on functional auditory and visual processing using fMRI with variable sensory loading.</title>
+      <link>/publication/cliff-aging-2013/</link>
+      <pubDate>Wed, 01 May 2013 00:00:00 +0000</pubDate>
+      <guid>/publication/cliff-aging-2013/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Modulation of somatosensory processing by action.</title>
+      <link>/publication/shergill-modulation-2013/</link>
+      <pubDate>Mon, 01 Apr 2013 00:00:00 +0000</pubDate>
+      <guid>/publication/shergill-modulation-2013/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Sexual quality of life in women who have undergone female genital mutilation: a case-control study.</title>
+      <link>/publication/andersson-sexual-2012/</link>
+      <pubDate>Sat, 01 Dec 2012 00:00:00 +0000</pubDate>
+      <guid>/publication/andersson-sexual-2012/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>To trust or not to trust: the dynamics of social interaction in psychosis.</title>
+      <link>/publication/fett-trust-2012/</link>
+      <pubDate>Thu, 01 Mar 2012 00:00:00 +0000</pubDate>
+      <guid>/publication/fett-trust-2012/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Functional magnetic resonance imaging investigation of the amphetamine sensitization model of schizophrenia in healthy male volunteers.</title>
+      <link>/publication/odaly-functional-2011/</link>
+      <pubDate>Wed, 01 Jun 2011 00:00:00 +0000</pubDate>
+      <guid>/publication/odaly-functional-2011/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Spatial language, visual attention, and perceptual simulation.</title>
+      <link>/publication/coventry-spatial-2010/</link>
+      <pubDate>Mon, 01 Mar 2010 00:00:00 +0000</pubDate>
+      <guid>/publication/coventry-spatial-2010/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>An evoked auditory response fMRI study of the effects of rTMS on putative AVH pathways in healthy volunteers.</title>
+      <link>/publication/tracy-evoked-2010/</link>
+      <pubDate>Fri, 01 Jan 2010 00:00:00 +0000</pubDate>
+      <guid>/publication/tracy-evoked-2010/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Kinematic cues in perceptual weight judgement and their origins in box lifting.</title>
+      <link>/publication/hamilton-kinematic-2007/</link>
+      <pubDate>Mon, 01 Jan 2007 00:00:00 +0000</pubDate>
+      <guid>/publication/hamilton-kinematic-2007/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Passive processing of visual and auditory stimuli in the young and elderly: a neuroimaging study</title>
+      <link>/publication/joyce-passive-2006/</link>
+      <pubDate>Sun, 01 Jan 2006 00:00:00 +0000</pubDate>
+      <guid>/publication/joyce-passive-2006/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Spatial prepositions and vague quantifiers: Implementing the functional geometric framework</title>
+      <link>/publication/coventry-spatial-2004/</link>
+      <pubDate>Thu, 01 Jan 2004 00:00:00 +0000</pubDate>
+      <guid>/publication/coventry-spatial-2004/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>On the foundations of perceptual symbol systems: Specifying embodied representations via connectionism</title>
+      <link>/publication/joyce-foundations-2003/</link>
+      <pubDate>Wed, 01 Jan 2003 00:00:00 +0000</pubDate>
+      <guid>/publication/joyce-foundations-2003/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Object representation-by-fragments in the visual system: A neurocomputational model</title>
+      <link>/publication/joyce-object-2002/</link>
+      <pubDate>Tue, 01 Jan 2002 00:00:00 +0000</pubDate>
+      <guid>/publication/joyce-object-2002/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Putting geometry and function together-towards a psychologically-plausible computational model for spatial language comprehension</title>
+      <link>/publication/coventry-putting-2002/</link>
+      <pubDate>Tue, 01 Jan 2002 00:00:00 +0000</pubDate>
+      <guid>/publication/coventry-putting-2002/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>SoFAR with DIM agents: An agent framework for distributed information management</title>
+      <link>/publication/moreau-sofar-2000/</link>
+      <pubDate>Sat, 01 Jan 2000 00:00:00 +0000</pubDate>
+      <guid>/publication/moreau-sofar-2000/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>A flexible architecture for content and concept based multimedia information exploration</title>
+      <link>/publication/dobie-flexible-1999/</link>
+      <pubDate>Fri, 01 Jan 1999 00:00:00 +0000</pubDate>
+      <guid>/publication/dobie-flexible-1999/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Connectionist Models for Learning Choice Behaviour in Reactive Software</title>
+      <link>/publication/joyce-connectionist-1999/</link>
+      <pubDate>Fri, 01 Jan 1999 00:00:00 +0000</pubDate>
+      <guid>/publication/joyce-connectionist-1999/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>MAVIS 2: a new approach to content and concept based navigation</title>
+      <link>/publication/dobie-mavis-1999/</link>
+      <pubDate>Fri, 01 Jan 1999 00:00:00 +0000</pubDate>
+      <guid>/publication/dobie-mavis-1999/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Modelling Learning for Intelligent Software Agents: A Connectionist Approach</title>
+      <link>/publication/joyce-modelling-1999/</link>
+      <pubDate>Fri, 01 Jan 1999 00:00:00 +0000</pubDate>
+      <guid>/publication/joyce-modelling-1999/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Semiotics and agents for integrating and navigating through multimedia representations of concepts</title>
+      <link>/publication/joyce-semiotics-1999/</link>
+      <pubDate>Fri, 01 Jan 1999 00:00:00 +0000</pubDate>
+      <guid>/publication/joyce-semiotics-1999/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Texture Content-Based Retrieval Using Content Descriptions</title>
+      <link>/publication/kuan-texture-1999/</link>
+      <pubDate>Fri, 01 Jan 1999 00:00:00 +0000</pubDate>
+      <guid>/publication/kuan-texture-1999/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Flexible Features in Texture Similarity</title>
+      <link>/publication/kuan-flexible-1998/</link>
+      <pubDate>Thu, 01 Jan 1998 00:00:00 +0000</pubDate>
+      <guid>/publication/kuan-flexible-1998/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

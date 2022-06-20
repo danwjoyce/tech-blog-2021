@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Thomas Dannhauser | Dan W Joyce</title>
+    <link>/author/thomas-dannhauser/</link>
+      <atom:link href="/author/thomas-dannhauser/index.xml" rel="self" type="application/rss+xml" />
+    <description>Thomas Dannhauser</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Wed, 01 May 2013 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Thomas Dannhauser</title>
+      <link>/author/thomas-dannhauser/</link>
+    </image>
+    
+    <item>
+      <title>Aging effects on functional auditory and visual processing using fMRI with variable sensory loading.</title>
+      <link>/publication/cliff-aging-2013/</link>
+      <pubDate>Wed, 01 May 2013 00:00:00 +0000</pubDate>
+      <guid>/publication/cliff-aging-2013/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Passive processing of visual and auditory stimuli in the young and elderly: a neuroimaging study</title>
+      <link>/publication/joyce-passive-2006/</link>
+      <pubDate>Sun, 01 Jan 2006 00:00:00 +0000</pubDate>
+      <guid>/publication/joyce-passive-2006/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

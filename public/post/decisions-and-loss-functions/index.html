@@ -1,0 +1,1704 @@
+<!DOCTYPE html><html lang="en-us" >
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  
+  
+    <meta name="generator" content="Wowchemy 5.1.0 for Hugo" />
+  
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Dan W Joyce" />
+
+  
+  
+  
+    
+  
+  <meta name="description" content="In the previous post, loss functions where considered in the context of estimating measures of central tendency for distributions. In this post, I want to look at the computation of loss functions in situations that might arise in a clinical predictive model." />
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/decisions-and-loss-functions/" />
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+
+  
+  
+  
+    <meta name="theme-color" content="#1565c0" />
+  
+
+  
+  
+    
+    <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha256-FMvZuGapsJLjouA6k7Eo2lusoAX9i0ShlWFG6qt7SLc=" crossorigin="anonymous">
+
+    
+    
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/styles/github.min.css" crossorigin="anonymous" title="hl-light" media="print" onload="this.media='all'">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" media="print" onload="this.media='all'" disabled>
+        
+      
+    
+
+    
+    
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.css" integrity="sha512-1xoFisiGdy9nvho8EgXuXvnpR5GAMSjFwp40gSRE3NwdUdIMIKuPa7bqoUhLD0O/5tPNhteAsE5XyyMi5reQVA==" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
+
+    
+
+    
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+  
+
+  
+  
+  
+    
+      
+      <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap" media="print" onload="this.media='all'">
+    
+  
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/wowchemy.ddb2a9c79d7760a321f1b5392a04566a.css" />
+
+  
+
+
+
+  
+
+  
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+    <link rel="manifest" href="/index.webmanifest" />
+  
+
+  <link rel="icon" type="image/png" href="/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_32x32_fill_lanczos_center_2.png" />
+  <link rel="apple-touch-icon" type="image/png" href="/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_180x180_fill_lanczos_center_2.png" />
+
+  <link rel="canonical" href="/post/decisions-and-loss-functions/" />
+
+  
+  
+  
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary" />
+  
+    <meta property="twitter:site" content="@@dan_w_joyce" />
+    <meta property="twitter:creator" content="@@dan_w_joyce" />
+  
+  <meta property="og:site_name" content="Dan W Joyce" />
+  <meta property="og:url" content="/post/decisions-and-loss-functions/" />
+  <meta property="og:title" content="Decisions and Loss Functions - A more clinical focus | Dan W Joyce" />
+  <meta property="og:description" content="In the previous post, loss functions where considered in the context of estimating measures of central tendency for distributions. In this post, I want to look at the computation of loss functions in situations that might arise in a clinical predictive model." /><meta property="og:image" content="/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png" />
+    <meta property="twitter:image" content="/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png" /><meta property="og:locale" content="en-us" />
+  
+    
+      <meta
+        property="article:published_time"
+        content="2020-04-02T00:00:00&#43;00:00"
+      />
+    
+    <meta property="article:modified_time" content="2020-04-02T00:00:00&#43;00:00">
+  
+
+  
+
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "/post/decisions-and-loss-functions/"
+  },
+  "headline": "Decisions and Loss Functions - A more clinical focus",
+  
+  "datePublished": "2020-04-02T00:00:00Z",
+  "dateModified": "2020-04-02T00:00:00Z",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Dan W Joyce"
+  },
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "Dan W Joyce",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_192x192_fill_lanczos_center_2.png"
+    }
+  },
+  "description": "In the previous post, loss functions where considered in the context of estimating measures of central tendency for distributions. In this post, I want to look at the computation of loss functions in situations that might arise in a clinical predictive model."
+}
+</script>
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+  <title>Decisions and Loss Functions - A more clinical focus | Dan W Joyce</title>
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class="page-wrapper   " data-wc-page-id="7326d4845607b47d25c5566bca7ca189" >
+
+  
+  
+  
+  
+  
+  
+  
+  
+  <script src="/js/wowchemy-init.min.f16be01fc8fb2b5885dd67ce942d1185.js"></script>
+
+  
+
+
+<aside class="search-modal" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#" aria-label="Close"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search" class="form-control"
+        aria-label="Search...">
+        
+      </div>
+
+      
+      
+
+      
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+
+  <div class="page-header">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container-xl">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Dan W Joyce</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Dan W Joyce</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#about"><span>About</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#featured"><span>Publications</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#contact"><span>Contact</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+
+      
+      
+        
+          
+          <li class="nav-item d-none d-lg-inline-flex">
+            <a class="nav-link" href="https://twitter.com/dan_w_joyce" data-toggle="tooltip" data-placement="bottom" title="Follow me on Twitter" target="_blank" rel="noopener" aria-label="Follow me on Twitter">
+              <i class="fab fa-twitter" aria-hidden="true"></i>
+            </a>
+          </li>
+        
+      
+
+      
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#" aria-label="Search"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      
+      <li class="nav-item dropdown theme-dropdown">
+        <a href="#" class="nav-link" data-toggle="dropdown" aria-haspopup="true" aria-label="Display preferences">
+          <i class="fas fa-moon" aria-hidden="true"></i>
+        </a>
+        <div class="dropdown-menu">
+          <a href="#" class="dropdown-item js-set-theme-light">
+            <span>Light</span>
+          </a>
+          <a href="#" class="dropdown-item js-set-theme-dark">
+            <span>Dark</span>
+          </a>
+          <a href="#" class="dropdown-item js-set-theme-auto">
+            <span>Automatic</span>
+          </a>
+        </div>
+      </li>
+      
+
+      
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  </div>
+
+  <div class="page-body">
+    <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1>Decisions and Loss Functions - A more clinical focus</h1>
+
+  
+
+  
+    
+
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    Apr 2, 2020
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    13 min read
+  </span>
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder mr-1"></i><a href="/category/r-code/">R code</a></span>
+  
+
+</div>
+
+    
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      
+<script src="/post/decisions-and-loss-functions/index_files/header-attrs/header-attrs.js"></script>
+<script src="/post/decisions-and-loss-functions/index_files/kePrint/kePrint.js"></script>
+<link href="/post/decisions-and-loss-functions/index_files/lightable/lightable.css" rel="stylesheet" />
+
+
+<p>In the previous post, loss functions where considered in the context of estimating measures of central tendency for distributions. In this post, I want to look at the computation of loss functions in situations that might arise in a clinical predictive model. This is all textbook stuff – see <a href="#sec-further-reading">Further Reading</a> – but I wanted to summarise it in a way I understood when in a year’s time, I wonder what the code does.</p>
+<p>I realised that the notation in the last post was sloppy, so for this post, I’ll adopt the conventions in <span class="citation">(<a href="#ref-berger1985statistical" role="doc-biblioref">Berger 1985</a>)</span>.</p>
+<p>The basic setup is:</p>
+<ul>
+<li>There is a finite set of available actions, <span class="math inline">\(\mathscr{A} = \{ a_1, a_2, \ldots, a_j \}\)</span> – in the examples that follow, we’ll restrict our attention to a choice between two actions of “do nothing” or “intervene/treat” respectively but there is no loss of generality in assuming this.</li>
+<li>There are uncertain quantities representing “states of the world” <span class="math inline">\(\Theta = \{ \theta_1, \theta_2, \ldots, \theta_i \}\)</span> about which we can obtain data and that can affect our decision about which action to take. Here, these states will reflect something about a patient.</li>
+</ul>
+<p>Then, our task will be to choose the best action from <span class="math inline">\(\mathscr{A}\)</span> given information about states <span class="math inline">\(\Theta\)</span>.</p>
+<p>Information about the states <span class="math inline">\(\Theta\)</span> will come from a putative predictive model: as in the previous post, measurements (the “input” to the model) for a given patient <span class="math inline">\(x\)</span> are given to the predictive model <span class="math inline">\(Y = F(x)\)</span> that delivers scores (the “output”) as realisations of <span class="math inline">\(Y \in [0,1]\)</span>. Importantly, for any <span class="math inline">\(x\)</span>, we can access samples from the posterior distribution <span class="math inline">\(\pi_{F}(Y|x)\)</span> (rather than relying on a single point prediction, such as the mean of the posterior).</p>
+<div id="setup" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Setup</h1>
+<p>To begin with, assume the simplest case of there being two states <span class="math inline">\(\Theta = \{ \theta_1, \theta_2 \}\)</span> which correspond to a patient being “negative” or “positive” (respectively) for some event or outcome. Our repetoire of actions is <span class="math inline">\(\mathscr{A} = \{ a_1, a_2 \}\)</span> representing “do nothing” and “intervene/treat” respectively. This only serves a pedagogical need when developing the ideas, not because it represents a principled or sound modelling decision.</p>
+<p>For a single example patient <span class="math inline">\(x\)</span>, the output of the model suggests the they are most likely negative (i.e. the probability mass is concentrated near zero):</p>
+<pre class="r"><code>library(ggplot2)
+library(gridExtra)
+library(kableExtra)
+library(latex2exp)
+library(reshape2)
+
+# globals for presentation
+basictheme &lt;- theme_minimal() + 
+  theme(axis.title = element_text(size = 14),
+        axis.text = element_text(size = 12),
+        plot.title = element_text(size = rel(1.25), face = &quot;bold&quot;, hjust = 0.5 ))</code></pre>
+<pre class="r"><code>set.seed(3141)
+range01 &lt;- function(x){(x-min(x))/(max(x)-min(x))}
+samples &lt;- range01( rgamma( 2000, shape = 2, scale = 2) )
+df &lt;- data.frame( y = samples )
+ggplot( df, aes( y ) ) +
+  geom_density( fill = &quot;#fa9fb5&quot;) + 
+  ylab(&quot;Density\n&quot;) + 
+  xlab(&quot;\nScore (Y)&quot;) + basictheme</code></pre>
+<p><img src="/post/decisions-and-loss-functions/index_files/figure-html/unnamed-chunk-2-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>We now require a mapping from the samples <span class="math inline">\(y \sim \pi_{F}(Y|x)\)</span> to <span class="math inline">\(\Theta\)</span> because the domain of <span class="math inline">\(\pi_{F}\)</span> will be the interval <span class="math inline">\([0,1]\)</span> and to get started, we need to “quantise” to two states.</p>
+<p>Define the distribution over states <span class="math inline">\(\pi_{\Theta}\)</span> as follows:</p>
+<span class="math display">\[\begin{aligned}
+\pi_{\Theta}(\theta_{1}) &amp;= \Pr_{\pi_{F}}( Y \leq 0.5 ) \\
+\pi_{\Theta}(\theta_{2})  &amp;= \Pr_{\pi_{F}}( Y &gt; 0.5 )
+\end{aligned}\]</span>
+<p>So, we basically histogram the samples into two bins either side of 0.5, representing the probability of a patient being negative (<span class="math inline">\(\theta_1\)</span>) or positive (<span class="math inline">\(\theta_2\)</span>). A terrible idea, which we will reverse later.</p>
+<pre class="r"><code>pdfFromSamples &lt;- function(a, b, delta, samples) {
+  H &lt;- hist( samples, plot = FALSE, breaks = seq(a, b, by = delta) )
+  ret &lt;- data.frame(
+    mids  = H$mids,
+    freq  = H$counts
+  )
+  ret$P &lt;- ret$freq / sum(ret$freq)
+  return(ret)
+}
+
+pdf.Y &lt;- pdfFromSamples(0,1,delta = 1/2, samples)
+pdf.Y$theta &lt;- factor( c(1,2) )
+
+pdf.plot &lt;- ggplot( pdf.Y, aes( x = theta, y = P ) ) + 
+  geom_col( fill = &quot;#fa9fb5&quot; ) + 
+  scale_x_discrete(labels = pdf.Y$theta ) +
+  xlab(TeX(&quot;$\\theta&quot;)) +
+  ylab(TeX(&#39;$\\pi(\\theta)&#39;)) +
+  basictheme
+
+print( pdf.plot )</code></pre>
+<p><img src="/post/decisions-and-loss-functions/index_files/figure-html/unnamed-chunk-3-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>According to our blunt assignment of states to output from the predictive model, the probability the patient is negative is <span class="math inline">\(\pi_{\Theta}(\theta_{1})\)</span> = 0.921 and positive <span class="math inline">\(\pi_{\Theta}(\theta_{2})\)</span> = 0.079.</p>
+<p>With this setup, (two actions, two states) we can “tabulate” the combinations of actions and states (the <a href="https://en.wikipedia.org/wiki/Cartesian_product">Cartesian product</a>: <span class="math inline">\(\Theta \times \mathscr{A}\)</span>):</p>
+<p><img src="loss-actions.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>In each “cell” or combination <span class="math inline">\((\theta,a)\)</span> we then assign a <strong>loss</strong> <span class="math inline">\(L(\theta,a) \leq 0\)</span> which describes the <strong>cost</strong> incurred for taking action <span class="math inline">\(a\)</span> when the state <span class="math inline">\(\theta\)</span> obtains. Generally, we will adopt the convention that losses represent costs or penalties for actions with respect to states.</p>
+</div>
+<div id="example-loss-matrix" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Example Loss Matrix</h1>
+<p>Equipped with this toy example we assign losses:</p>
+<pre class="r"><code>A &lt;- c(&quot;a1:&lt;br&gt;do nothing&quot;,&quot;a2:&lt;br&gt;intervene&quot;)
+Theta &lt;- c(&quot;&lt;b&gt;theta1:&lt;/b&gt;&lt;br&gt;negative&quot;, &quot;&lt;b&gt;theta2:&lt;/b&gt;&lt;br&gt;positive&quot;)
+
+loss.matrix &lt;- matrix( c( 0.0,  -0.5,
+                          -1.0, 0 ), 
+                       nrow = 2, ncol = 2, byrow = TRUE)
+rownames(loss.matrix) &lt;- Theta
+colnames(loss.matrix) &lt;- A
+
+knitr::kable( loss.matrix, 
+              format = &quot;html&quot;, 
+              align = &#39;c&#39;, 
+              full_width = FALSE, 
+              position = &#39;c&#39;,
+              escape = FALSE ) %&gt;%
+        kable_styling(position = &quot;center&quot;)</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:center;">
+a1:<br>do nothing
+</th>
+<th style="text-align:center;">
+a2:<br>intervene
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<b>theta1:</b><br>negative
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+-0.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<b>theta2:</b><br>positive
+</td>
+<td style="text-align:center;">
+-1
+</td>
+<td style="text-align:center;">
+0.0
+</td>
+</tr>
+</tbody>
+</table>
+<p>As a use example, assume we decide <span class="math inline">\(a_2\)</span> (intervene) and the state of the patient turns out to be <span class="math inline">\(\theta_1\)</span> (negative) we incur a loss of <span class="math inline">\(L(\theta_1,a_2) = -0.5\)</span> to reflect unnecessary costs of e.g. further investigations, inconvenience to the patient etc. If we select <span class="math inline">\(a_1\)</span> and the state is <span class="math inline">\(\theta_1\)</span> (equating to doing nothing and the patient is negative) we incur zero loss because this was an appropriate action given the circumstances.</p>
+</div>
+<div id="bayesian-expected-loss" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Bayesian Expected Loss</h1>
+<p>Following <span class="citation">(<a href="#ref-berger1985statistical" role="doc-biblioref">Berger 1985</a>)</span>, we define the Bayesian expected loss (BEL) for action <span class="math inline">\(a_j\)</span> with respect to the discrete distribution <span class="math inline">\(\pi_{\Theta}\)</span> as
+<span class="math display">\[
+\rho(\pi_{\Theta},a_j) = \mathbb{E}_{\pi_{\Theta}} \left[ L(\theta,a_j\right] = \sum_{i}L(\theta_i,a_j)\pi_{\Theta}(\theta_i)
+\]</span></p>
+<pre class="r"><code># Bayesian expected loss (BEL)
+BEL &lt;- function( a, p.pi, loss.matrix ) {
+   sum( loss.matrix[ , a ] * p.pi )
+}
+
+# compute BEL for each action a:
+rho.A &lt;- data.frame( 
+  A = factor(c(&quot;a1&quot;,&quot;a2&quot;)),
+  rho = rep(NA,2)
+)
+
+# for each action
+for( j in 1:2 ) {
+  rho.A$rho[j] &lt;- BEL( j, pdf.Y$P, loss.matrix )
+}
+
+bel.plot &lt;- ggplot( rho.A, aes(x = A, y = rho) ) +
+  geom_col( fill = &quot;#d6604d&quot; ) + 
+  basictheme
+
+grid.arrange( pdf.plot, bel.plot, nrow = 1, ncol = 2 )</code></pre>
+<p><img src="/post/decisions-and-loss-functions/index_files/figure-html/unnamed-chunk-6-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Note that the upper bound of the BEL is zero.</p>
+</div>
+<div id="conditional-bayes-decision-principal" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Conditional Bayes Decision Principal</h1>
+<p>Having established the BEL for each action, the conditional bayes decision principle (CBD) for deciding on an action <span class="citation">(<a href="#ref-berger1985statistical" role="doc-biblioref">Berger 1985</a>)</span> is:</p>
+<ul>
+<li>choose <span class="math inline">\(a_{j} \in \mathscr{A}\)</span> such that <span class="math inline">\(a_j\)</span> <strong>minimises</strong> the BEL : <span class="math inline">\(\underset{j}{\mathrm{arg\,max}} \; \rho( \pi_{\Theta}, a_j )\)</span></li>
+</ul>
+<p>In code: the resulting vector for <span class="math inline">\(\rho( \pi_{\Theta}, a )\)</span></p>
+<pre class="r"><code>knitr::kable( rho.A, 
+              format = &quot;html&quot;, 
+              align = &#39;c&#39;, 
+              full_width = FALSE, 
+              position = &#39;c&#39;,
+              escape = FALSE ) %&gt;%
+        kable_styling(position = &quot;center&quot;)</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:center;">
+A
+</th>
+<th style="text-align:center;">
+rho
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+a1
+</td>
+<td style="text-align:center;">
+-0.0790
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+a2
+</td>
+<td style="text-align:center;">
+-0.4605
+</td>
+</tr>
+</tbody>
+</table>
+<p>And the action that minimises the BEL:</p>
+<pre class="r"><code>print( min.bel.CBD &lt;- which.max( rho.A$rho ) )</code></pre>
+<pre><code>## [1] 1</code></pre>
+<p>In the example above, we find the action 1 (i.e. <span class="math inline">\(a_1\)</span> = “do nothing”) minimises the BEL. This fits with our intuition given the patient is most likely negative: <span class="math inline">\(\pi_{\Theta}(\theta_1) &gt; \pi_{\Theta}(\theta_1)\)</span>.</p>
+</div>
+<div id="developing-the-loss-function" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Developing the Loss Function</h1>
+<p>Consider a different patient where the posterior distribution <span class="math inline">\(\pi_{F}(Y|x)\)</span>, the output of the predictive model, looks like:</p>
+<pre class="r"><code>samples &lt;- range01( c(rnorm( 1000, mean = 0, sd = 2 ), rnorm( 1000, mean = 10, sd = 3) ) )
+df &lt;- data.frame( y = samples )
+ggplot( df, aes( y ) ) +
+  geom_density( fill = &quot;#fa9fb5&quot;) + 
+  ylab(&quot;Density\n&quot;) + 
+  xlab(&quot;\nScore (Y)&quot;) + basictheme</code></pre>
+<p><img src="/post/decisions-and-loss-functions/index_files/figure-html/unnamed-chunk-9-1.png" width="70%" style="display: block; margin: auto;" />
+In this example, there’s uncertainty about the patient being negative or positive.</p>
+<p>This time, we’ll quantise into <em>three</em> equal-sized intervals over the range <span class="math inline">\([0,1]\)</span> (again, an unprincipled decision made only for demonstration) and map to three states:</p>
+<pre class="r"><code>pdf.Y &lt;- pdfFromSamples(0,1,delta=1/3,samples)
+pdf.Y$theta &lt;- factor( seq(1,3,by=1) )
+
+pdf.plot &lt;- ggplot( pdf.Y, aes( x = theta, y = P ) ) + 
+  geom_col( fill = &quot;#fa9fb5&quot; ) + 
+  scale_x_discrete(labels = pdf.Y$theta ) +
+  xlab(TeX(&quot;$\\theta&quot;)) +
+  ylab(TeX(&#39;$\\pi(\\theta)&#39;)) +
+  basictheme
+
+print( pdf.plot )</code></pre>
+<p><img src="/post/decisions-and-loss-functions/index_files/figure-html/unnamed-chunk-10-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>The loss matrix will now be a <span class="math inline">\(3 \times 2\)</span> matrix:</p>
+<pre class="r"><code>A &lt;- c(&quot;a1:&lt;br&gt;do nothing&quot;,&quot;a2:&lt;br&gt;intervene&quot;)
+Theta &lt;- c(&quot;&lt;b&gt;theta1:&lt;/b&gt;&lt;br&gt;negative&quot;, 
+           &quot;&lt;b&gt;theta2:&lt;/b&gt;&lt;br&gt;equivocal&quot;,  
+           &quot;&lt;b&gt;theta3:&lt;/b&gt;&lt;br&gt;positive&quot;)
+
+loss.matrix &lt;- matrix( c( 0.0,  -0.5,
+                          -0.5,  -0.2,
+                          -1.0, 0 ), 
+                       nrow = 3, ncol = 2, byrow = TRUE)
+rownames(loss.matrix) &lt;- Theta
+colnames(loss.matrix) &lt;- A
+
+knitr::kable( loss.matrix, 
+              format = &quot;html&quot;, 
+              align = &#39;c&#39;, 
+              full_width = FALSE, 
+              position = &#39;c&#39;,
+              escape = FALSE ) %&gt;%
+        kable_styling(position = &quot;center&quot;)</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:center;">
+a1:<br>do nothing
+</th>
+<th style="text-align:center;">
+a2:<br>intervene
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<b>theta1:</b><br>negative
+</td>
+<td style="text-align:center;">
+0.0
+</td>
+<td style="text-align:center;">
+-0.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<b>theta2:</b><br>equivocal
+</td>
+<td style="text-align:center;">
+-0.5
+</td>
+<td style="text-align:center;">
+-0.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<b>theta3:</b><br>positive
+</td>
+<td style="text-align:center;">
+-1.0
+</td>
+<td style="text-align:center;">
+0.0
+</td>
+</tr>
+</tbody>
+</table>
+<p>Bearing in mind that states are uncertain, the logic behind this loss matrix is as follows:</p>
+<ol style="list-style-type: decimal">
+<li><p>For <span class="math inline">\(a_1\)</span> (do nothing) : no cost is incurred if the patient is likely negative (<span class="math inline">\(\theta_1\)</span>). If the patient is most likely positive (<span class="math inline">\(\theta_3\)</span>) and we do nothing, this is evidently the wrong decision and we incur the maximum penalty of -1.0. If there is some equivocation <span class="math inline">\((\theta_2\)</span>) – we penalise by half the maximum cost to discourage doing nothing (equating to loss aversion)</p></li>
+<li><p>For <span class="math inline">\(a_2\)</span> (intervene) : for <span class="math inline">\(\theta_1\)</span> we incur a cost (-0.5) for intervening when unnecessary. Naturally, for <span class="math inline">\(\theta_3\)</span>, the correct thing to do is intervene so this has no penalty associated. For the equivocal case, <span class="math inline">\(\theta_2\)</span>, we should certainly not ignore these cases but simply intervening (i.e. with zero penalty) is inappropriate. So we incur a small penalty (-0.2) to nudge us away from intervening as the default.</p></li>
+</ol>
+<p>Notice that in designing the loss matrix, we are trying to capture domain knowledge about the <em>deployment</em> of the model – for example, the loss attached to doing nothing (when there is equivocation about the negative/positive state of the patient) pushes us to be cautious and intervene.</p>
+<p>Let’s look at the resulting BEL:</p>
+<pre class="r"><code># compute BEL for each action a:
+rho.A &lt;- data.frame( 
+  A = factor(c(&quot;a1&quot;,&quot;a2&quot;)),
+  rho = rep(NA,2)
+)
+
+# for each action
+for( j in 1:2 ) {
+  rho.A$rho[j] &lt;- BEL( j, pdf.Y$P, loss.matrix )
+}
+
+bel.plot &lt;- ggplot( rho.A, aes(x = A, y = rho) ) +
+  geom_col( fill = &quot;#d6604d&quot; ) + 
+  basictheme
+
+grid.arrange( pdf.plot, bel.plot, nrow = 1, ncol = 2 )</code></pre>
+<p><img src="/post/decisions-and-loss-functions/index_files/figure-html/unnamed-chunk-12-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>knitr::kable( rho.A, 
+              format = &quot;html&quot;, 
+              align = &#39;c&#39;, 
+              full_width = FALSE, 
+              position = &#39;c&#39;,
+              escape = FALSE ) %&gt;%
+        kable_styling(position = &quot;center&quot;)</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:center;">
+A
+</th>
+<th style="text-align:center;">
+rho
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+a1
+</td>
+<td style="text-align:center;">
+-0.35125
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+a2
+</td>
+<td style="text-align:center;">
+-0.30530
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>print( min.bel.CBD &lt;- which.max( rho.A$rho ) )</code></pre>
+<pre><code>## [1] 2</code></pre>
+<p>The action that minimises <span class="math inline">\(\rho(\pi_{\Theta},a)\)</span> is <span class="math inline">\(a_2\)</span> – as can be seen, the probability mass for <span class="math inline">\(\theta_2\)</span> and <span class="math inline">\(\theta_3\)</span> (and the associated losses) is driving the decision to intervene i.e. be cautious.</p>
+<p>We can continue introducing more and more granularity in quantising the posterior predictions <span class="math inline">\(\pi_{F}(Y|x)\)</span> to arrive at mappings to states <span class="math inline">\(\Theta\)</span> and then specifying individual losses in the corresponding rows of the loss matrix. Instead, we’ll specify a <strong>loss function</strong> (although for coding convenience, we’ll continue with a matrix representation).</p>
+<pre class="r"><code>Sigmoid &lt;- function( x, A, B, m, s ) {
+  # x = vector of values
+  # A = height of sigmoid
+  # B = translation on y axis
+  # m = value of x for which Sigmoid() = half max value
+  # s = steepness of linear component
+  exp.x &lt;- exp( -(x-m)/s )
+  return(
+    ( A + B * (1+exp.x) ) / (1+exp.x)
+  )
+}
+
+
+# plots to compare the quantised states to a more fine-grained version
+pdf.Y1 &lt;- pdfFromSamples(0, 1, delta= 1/50, samples)
+pdf.plot.Y1 &lt;- ggplot( pdf.Y1, aes( x = mids, y = P ) ) + 
+  geom_col( fill = &quot;#fa9fb5&quot; ) + 
+  xlab(TeX(&quot;$\\theta&quot;)) +
+  ylab(TeX(&#39;$\\pi(\\theta)&#39;)) +
+  basictheme
+
+pdf.Y2 &lt;- pdfFromSamples(0, 1, delta= 1/3, samples)
+pdf.Y2$Theta &lt;- factor(c(&quot;theta1&quot;,&quot;theta2&quot;,&quot;theta3&quot;))
+pdf.plot.Y2 &lt;- ggplot( pdf.Y2, aes( x = Theta, y = P ) ) + 
+  geom_col( fill = &quot;#fa9fb5&quot; ) + 
+  scale_x_discrete(labels = pdf.Y2$theta ) +
+  xlab(TeX(&quot;$\\theta&quot;)) +
+  ylab(TeX(&#39;$\\pi(\\theta)&#39;)) +
+  basictheme
+
+# loss functions for a1 and a2
+loss.fun.a1 &lt;- Sigmoid(pdf.Y1$mids, A = -1.0, B = 0, m = 0.5, s = 0.15 )
+loss.fun.a2 &lt;- Sigmoid(pdf.Y1$mids, A = 0.5, B = -0.5, m = 0.3, s = 0.08 )
+
+# build a tabular version of loss function
+loss.fun &lt;- data.frame( Theta = pdf.Y1$mids,
+                        L.a1 = loss.fun.a1,
+                        L.a2 = loss.fun.a2
+                        )
+
+# show the loss function and 3 state quantised loss matrix
+loss.fun.plot &lt;- ggplot( loss.fun, aes( x = Theta ) ) +
+  geom_line( aes( y = L.a1 ), colour = &quot;#fc8d59&quot;, size = 1) +
+  annotate( &quot;label&quot;, x = 0.9, y = -0.75, label = &quot;a1&quot; ) + 
+  geom_line( aes( y = L.a2 ), colour = &quot;#91bfdb&quot;, size = 1 ) + 
+  annotate( &quot;label&quot;, x = 0.9, y = -0.15, label = &quot;a2&quot; ) +
+  ylab(&quot;Loss&quot;) +
+  xlab(&quot;\nTheta&quot;) +
+  basictheme
+
+df.loss.matrix &lt;- data.frame( Theta = factor( c(&quot;theta1&quot;,&quot;theta2&quot;,&quot;theta3&quot;) ),
+                              L.a1 = loss.matrix[,1],
+                              L.a2 = loss.matrix[,2]
+                            )
+
+loss.matrix.plot &lt;- ggplot( df.loss.matrix ) +
+  geom_line( aes( x = Theta, y = L.a1, group = 1), 
+             colour = &quot;#fc8d59&quot;, size = 1) +
+  geom_point( aes( x = Theta, y = L.a1, group = 1), 
+             colour = &quot;#fc8d59&quot;, size = 4) +
+  annotate( &quot;label&quot;, 
+            x = 2.8, y = -0.7, label = &quot;a1&quot; ) + 
+  geom_line( aes( x = Theta, y = L.a2, group= 1), 
+             colour = &quot;#91bfdb&quot;, size = 1.5 ) + 
+  geom_point( aes( x = Theta, y = L.a2, group= 1), 
+             colour = &quot;#91bfdb&quot;, size = 4 ) + 
+  annotate( &quot;label&quot;, 
+            x = 2.8, y = -0.2, label = &quot;a2&quot; ) +
+  ylab(&quot;Loss&quot;) +
+  xlab(&quot;\nTheta&quot;) +
+  basictheme
+
+grid.arrange( pdf.plot.Y2, pdf.plot.Y1, 
+              loss.matrix.plot, loss.fun.plot, 
+              nrow = 2, ncol = 2 )</code></pre>
+<p><img src="/post/decisions-and-loss-functions/index_files/figure-html/unnamed-chunk-14-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<p>In the figure above, we show the three-state loss matrix underneath the distribution <span class="math inline">\(\pi_{\Theta}\)</span> (the lines are to emphasise the trend in losses as we proceed from likely negative through positive). On the right, a finer-grained representation of the distribution <span class="math inline">\(\pi_{\Theta} \approx \pi_{F}(Y|x)\)</span> with a sigmoid loss function over <span class="math inline">\(\Theta\)</span> interpolating between the points in the loss matrix at the extremes (negative, positive) and midpoint (equivocal). Now, we can effectively use the whole of the posterior <span class="math inline">\(\pi_{F}(Y|x)\)</span> more directly:</p>
+<pre class="r"><code># the loss function x probability
+pdf.Y1$L.a1 &lt;- pdf.Y1$P * loss.fun$L.a1
+pdf.Y1$L.a2 &lt;- pdf.Y1$P * loss.fun$L.a2
+
+# product of the posterior and loss function
+loss.fun.plot2 &lt;- ggplot( pdf.Y1, aes( x = mids ) ) +
+  geom_line( aes( y = L.a1 ), colour = &quot;#fc8d59&quot;, size = 1.5) +
+  #annotate( &quot;label&quot;, x = 0.9, y = -0.75, label = &quot;a1&quot; ) + 
+  geom_line( aes( y = L.a2 ), colour = &quot;#91bfdb&quot;, size = 1.5 ) + 
+  #annotate( &quot;label&quot;, x = 0.9, y = -0.15, label = &quot;a2&quot; ) +
+  ylab(&quot;Loss&quot;) +
+  xlab(&quot;\nTheta&quot;) + 
+  basictheme
+
+## The actual BEL
+# we need a matrix representation of the loss function
+loss.fun.matrix &lt;- as.matrix( loss.fun[,2:3] )
+colnames( loss.fun.matrix ) &lt;- c(&quot;a1&quot;,&quot;a2&quot;)
+
+# compute BEL for each action a:
+rho.A &lt;- data.frame( 
+  A = factor(c(&quot;a1&quot;,&quot;a2&quot;)),
+  rho = rep(NA,2)
+)
+
+# for each action
+for( j in 1:2 ) {
+  rho.A$rho[j] &lt;- BEL( j, pdf.Y1$P, loss.fun.matrix )
+}
+
+bel.plot &lt;- ggplot( rho.A, aes(x = A, y = rho) ) +
+  geom_col( fill = &quot;#d6604d&quot; ) + 
+  basictheme
+
+grid.arrange( pdf.plot.Y1, loss.fun.plot2, bel.plot, ncol = 2, nrow = 2)</code></pre>
+<p><img src="/post/decisions-and-loss-functions/index_files/figure-html/unnamed-chunk-15-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Above, the top-left panel shows a finer-grained distribution function <span class="math inline">\(\pi_{\Theta}\)</span> and the top-right panel shows the loss function for <span class="math inline">\(a_1\)</span> and <span class="math inline">\(a_2\)</span> weighted by <span class="math inline">\(\pi_{\Theta} \approx \pi_{F}(Y|x)\)</span> – rather than the <strong>sum</strong> for each action as in <span class="math inline">\(\rho(\theta, a)\)</span>. This exposes that the Bayesian expected loss of an action is the integral over states (equivalently, the sum for discrete distributions) of the product of the loss function for an action in a certain state and the probability of that state. The bottom-left panel shows the resulting BEL where, as expected, <span class="math inline">\(a2\)</span> minimises <span class="math inline">\(\rho(\theta,a)\)</span>.</p>
+</div>
+<div id="sec-further-reading" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> Further Reading</h1>
+<p>If I were to try this again (rather than trying to piece together an understanding from wikipedia), I would proceed in this order:</p>
+<ol style="list-style-type: decimal">
+<li>Start with <span class="citation">(<a href="#ref-savage1951theory" role="doc-biblioref">Savage 1951</a>)</span> for foundations/first principles and tutorial approach.</li>
+<li>First four chapters of <span class="citation">(<a href="#ref-berger1985statistical" role="doc-biblioref">Berger 1985</a>)</span> for a really clear exposition of the core ideas.</li>
+<li>For decision theory in point estimation from the perspective of sciences concerned with <strong>prediction</strong> and <strong>forecasting</strong>: <span class="citation">(<a href="#ref-gneiting2011making" role="doc-biblioref">Gneiting 2011</a>)</span> provides a comprehensive review</li>
+<li>Risk/decision theory for <strong>classification</strong> Chapter 2 of <span class="citation">(<a href="#ref-duda2012pattern" role="doc-biblioref">Duda, Hart, and Stork 2012</a>)</span> and Chapter 1.5 of <span class="citation">(<a href="#ref-bishop2006pattern" role="doc-biblioref">Bishop 2006</a>)</span>.<br />
+</li>
+<li>Foundations in Bayesian principles more generally: Chapter 2 and Appendix B of <span class="citation">(<a href="#ref-bernardo2009bayesian" role="doc-biblioref">Bernardo and Smith 2009</a>)</span></li>
+</ol>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-berger1985statistical" class="csl-entry">
+Berger, James O. 1985. <em>Statistical Decision Theory and Bayesian Analysis</em>. 2nd ed. Springer.
+</div>
+<div id="ref-bernardo2009bayesian" class="csl-entry">
+Bernardo, José M, and Adrian FM Smith. 2009. <em>Bayesian Theory</em>. Vol. 405. John Wiley &amp; Sons.
+</div>
+<div id="ref-bishop2006pattern" class="csl-entry">
+Bishop, Christopher M. 2006. <em>Pattern Recognition and Machine Learning</em>. Springer.
+</div>
+<div id="ref-duda2012pattern" class="csl-entry">
+Duda, Richard O, Peter E Hart, and David G Stork. 2012. <em>Pattern Classification</em>. John Wiley &amp; Sons.
+</div>
+<div id="ref-gneiting2011making" class="csl-entry">
+Gneiting, Tilmann. 2011. <span>“Making and Evaluating Point Forecasts.”</span> <em>Journal of the American Statistical Association</em> 106 (494): 746–62.
+</div>
+<div id="ref-savage1951theory" class="csl-entry">
+Savage, Leonard J. 1951. <span>“The Theory of Statistical Decision.”</span> <em>Journal of the American Statistical Association</em> 46 (253): 55–67.
+</div>
+</div>
+</div>
+
+    </div>
+
+    
+
+
+
+
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tag/posterior-distribution/">posterior distribution</a>
+  
+  <a class="badge badge-light" href="/tag/loss-functions/">loss functions</a>
+  
+  <a class="badge badge-light" href="/tag/risk/">risk</a>
+  
+  <a class="badge badge-light" href="/tag/decisions/">decisions</a>
+  
+</div>
+
+
+
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=/post/decisions-and-loss-functions/&amp;text=Decisions%20and%20Loss%20Functions%20-%20A%20more%20clinical%20focus" target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=/post/decisions-and-loss-functions/&amp;t=Decisions%20and%20Loss%20Functions%20-%20A%20more%20clinical%20focus" target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Decisions%20and%20Loss%20Functions%20-%20A%20more%20clinical%20focus&amp;body=/post/decisions-and-loss-functions/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=/post/decisions-and-loss-functions/&amp;title=Decisions%20and%20Loss%20Functions%20-%20A%20more%20clinical%20focus" target="_blank" rel="noopener" class="share-btn-linkedin">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="whatsapp://send?text=Decisions%20and%20Loss%20Functions%20-%20A%20more%20clinical%20focus%20/post/decisions-and-loss-functions/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=/post/decisions-and-loss-functions/&amp;title=Decisions%20and%20Loss%20Functions%20-%20A%20more%20clinical%20focus" target="_blank" rel="noopener" class="share-btn-weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  <div class="media author-card content-widget-hr">
+    
+      
+      <img class="avatar mr-3 avatar-circle" src="/author/dan-w-joyce/avatar_hu9239ca797fad516d0c82eef67fca2cab_38244_270x270_fill_q75_lanczos_center.jpg" alt="Dan W Joyce">
+    
+
+    <div class="media-body">
+      <h5 class="card-title">Dan W Joyce</h5>
+      
+      <p class="card-text">I’m interested in how principles from computation can be used to understand things like clinical state, trajectories and how to augment clinical decision making using data, multivariate statistics and (cautiously) AI and ML.</p>
+      <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="/#contact" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://twitter.com/dan_w_joyce" target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/danwjoyce" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.linkedin.com/in/dan-joyce-6870166b/" target="_blank" rel="noopener">
+        <i class="fab fa-linkedin"></i>
+      </a>
+    </li>
+  
+</ul>
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <div class="article-widget content-widget-hr">
+    <h3>Related</h3>
+    <ul>
+      
+      <li><a href="/post/loss-functions-and-posteriors/">Loss, Risk and Point Summaries of Posterior Distributions</a></li>
+      
+      <li><a href="/post/2021-05-23-sequential-triage/">Sequential Clinical Decision Making</a></li>
+      
+    </ul>
+  </div>
+  
+
+
+
+
+
+  </div>
+</article>
+  </div>
+
+  <div class="page-footer">
+    
+    
+    <div class="container">
+      <footer class="site-footer">
+
+  
+
+  
+
+  
+
+  
+  
+
+
+
+
+
+
+  <p class="powered-by">
+    
+    
+    
+      
+      
+      
+      
+      
+      
+      Published with <a href="https://wowchemy.com/?utm_campaign=poweredby" target="_blank" rel="noopener">Wowchemy</a> — the free, <a href="https://github.com/wowchemy/wowchemy-hugo-modules" target="_blank" rel="noopener">open source</a> website builder that empowers creators.
+    
+  </p>
+</footer>
+
+    </div>
+    
+  </div>
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/instant.page/5.1.0/instantpage.min.js" integrity="sha512-1+qUtKoh9XZW7j+6LhRMAyOrgSQKenQ4mluTR+cvxXjP1Z54RxZuzstR/H9kgPXQsVB8IW7DMDFUJpzLjvhGSQ==" crossorigin="anonymous"></script>
+
+      
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      
+
+      
+      
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/highlight.min.js" integrity="sha512-TDKKr+IvoqZnPzc3l35hdjpHD0m+b2EC2SrLEgKDRWpxf2rFCxemkgvJ5kfU48ip+Y+m2XVKyOCD85ybtlZDmw==" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/languages/r.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/languages/python.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/languages/latex.min.js"></script>
+        
+      
+
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.js" integrity="sha512-SeiQaaDh73yrb56sTW/RgVdi/mMqNeM2oBwubFHagc5BkixSpP1fvqF47mKzPGWYSSy4RwbBunrJBQ4Co8fRWA==" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+    
+      
+      <script id="search-hit-fuse-template" type="text/x-template">
+        <div class="search-hit" id="summary-{{key}}">
+          <div class="search-hit-content">
+            <div class="search-hit-name">
+              <a href="{{relpermalink}}">{{title}}</a>
+              <div class="article-metadata search-hit-type">{{type}}</div>
+              <p class="search-hit-description">{{snippet}}</p>
+            </div>
+          </div>
+        </div>
+      </script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+      
+    
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    <script src="/js/bootstrap.bundle.min.6aed84840afc03ab4d5750157f69c120.js"></script>
+
+    
+    
+      
+      
+      
+      
+      
+      
+      
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+      
+      
+    
+    
+    <script src="/en/js/wowchemy.min.71e713848164e269bc250f377042949d.js"></script>
+
+    
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+
+
+
+</body>
+</html>

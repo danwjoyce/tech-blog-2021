@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>dynamical systems | Dan W Joyce</title>
+    <link>/category/dynamical-systems/</link>
+      <atom:link href="/category/dynamical-systems/index.xml" rel="self" type="application/rss+xml" />
+    <description>dynamical systems</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Sun, 12 May 2019 18:00:00 +0100</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>dynamical systems</title>
+      <link>/category/dynamical-systems/</link>
+    </image>
+    
+    <item>
+      <title>Clinical State: Part One - Dynamical Systems</title>
+      <link>/post/2021-05-23-clinical-trajectories-pt-one/</link>
+      <pubDate>Sun, 12 May 2019 18:00:00 +0100</pubDate>
+      <guid>/post/2021-05-23-clinical-trajectories-pt-one/</guid>
+      <description>
+&lt;script src=&#34;/post/2021-05-23-clinical-trajectories-pt-one/index_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/post/2021-05-23-clinical-trajectories-pt-one/index_files/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;/post/2021-05-23-clinical-trajectories-pt-one/index_files/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+
+
+&lt;p&gt;In this series of blogposts, we look at some models of clinical state. The motivation is to document exploratory work with a colleague (Nick Meyer, who runs the &lt;a href=&#34;https://sleepsight.org/&#34;&gt;SleepSight&lt;/a&gt; study) as we try and apply some theoretical ideas – for example &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-nelson2017moving&#34; role=&#34;doc-biblioref&#34;&gt;Nelson et al. 2017&lt;/a&gt;; &lt;a href=&#34;#ref-scheffer2009early&#34; role=&#34;doc-biblioref&#34;&gt;Scheffer et al. 2009&lt;/a&gt;)&lt;/span&gt; – to ‘real-life’ data. This problem is interesting because the psychiatric literature more often than not uses an aggregate measure of either state or trajectory, and sometimes, there is no distinction made between the person’s clinical state, a measurement of this state and an ‘outcome.’ As examples, most will be familiar with measuring the total (aggregate) score over some scale or instrument (e.g. HAMD in depression, PANSS in psychotic disorders). Often, we measure this at two time-points – such as before and after treatment – and describe the outcome as a change in this aggregated score. Sometimes, we plot a time-series of these total scores, and call this a trajectory. However, this results in a loss of information (see &lt;a href=&#34;http://www.danwjoyce.com/clinical-state-models&#34;&gt;here&lt;/a&gt;) and is driven by the requirement to be compatible with standard (or perhaps more accurately, off-the-shelf) procedures for analysing such data (i.e. defining a discrete ‘response’ / ‘no-response’ univariate outcome for investigating the efficacy/effectiveness of an intervention).&lt;/p&gt;
+&lt;div id=&#34;basics&#34; class=&#34;section level1&#34; number=&#34;1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;1&lt;/span&gt; Basics&lt;/h1&gt;
+&lt;p&gt;Throughout, we will assume that there are measurements of clinical state, obtained by some instrument, usually with some noise added. Further, for the purposes of this post, we assume that there is some latent process being measured by these instruments and we use clinical symptoms as a concrete example (but the principles generalise to anything that can be measured and taken to represent state). For pedagogical reasons, the easiest example is to consider just two dimensions - for example, in psychosis, we might measure the positive and negative symptom burden.&lt;/p&gt;
+&lt;p&gt;To begin, take a time-ordered set of measurements for positive (&lt;span class=&#34;math inline&#34;&gt;\(P\)&lt;/span&gt;) and negative (&lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt;) symptoms respectively:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\begin{aligned}
+P &amp;amp;= (29,24,17, \ldots, 12, 11) \\
+N &amp;amp;= (26,24,19, \ldots, 22, 25)
+\end{aligned}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Graphically, this looks like:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-05-23-clinical-trajectories-pt-one/index_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Individually, we can see that positive symptoms generally decrease over time, but the negative symptoms ‘oscillate.’ Next we define a native &lt;strong&gt;state space&lt;/strong&gt; where instead of treating the two sequences as independent, we form a vector &lt;span class=&#34;math inline&#34;&gt;\(x(t) = (p_t, n_t)\)&lt;/span&gt; with &lt;span class=&#34;math inline&#34;&gt;\(p_t \in P\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(n_t \in N\)&lt;/span&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\begin{aligned}
+x(t) &amp;amp;= \big[ (29,26), (24,24), (17,19), \ldots,(12,22), (11,25)   \big]
+\end{aligned}
+\]&lt;/span&gt;
+So, if we want the state at &lt;span class=&#34;math inline&#34;&gt;\(t=7\)&lt;/span&gt; we get &lt;span class=&#34;math inline&#34;&gt;\(x(7) = (12,22)\)&lt;/span&gt; and similarly, &lt;span class=&#34;math inline&#34;&gt;\(x(2) = (24,24)\)&lt;/span&gt;. Each of these states is naturally a point in two dimensions, visualised as a plane:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-05-23-clinical-trajectories-pt-one/index_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In this example, the state space is a finite plane (two-dimensional) which contains &lt;em&gt;all possible&lt;/em&gt; configurations of &lt;span class=&#34;math inline&#34;&gt;\((P,N)\)&lt;/span&gt;, and a single time-ordered sequence of states (numbered 1 through 8, in orange) shows the state &lt;strong&gt;trejectory&lt;/strong&gt; for a single person. We can equip this state space with a &lt;a href=&#34;https://en.wikipedia.org/wiki/Metric_space&#34;&gt;metric&lt;/a&gt; that imports mathematical tools for notions such as the distance between two states. This means we can model the patient’s trajectory in this &lt;strong&gt;native&lt;/strong&gt; state space (preserving information) and only when we absolutely need to, apply mathematical tools to reduce this multi-dimensional representation to a convenient form that enables us to e.g. inspect change or build statistical models.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;dynamical-system-approach&#34; class=&#34;section level1&#34; number=&#34;2&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;2&lt;/span&gt; Dynamical System Approach&lt;/h1&gt;
+&lt;p&gt;As a starting point, &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-nelson2017moving&#34; role=&#34;doc-biblioref&#34;&gt;Nelson et al. 2017&lt;/a&gt;)&lt;/span&gt; consider and survey some theoretical proposals for moving toward dynamic (instead of static) models of the &lt;em&gt;onset&lt;/em&gt; of disorders – notably, they review dynamical systems and network models. Similarly, &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-mason2017mood&#34; role=&#34;doc-biblioref&#34;&gt;Mason, Eldar, and Rutledge 2017&lt;/a&gt;)&lt;/span&gt; explore a model of how mood oscillations occur in bipolar disorder and their proposal is superifically similar to a dynamical system with periodic behaviour. The influential work of &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-scheffer2009early&#34; role=&#34;doc-biblioref&#34;&gt;Scheffer et al. 2009&lt;/a&gt;)&lt;/span&gt; is also relevant: if one can identify a latent process with a dynamical systems formulation, then a whole theory of &lt;strong&gt;critical transitions&lt;/strong&gt; can be mobilised to explain how perturbations from the system’s equilibirum can ‘break’ the inherent stability of a system leading to a catastrophic change (i.e. relapse). Our starting point here is how &lt;em&gt;operationalize&lt;/em&gt; these ideas.&lt;/p&gt;
+&lt;p&gt;Here, we assume that underlying the measured clinical state is some process which behaves according to a putative model. The example used here, and in the literature, is of &lt;strong&gt;damped oscillators&lt;/strong&gt;. A physical analogy helps: imagine a mass attached to a fixed point by a spring. At rest, this system is in equilibrium. If the mass is pulled or pushed (displaced) by a certain amount, the system is moved from equilibrium and will ‘bounce’ up and down with a frequency and amplitude determined by the amount of displacement, the ‘stiffness’ of the spring and any ‘damping’ introduced by the viscosity of the medium. This has been proposed as a model of e.g. mood dysregulation &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-odgers2009capturing&#34; role=&#34;doc-biblioref&#34;&gt;Odgers et al. 2009&lt;/a&gt;)&lt;/span&gt; and symptom trajectory is modelled using a &lt;a href=&#34;https://en.wikipedia.org/wiki/Harmonic_oscillator&#34;&gt;damped oscillator&lt;/a&gt; that is fit to data using for example, regression &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-boker2002method&#34; role=&#34;doc-biblioref&#34;&gt;Boker and Nesselroade 2002&lt;/a&gt;)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;To begin, we denote the clinical state at time &lt;span class=&#34;math inline&#34;&gt;\(t\)&lt;/span&gt; by &lt;span class=&#34;math inline&#34;&gt;\(x(t)\)&lt;/span&gt; (note this is a uni- rather than multi-variate state representation, so for example, consider only the ‘negative symptoms’ plot above). For more discussion of models of damped oscillators, see &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-hayek2003&#34; role=&#34;doc-biblioref&#34;&gt;Hayek 2003&lt;/a&gt;)&lt;/span&gt; for an applied physical systems discussion, and for a helpful mathematical tutorial, &lt;a href=&#34;%7Bhttps://www.jirka.org/diffyqs/%7D&#34;&gt;Chapter 2.4&lt;/a&gt; of &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-Lebl2019diff&#34; role=&#34;doc-biblioref&#34;&gt;Lebl 2019&lt;/a&gt;)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;A general damped oscillator is described by a linear second-order ordinary differential equation (ODE):&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\frac{d^2x}{dt^2} - \zeta \frac{dx}{dt} - \eta x = 0
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;With coefficient &lt;span class=&#34;math inline&#34;&gt;\(\zeta\)&lt;/span&gt; modelling the ‘decay’ of the oscillations, and &lt;span class=&#34;math inline&#34;&gt;\(\eta\)&lt;/span&gt; describing the ‘frequency’ of oscillations.&lt;/p&gt;
+&lt;p&gt;To simplify the presentation, we use ‘dot’ notation where &lt;span class=&#34;math inline&#34;&gt;\(\ddot{x}\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\dot{x}\)&lt;/span&gt; are the second and first derivatives respectively:
+&lt;span class=&#34;math display&#34;&gt;\[
+\ddot{x}(t) - \zeta \dot{x}(t) - \eta x(t) = 0
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Rearranging for the second-order term:
+&lt;span class=&#34;math display&#34;&gt;\[
+\ddot{x}(t) = \zeta \dot{x}(t) + \eta x(t)
+\]&lt;/span&gt;
+Generally, we only have access to numerical data that we suppose is generated from an underlying damped oscillator process; so we use &lt;a href=&#34;https://en.wikipedia.org/wiki/Numerical_differentiation&#34;&gt;numerical differentiation&lt;/a&gt; to obtain the &lt;a href=&#34;https://en.wikipedia.org/wiki/Linear_approximation&#34;&gt;locally-linear&lt;/a&gt; approximation to the derivatives of &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;To use ODEs as our model, we need to be able to solve them (for example, for fitting and then reconstructing the model for a given set of data). To use off-the-shelf ODE solvers, we need to convert the second order ODE into two first-order equations by writing substitutions:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\begin{aligned}
+  y_1 &amp;amp;= x \\
+  y_2 &amp;amp;= \dot{x} = \dot{y_1} \\
+\end{aligned}
+\]&lt;/span&gt;
+So :
+&lt;span class=&#34;math display&#34;&gt;\[
+\begin{aligned}
+  \dot{y_2} &amp;amp;= \zeta y_2 + \eta y_1 \\
+  \dot{y_1} &amp;amp;= y_2
+\end{aligned}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;The analytic solution for this system is well understood and depends on the parameters &lt;span class=&#34;math inline&#34;&gt;\(\zeta\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\eta\)&lt;/span&gt; – there are three solutions for &lt;span class=&#34;math inline&#34;&gt;\(x(t)\)&lt;/span&gt; depending on whether the system is damped, under-damped or critically damped – &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-Lebl2019diff&#34; role=&#34;doc-biblioref&#34;&gt;Lebl 2019&lt;/a&gt;)&lt;/span&gt; gives a helpful tutorial. However, as we won’t know the parameters in advance, we need to use numerical methods (an ODE solver) reassured that we can plug in any set of parameters to construct and visualise &lt;span class=&#34;math inline&#34;&gt;\(x(t)\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;simulated-example&#34; class=&#34;section level1&#34; number=&#34;3&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;3&lt;/span&gt; Simulated Example&lt;/h1&gt;
+&lt;p&gt;We generate some simulated data with the following parameters:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class=&#34;math inline&#34;&gt;\(\zeta\)&lt;/span&gt; = -0.1 (the ‘damping’ or ‘amplification’)&lt;/li&gt;
+&lt;li&gt;&lt;span class=&#34;math inline&#34;&gt;\(\eta\)&lt;/span&gt; = -0.5 (the ‘frequency’ of oscillations)&lt;/li&gt;
+&lt;li&gt;initial displacement (‘baseline’) value &lt;span class=&#34;math inline&#34;&gt;\(x(0)\)&lt;/span&gt; = 5 and initial ‘velocity’ &lt;span class=&#34;math inline&#34;&gt;\(\dot{x}(0)\)&lt;/span&gt; = -2.5&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-05-23-clinical-trajectories-pt-one/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;To emphasise how the system looks when amplifying (rather than damping) the oscilations, we invert the sign: &lt;span class=&#34;math inline&#34;&gt;\(\zeta\)&lt;/span&gt; = 0.1 resulting in:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-05-23-clinical-trajectories-pt-one/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;model-fitting&#34; class=&#34;section level1&#34; number=&#34;4&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;4&lt;/span&gt; Model Fitting&lt;/h1&gt;
+&lt;p&gt;The modelling approach from &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-boker2002method&#34; role=&#34;doc-biblioref&#34;&gt;Boker and Nesselroade 2002&lt;/a&gt;)&lt;/span&gt; – used in &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-odgers2009capturing&#34; role=&#34;doc-biblioref&#34;&gt;Odgers et al. 2009&lt;/a&gt;)&lt;/span&gt; – is to treat &lt;span class=&#34;math inline&#34;&gt;\(\ddot{x}\)&lt;/span&gt; as the dependent variable in a linear regression model with independent variables &lt;span class=&#34;math inline&#34;&gt;\(\ddot{x}\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;. We note that &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-boker2002method&#34; role=&#34;doc-biblioref&#34;&gt;Boker and Nesselroade 2002&lt;/a&gt;)&lt;/span&gt; intends for their method to fit a population-level model – that is, extracting a common &lt;span class=&#34;math inline&#34;&gt;\(\zeta\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\eta\)&lt;/span&gt; for a group of people’s trajectories such that “When a stable interrelationship between a variable and its own derivatives occurs, the variable is said to exhibit intrinsic dynamics” &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-boker2002method&#34; role=&#34;doc-biblioref&#34;&gt;Boker and Nesselroade 2002&lt;/a&gt;)&lt;/span&gt;. We’ll only consider fitting to a single individual here.&lt;/p&gt;
+&lt;p&gt;The steps are as follows.&lt;/p&gt;
+&lt;div id=&#34;compute-gradients&#34; class=&#34;section level2&#34; number=&#34;4.1&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.1&lt;/span&gt; Compute Gradients&lt;/h2&gt;
+&lt;p&gt;Using numerical approximation, and the simulated damped oscillator data, the columns are &lt;code&gt;x&lt;/code&gt; = &lt;span class=&#34;math inline&#34;&gt;\(x(t)\)&lt;/span&gt;, &lt;code&gt;dx1&lt;/code&gt; = &lt;span class=&#34;math inline&#34;&gt;\(\dot{x}\)&lt;/span&gt; and &lt;code&gt;dx2&lt;/code&gt; = &lt;span class=&#34;math inline&#34;&gt;\(\ddot{x}\)&lt;/span&gt;:&lt;/p&gt;
+&lt;table class=&#34;table table-striped&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Time
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+x
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+dx1
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+dx2
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+5.00000
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-3.34588
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.21820
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.65412
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-3.56407
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.11456
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+3
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-2.12815
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-3.11675
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.13715
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+4
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-4.57938
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-1.28977
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2.03432
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+5
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-4.70768
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.95190
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.91782
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+6
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-2.67558
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2.54586
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.93726
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+7
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.38405
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2.82642
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.37767
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+8
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2.97725
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1.79053
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-1.39512
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div id=&#34;estimate-parameters&#34; class=&#34;section level2&#34; number=&#34;4.2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.2&lt;/span&gt; Estimate Parameters&lt;/h2&gt;
+&lt;p&gt;We can quickly and easily estimate using the ‘regression’ approach, which will be an ordinary least squares solution. The resulting point estimates &lt;span class=&#34;math inline&#34;&gt;\(\hat{\zeta}\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\hat{\eta}\)&lt;/span&gt;, are displayed below, alongside the actual parameters (i.e. for the simulated damped oscillator above):&lt;/p&gt;
+&lt;table class=&#34;table table-striped&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Estimated
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Actual
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Zeta
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.151
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.1
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Eta
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.381
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+-0.5
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div id=&#34;reconstruct-time-series&#34; class=&#34;section level2&#34; number=&#34;4.3&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.3&lt;/span&gt; Reconstruct Time Series&lt;/h2&gt;
+&lt;p&gt;The final step is to visualise the resulting model by numerically integrating the ODEs again, but this time, using the estimated &lt;span class=&#34;math inline&#34;&gt;\(\hat{\zeta}\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\hat{\eta}\)&lt;/span&gt; to ‘reconstruct’ the time series &lt;span class=&#34;math inline&#34;&gt;\(\hat{x}(t)\)&lt;/span&gt; and compare with the original:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-05-23-clinical-trajectories-pt-one/index_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The time series resulting from the estimated model parameters (shown in red) is predictably different – and there are at least two systematic reasons for this:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;The numerical approximation of the true derivatives is systematically over or under-estimating the ‘true’ derivatives&lt;/li&gt;
+&lt;li&gt;These errors are propogated further by obtaining (essentially) an ordinary-least-squares point estimate of the parameters from the data&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The estimates &lt;span class=&#34;math inline&#34;&gt;\(\hat{\zeta}\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\hat{\eta}\)&lt;/span&gt; are derived from these numerical derivatives, so unsuprisingly they are close (but significantly) different from the ‘theoretical’ or known &lt;span class=&#34;math inline&#34;&gt;\(\zeta\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\eta\)&lt;/span&gt;. We can quantify the mean square error between the reconstructed and original time series:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\text{MSE} \left( \hat{x}(t), x(t) \right) = \frac{1}{N} \sum_{t}  \big[ \hat{x}(t)-x(t) \big]^2
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;where &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; is the number of time points in the original &lt;span class=&#34;math inline&#34;&gt;\(x(t)\)&lt;/span&gt;. The MSE is then 0.9552. This is useful as a baseline for what follows.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;estimating-parameters-by-non-linear-least-squares-optimisation&#34; class=&#34;section level1&#34; number=&#34;5&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;5&lt;/span&gt; Estimating Parameters by Non-Linear Least Squares Optimisation&lt;/h1&gt;
+&lt;p&gt;Using an ordinary least squares solution for &lt;span class=&#34;math inline&#34;&gt;\(\ddot{x}(t) \sim \dot{x}(t) + x(t)\)&lt;/span&gt; – we obtained a relatively poor estimate for &lt;span class=&#34;math inline&#34;&gt;\(\hat{\zeta}\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\hat{\eta}\)&lt;/span&gt;, and this was reflected in the MSE for the reconstructed (versus original) time series. A more traditional method would be to use a non-linear &lt;a href=&#34;https://en.wikipedia.org/wiki/Optimization_problem&#34;&gt;optimisation algorithm&lt;/a&gt; to search the parameter space of &lt;span class=&#34;math inline&#34;&gt;\((\zeta, \eta)\)&lt;/span&gt;, so we try using the &lt;a href=&#34;https://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm&#34;&gt;Levenberg-Marquardt&lt;/a&gt; (LM) method. This method finds an estimate for &lt;span class=&#34;math inline&#34;&gt;\((\hat{\zeta}, \hat{\eta})\)&lt;/span&gt; by minimising an &lt;a href=&#34;https://en.wikipedia.org/wiki/Loss_function&#34;&gt;objective function&lt;/a&gt;, which in our case, are the values of the parameters that minimise the sum of squares of the deviations (essentially, the MSE). Like many optimisation methods, we run the risk of locating local (rather than global) minimum – that is, an estimate of &lt;span class=&#34;math inline&#34;&gt;\((\hat{\zeta}, \hat{\eta})\)&lt;/span&gt; which minimises the MSE, but where if we were to ‘explore’ the surface of the MSE over a broader range of parameters values, a better (more global) minimum might be found.&lt;/p&gt;
+&lt;p&gt;The LM algorithm is iterative, proceding by gradually refining the estimates &lt;span class=&#34;math inline&#34;&gt;\((\hat{\zeta}, \hat{\eta})\)&lt;/span&gt; from an initial, user specified ‘first estimate.’ If this first “guess” is close to the global minimum the algorithm is more likely to converge to the global solution. It therefore makes sense to use domain knowledge to establish a plausible starting point for the LM search. In our case, we will start the search by initialising the parameter estimate to be negative real numbers which corresponds to our expectation that we will be observing a damped (rather than amplifying) oscillator.&lt;/p&gt;
+&lt;p&gt;As we only have two parameters to estimate, we can manually evaluate the MSE by systematically varying &lt;span class=&#34;math inline&#34;&gt;\((\hat{\zeta}, \hat{\eta})\)&lt;/span&gt; over a coarse grid of values to get an idea of what the error surface looks like, and further, we can then extract the best estimate (as we will have evaluated the error at each combination of &lt;span class=&#34;math inline&#34;&gt;\((\hat{\zeta}, \hat{\eta})\)&lt;/span&gt;).&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-05-23-clinical-trajectories-pt-one/index_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;110%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;On the left, we see that the error surface on a coarse grid over [-1,0] in steps of 0.05 for &lt;span class=&#34;math inline&#34;&gt;\((\zeta,\eta)\)&lt;/span&gt; shows that the error is very large around &lt;span class=&#34;math inline&#34;&gt;\((0,0)\)&lt;/span&gt; but otherwise appears ‘flat.’ The white lines and dot show the parameter values for the minimum MSE – but at this coarse resolution, we can not see the shape of the error surface near the optimum solution. The panel on the right shows the error surface ‘zoomed’ for &lt;span class=&#34;math inline&#34;&gt;\(\hat{\zeta} \in [-0.15,-0.05]\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\hat{\eta} \in [-0.55,-0.45]\)&lt;/span&gt;, (note the difference in the MSE scale) and we can see that best esimates are &lt;span class=&#34;math inline&#34;&gt;\(\hat{\zeta} = -0.1\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\hat{\eta} = -0.5\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;This brute-force method gives us the correct answer, and allows a visualisation of the error surface we expect the LM algorithm to search iteratively. We now compare with the LM solution setting our “initial guess” to &lt;span class=&#34;math inline&#34;&gt;\(\hat{\zeta} = -1\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\hat{\eta} = -1\)&lt;/span&gt; which corresponds to the bottom-right of the parameter space above.&lt;/p&gt;
+&lt;p&gt;And find:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class=&#34;math inline&#34;&gt;\(\hat{\zeta}\)&lt;/span&gt; = -0.1&lt;/li&gt;
+&lt;li&gt;&lt;span class=&#34;math inline&#34;&gt;\(\hat{\eta}\)&lt;/span&gt; = -0.5&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Finally, we reconstruct the original time-series to compare:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-05-23-clinical-trajectories-pt-one/index_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;A much better fit, with an MSE approaching 0.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;some-real-data&#34; class=&#34;section level1&#34; number=&#34;6&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;6&lt;/span&gt; Some Real Data&lt;/h1&gt;
+&lt;p&gt;So far, we’ve been using ‘ideal’ simulated data where there is no measurement error and the underlying (hypothetical) damped oscillating process is in a one-one correspondence with the time series &lt;span class=&#34;math inline&#34;&gt;\(x(t)\)&lt;/span&gt;. Here, we use some data on daily self-reported symptoms from Nick Meyer’s &lt;a href=&#34;https://sleepsight.org/&#34;&gt;SleepSight&lt;/a&gt; study. Nick’s data is a natural fit for the state-space models espoused at the start, but to apply a dynamical system model, we need to start small (with one variable). We pick one symptom (self-reported sleep duration) for an examplar participant, and then scale and center the data, before detrending (i.e. removing any linear ‘drift’ in the time series). We then add a &lt;a href=&#34;https://en.wikipedia.org/wiki/Local_regression&#34;&gt;lowess&lt;/a&gt; smoother (shown in red) to try and expose any underlying pattern:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-05-23-clinical-trajectories-pt-one/index_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Note the somewhat periodic behaviour but there is no clear frequency or progression of damping of oscillations, so it is unlikely that a ‘pure’ damped oscillator will fit. Nonetheless, we use the LM method to try and fit a damped oscillator:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-05-23-clinical-trajectories-pt-one/index_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Resulting in a poorly fitting model. One way to understand this is that to look at the &lt;strong&gt;phase plane&lt;/strong&gt; for the system. First, take our first simulated oscillator:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-05-23-clinical-trajectories-pt-one/index_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;
+On the left, we have &lt;span class=&#34;math inline&#34;&gt;\(x(t)\)&lt;/span&gt; on the vertical axis as time progresses. On the right, we plot &lt;span class=&#34;math inline&#34;&gt;\(\dot{x}(t)\)&lt;/span&gt; on the vertical and &lt;span class=&#34;math inline&#34;&gt;\(x(t)\)&lt;/span&gt; on the horizontal axes (using the ‘mass on a spring’ analogy, we are looking at the relationship between the velocity and displacement). The purple line is our original oscillator, and the orange line the &lt;em&gt;same&lt;/em&gt; system (&lt;span class=&#34;math inline&#34;&gt;\(\zeta\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\eta\)&lt;/span&gt;), but with &lt;em&gt;different&lt;/em&gt; initial values (i.e. the initial state is &lt;span class=&#34;math inline&#34;&gt;\(x(t) = 2\)&lt;/span&gt; with initial ‘velocity’ &lt;span class=&#34;math inline&#34;&gt;\(\dot{x}(t) = 1.5\)&lt;/span&gt;). The right panel shows the phase plane – the evolution of the &lt;span class=&#34;math inline&#34;&gt;\(x(t)\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\dot{x}(t)\)&lt;/span&gt; over time. Notice how (despite different initial values) the two damped oscillators converge to a stable &lt;a href=&#34;https://en.wikipedia.org/wiki/Attractor&#34;&gt;attractor&lt;/a&gt; in the middle (which corresponds to the equilibrium state of the system around as &lt;span class=&#34;math inline&#34;&gt;\(t \rightarrow 100\)&lt;/span&gt;).&lt;/p&gt;
+&lt;p&gt;If we look at the behaviour of the real (sleep duration) data using the numerical derivatives:
+&lt;img src=&#34;/post/2021-05-23-clinical-trajectories-pt-one/index_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The colour gradient shows time so we can compare the left and right panels: we can see that while the system tends towards a region around &lt;span class=&#34;math inline&#34;&gt;\(x(t) = 0.2\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\dot{x}(t) = 0\)&lt;/span&gt;, it is not stable and the trajectory diverges rather than converging (in contrast to the simulated damped oscillator). The difference in behaviours shown by the phase planes for the real data and the idealised, simulated data (from an actual damped oscillator) tell us why the model fit was so poor.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;directions&#34; class=&#34;section level1&#34; number=&#34;7&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;7&lt;/span&gt; Directions&lt;/h1&gt;
+&lt;p&gt;The dynamical systems framework is appealing because it provides a model for a latent process which might underly measured / observed data. It requires a model (e.g. a damped oscillator) and a method to fit the data. If the model fits the data, we then import a whole theory that enables us to understand and test the qualitative properties of the model – for example, in terms of stability, attractors and critical transitions &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-scheffer2009early&#34; role=&#34;doc-biblioref&#34;&gt;Scheffer et al. 2009&lt;/a&gt;)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;The examples used in this post are all linear systems but there is evidently more complexity to the real data we examined – bluntly, a single damped oscillator cannot model the dynamics of self-reported sleep in our application (and it might be naive to assume that it would). As we alluded to at the start, we would prefer to treat individual variables as components of a larger system – and we have not explored this here (in part, because systems of &lt;em&gt;coupled&lt;/em&gt; oscillators require a more sophisticated analysis), instead focusing on principles and how they apply to data.&lt;/p&gt;
+&lt;p&gt;In future posts, we’ll try different approaches that inherit the ideas of state spaces, but attempt to model them without such strong assumptions about the dynamics.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;references&#34; class=&#34;section level1 unnumbered&#34;&gt;
+&lt;h1&gt;References&lt;/h1&gt;
+&lt;div id=&#34;refs&#34; class=&#34;references csl-bib-body hanging-indent&#34;&gt;
+&lt;div id=&#34;ref-boker2002method&#34; class=&#34;csl-entry&#34;&gt;
+Boker, Steven M, and John R Nesselroade. 2002. &lt;span&gt;“A Method for Modeling the Intrinsic Dynamics of Intraindividual Variability: Recovering the Parameters of Simulated Oscillators in Multi-Wave Panel Data.”&lt;/span&gt; &lt;em&gt;Multivariate Behavioral Research&lt;/em&gt; 37 (1): 127–60.
+&lt;/div&gt;
+&lt;div id=&#34;ref-hayek2003&#34; class=&#34;csl-entry&#34;&gt;
+Hayek, Sabih I. 2003. &lt;span&gt;“Mechanical Vibration and Damping.”&lt;/span&gt; In &lt;em&gt;Digital Encyclopedia of Applied Physics&lt;/em&gt;. &lt;a href=&#34;https://doi.org/10.1002/3527600434.eap231&#34;&gt;https://doi.org/10.1002/3527600434.eap231&lt;/a&gt;.
+&lt;/div&gt;
+&lt;div id=&#34;ref-Lebl2019diff&#34; class=&#34;csl-entry&#34;&gt;
+Lebl, Jiří. 2019. &lt;em&gt;Notes on Diffy Qs&lt;/em&gt;. &lt;a href=&#34;https://www.jirka.org/diffyqs/&#34;&gt;https://www.jirka.org/diffyqs/&lt;/a&gt;.
+&lt;/div&gt;
+&lt;div id=&#34;ref-mason2017mood&#34; class=&#34;csl-entry&#34;&gt;
+Mason, Liam, Eran Eldar, and Robb B Rutledge. 2017. &lt;span&gt;“Mood Instability and Reward Dysregulation—a Neurocomputational Model of Bipolar Disorder.”&lt;/span&gt; &lt;em&gt;JAMA Psychiatry&lt;/em&gt; 74 (12): 1275–76.
+&lt;/div&gt;
+&lt;div id=&#34;ref-nelson2017moving&#34; class=&#34;csl-entry&#34;&gt;
+Nelson, Barnaby, Patrick D McGorry, Marieke Wichers, Johanna TW Wigman, and Jessica A Hartmann. 2017. &lt;span&gt;“Moving from Static to Dynamic Models of the Onset of Mental Disorder: A Review.”&lt;/span&gt; &lt;em&gt;JAMA Psychiatry&lt;/em&gt; 74 (5): 528–34.
+&lt;/div&gt;
+&lt;div id=&#34;ref-odgers2009capturing&#34; class=&#34;csl-entry&#34;&gt;
+Odgers, Candice L, Edward P Mulvey, Jennifer L Skeem, William Gardner, Charles W Lidz, and Carol Schubert. 2009. &lt;span&gt;“Capturing the Ebb and Flow of Psychiatric Symptoms with Dynamical Systems Models.”&lt;/span&gt; &lt;em&gt;American Journal of Psychiatry&lt;/em&gt; 166 (5): 575–82.
+&lt;/div&gt;
+&lt;div id=&#34;ref-scheffer2009early&#34; class=&#34;csl-entry&#34;&gt;
+Scheffer, Marten, Jordi Bascompte, William A Brock, Victor Brovkin, Stephen R Carpenter, Vasilis Dakos, Hermann Held, Egbert H Van Nes, Max Rietkerk, and George Sugihara. 2009. &lt;span&gt;“Early-Warning Signals for Critical Transitions.”&lt;/span&gt; &lt;em&gt;Nature&lt;/em&gt; 461 (7260): 53.
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

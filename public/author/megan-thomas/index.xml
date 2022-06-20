@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Megan Thomas | Dan W Joyce</title>
+    <link>/author/megan-thomas/</link>
+      <atom:link href="/author/megan-thomas/index.xml" rel="self" type="application/rss+xml" />
+    <description>Megan Thomas</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Sat, 02 Jan 2021 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Megan Thomas</title>
+      <link>/author/megan-thomas/</link>
+    </image>
+    
+    <item>
+      <title>Cognitive performance in early, treatment-resistant psychosis patients: Could cognitive control play a role in persistent symptoms?</title>
+      <link>/publication/thomas-2021/</link>
+      <pubDate>Sat, 02 Jan 2021 00:00:00 +0000</pubDate>
+      <guid>/publication/thomas-2021/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

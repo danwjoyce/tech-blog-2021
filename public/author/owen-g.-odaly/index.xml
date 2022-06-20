@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Owen G. O&#39;Daly | Dan W Joyce</title>
+    <link>/author/owen-g.-odaly/</link>
+      <atom:link href="/author/owen-g.-odaly/index.xml" rel="self" type="application/rss+xml" />
+    <description>Owen G. O&#39;Daly</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Mon, 01 Sep 2014 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Owen G. O&#39;Daly</title>
+      <link>/author/owen-g.-odaly/</link>
+    </image>
+    
+    <item>
+      <title>Amphetamine sensitisation and memory in healthy human volunteers: a functional magnetic resonance imaging study.</title>
+      <link>/publication/odaly-amphetamine-2014-1/</link>
+      <pubDate>Mon, 01 Sep 2014 00:00:00 +0000</pubDate>
+      <guid>/publication/odaly-amphetamine-2014-1/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Amphetamine sensitization alters reward processing in the human striatum and amygdala.</title>
+      <link>/publication/odaly-amphetamine-2014/</link>
+      <pubDate>Wed, 01 Jan 2014 00:00:00 +0000</pubDate>
+      <guid>/publication/odaly-amphetamine-2014/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

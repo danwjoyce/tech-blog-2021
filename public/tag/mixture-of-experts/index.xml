@@ -1,0 +1,523 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>mixture of experts | Dan W Joyce</title>
+    <link>/tag/mixture-of-experts/</link>
+      <atom:link href="/tag/mixture-of-experts/index.xml" rel="self" type="application/rss+xml" />
+    <description>mixture of experts</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Mon, 16 May 2022 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>mixture of experts</title>
+      <link>/tag/mixture-of-experts/</link>
+    </image>
+    
+    <item>
+      <title>Three Heads are Better Than One</title>
+      <link>/post/wisdom-of-crowds/</link>
+      <pubDate>Mon, 16 May 2022 00:00:00 +0000</pubDate>
+      <guid>/post/wisdom-of-crowds/</guid>
+      <description>
+&lt;script src=&#34;/post/wisdom-of-crowds/index_files/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;/post/wisdom-of-crowds/index_files/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+
+
+&lt;div id=&#34;introduction&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;Multi-disciplinary teams (MDTs) assemble a group of healthcare professionals with the intention of mobilising different expertise to arrive at a collective decision or solution that is superior (or at least, no worse) than relying on a single individual. This is related to the &lt;a href=&#34;https://en.wikipedia.org/wiki/Wisdom_of_the_crowd&#34;&gt;wisdom of crowds&lt;/a&gt; and is not without controversy. But the question I’m interested in here is: can we &lt;strong&gt;model&lt;/strong&gt; and show that under certain circumstances, having more than one expert is better than a single individual?&lt;/p&gt;
+&lt;p&gt;The related theory can be found in &lt;a href=&#34;https://en.wikipedia.org/wiki/Condorcet%27s_jury_theorem&#34;&gt;jury theorems&lt;/a&gt; – albeit within a judicial framing – and the oldest result is Condorcet’s jury theorem dating back to 1785. Who knew.&lt;/p&gt;
+&lt;p&gt;In machine learning, mixture of experts (MoE) architectures and ensemble learning appeal to the same idea: by combining a collection of imperfect decisions, you can arrive at an “overall’’ better decision.&lt;/p&gt;
+&lt;p&gt;Some basics to get us started:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;a “jury” (or MDT) is a collection of individual voters, tasked with arriving at a decision on some issue and each having a &lt;strong&gt;competence&lt;/strong&gt; which is the probability they will vote “yes” (or “guilty” if you prefer), which we’ll call &lt;span class=&#34;math inline&#34;&gt;\(p\)&lt;/span&gt; and for now, we’ll assume all voters (MDT members) have equal competence. Naturally, if &lt;span class=&#34;math inline&#34;&gt;\(p = 0.5\)&lt;/span&gt; then each voter is no more useful than tossing a coin to arrive at a decision.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;the size of our MDT (jury) &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; will always be odd-numbered (3, 5, 7e …) to avoid tied voting&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Condorcet’s jury theorem&lt;/strong&gt; is:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If &lt;span class=&#34;math inline&#34;&gt;\(p &amp;gt; 0.5\)&lt;/span&gt; – each voter is more competent than chance – then increasing the size of the jury (MDT) increases the probability that the majority decision is correct. Further, as the size of the team increases, the probability of a correct majority decision tends to 1&lt;/li&gt;
+&lt;li&gt;For &lt;span class=&#34;math inline&#34;&gt;\(p \leq 0.5\)&lt;/span&gt; – voters’ competence is chance-level or worse – then increasing the size of the team results in a reduction in the probability of a majority correct decision and in these circumstance, the best team is just a single voter.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;related-literature&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Related Literature&lt;/h2&gt;
+&lt;p&gt;A readable introduction to the analysis and philosophy of jury theorems is given in &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-dietrich2019jury&#34; role=&#34;doc-biblioref&#34;&gt;Dietrich and Spiekermann 2019&lt;/a&gt;)&lt;/span&gt; which discusses the flaws and assumptions of the framework. A proof and connection to statistical hypothesis testing is given by &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-young1988condorcet&#34; role=&#34;doc-biblioref&#34;&gt;Young 1988&lt;/a&gt;)&lt;/span&gt;. For some extensions to the basic Condorcet jury theorem, &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-ladha1992condorcet&#34; role=&#34;doc-biblioref&#34;&gt;Ladha 1992&lt;/a&gt;)&lt;/span&gt; describes how to model voting without independent voter assumptions (i.e. correlated voting) and the relationship with free speech (a little outside the scope of this blog). Asymptotic results on designing juries with correlated voting are given in &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-kaniovski2011optimal&#34; role=&#34;doc-biblioref&#34;&gt;Kaniovski and Zaigraev 2011&lt;/a&gt;)&lt;/span&gt; – see also &lt;a href=&#34;https://en.wikipedia.org/wiki/Condorcet%27s_jury_theorem&#34;&gt;the wikipaedia page&lt;/a&gt; – but we will not rely on these here, rather we’ll use simulations to allow flexibility.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;tldr-yes-multiple-experts-win&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;TL;DR – Yes, Multiple Experts Win&lt;/h1&gt;
+&lt;p&gt;Let’s be explicit about the assumptions in the basic Condorcet model &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-dietrich2019jury&#34; role=&#34;doc-biblioref&#34;&gt;Dietrich and Spiekermann 2019&lt;/a&gt;)&lt;/span&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Voters are independent (that is, they do not influence one another; there is no “leader” directing the team)&lt;/li&gt;
+&lt;li&gt;All voters are equally competent and perform better than chance&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&#34;/post/wisdom-of-crowds/index_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;
+In the figure above, we can see that if the competence of voters is chance (&lt;span class=&#34;math inline&#34;&gt;\(p = 0.5\)&lt;/span&gt;) then increasing the number of voters has no effect. If the competence of voters is &lt;span class=&#34;math inline&#34;&gt;\(p &amp;lt; 0.5\)&lt;/span&gt;, adding voters makes the team’s probability of a correct majority decision &lt;strong&gt;worse&lt;/strong&gt;. And as Condorcet’s jury theorem describes, for voters with above-chance competence, the size of the team increase the probability of a correct majority decision.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mixed-competencies&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Mixed Competencies&lt;/h1&gt;
+&lt;p&gt;Not all members of a team will have the same competencies. If we keep the rest of the setup the same, but vary the composition (diversity) of the team allowing &lt;span class=&#34;math inline&#34;&gt;\(p_i\)&lt;/span&gt; to be the probability of voting “yes” for voted &lt;span class=&#34;math inline&#34;&gt;\(i\)&lt;/span&gt; – we have to resort to stochastic simulations. In the machine learning literature, there is some consensus that ``diversity’’ refers to agreement (similarity) between different team members’ output – in &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-kuncheva2003measures&#34; role=&#34;doc-biblioref&#34;&gt;Kuncheva and Whitaker 2003&lt;/a&gt;)&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;appendix-details&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Appendix &amp;amp; Details&lt;/h1&gt;
+&lt;div id=&#34;counting-voting-profiles&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Counting Voting Profiles&lt;/h2&gt;
+&lt;p&gt;Designate a jury or MDT (e.g. a group of experts) of &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; people (jurors, team mebers), each delivering a vote &lt;span class=&#34;math inline&#34;&gt;\(v_{i= \{1 \ldots N\}} \in \{0,1\}\)&lt;/span&gt; (e.g. innocent/guilty, no/yes to a decision).&lt;/p&gt;
+&lt;p&gt;Let &lt;span class=&#34;math inline&#34;&gt;\(\mathbf{V}^N\)&lt;/span&gt; be the set of all possible voting profiles for &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; jurors with size &lt;span class=&#34;math inline&#34;&gt;\(| \mathbf{V} | = 2^{N}\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;For example, with &lt;span class=&#34;math inline&#34;&gt;\(N = 3\)&lt;/span&gt; jurors, we have the following &lt;span class=&#34;math inline&#34;&gt;\(2^3 = 8\)&lt;/span&gt; possible &lt;strong&gt;voting profiles&lt;/strong&gt; as follows:&lt;/p&gt;
+&lt;table class=&#34; lightable-paper&#34; style=&#34;font-family: &amp;quot;Arial Narrow&amp;quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+v1
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+v2
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+v3
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Let &lt;span class=&#34;math inline&#34;&gt;\(\mathbf{v}_j \in \mathbf{V}^N\)&lt;/span&gt; be a &lt;strong&gt;voting profile&lt;/strong&gt; (i.e. a row in the above table) – for example, &lt;span class=&#34;math inline&#34;&gt;\(\mathbf{v}_6 = (1,0,1)\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Define a &lt;strong&gt;majority&lt;/strong&gt; as &lt;span class=&#34;math inline&#34;&gt;\(M = \lfloor N/2 \rfloor + 1\)&lt;/span&gt;. For example, for &lt;span class=&#34;math inline&#34;&gt;\(N = 5\)&lt;/span&gt; we require a majority of 3 voters/jurors to vote “yes” (“guilty”) or one with the remainder voting “no” (“innocent”) or zero.&lt;/p&gt;
+&lt;p&gt;Then, the number of &lt;strong&gt;majority voting profiles&lt;/strong&gt; is:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\sum_{k = M}^{N}C(N,k)
+\]&lt;/span&gt;
+Where &lt;span class=&#34;math inline&#34;&gt;\(C(N,k)\)&lt;/span&gt; is the binomial coefficient or &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; choose &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;, interpreted as &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; ‘one’ votes in a jury of size &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;For a jury of &lt;span class=&#34;math inline&#34;&gt;\(N = 3\)&lt;/span&gt;, a majority is &lt;span class=&#34;math inline&#34;&gt;\(M = \lfloor 3/2 \rfloor + 1 = 2\)&lt;/span&gt; and we then require all combinations (rows &lt;span class=&#34;math inline&#34;&gt;\(\mathbf{v}_j \in \mathbf{V}^N\)&lt;/span&gt;) that have &lt;span class=&#34;math inline&#34;&gt;\(k=2\)&lt;/span&gt; or &lt;span class=&#34;math inline&#34;&gt;\(k=3\)&lt;/span&gt; jurors voting “one”:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\begin{align}
+C(3,2) + C(3,3) \\
+= 3 + 1 \\
+= 4
+\end{align}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Similarly, for &lt;span class=&#34;math inline&#34;&gt;\(N=5\)&lt;/span&gt; we have:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class=&#34;math inline&#34;&gt;\(\mathbf{V}^5\)&lt;/span&gt; is the set of all possible voting profiles of size &lt;span class=&#34;math inline&#34;&gt;\(| \mathbf{V} | = 2^{5} = 32\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;with a majority of &lt;span class=&#34;math inline&#34;&gt;\(M = \lfloor 5/2 \rfloor + 1 = 3\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;and &lt;span class=&#34;math inline&#34;&gt;\(C(5,3) + C(5,4) + C(5,5) = 16\)&lt;/span&gt; majority voting profiles&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;probability-of-a-voting-profile&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Probability of a Voting Profile&lt;/h2&gt;
+&lt;p&gt;Each voter &lt;span class=&#34;math inline&#34;&gt;\(v_i\)&lt;/span&gt; is assumed independent (i.e. votes without influence from other members) and a realisation of a Bernoulli trial where the probability of voting “one” (“yes”, “guilty” etc) is &lt;span class=&#34;math inline&#34;&gt;\(\Pr(v_i = 1) = p_i\)&lt;/span&gt; and conversely &lt;span class=&#34;math inline&#34;&gt;\(\Pr(v_i = 0) = (1-p_i)\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Consequently, the probability of a given voting profile &lt;span class=&#34;math inline&#34;&gt;\(\mathbf{v}_j\)&lt;/span&gt; – a single row in the table of all possible voting profiles – is given by:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+  \Pr(\mathbf{v}_j) = \prod_{i=1}^N p_{i}^{v_i} (1-p_{i})^{1-v_i}
+\]&lt;/span&gt;
+For example, with three voters, each voting “yes” with probability being &lt;span class=&#34;math inline&#34;&gt;\(p_i = p = 0.8\)&lt;/span&gt;, the probability of the voting profile &lt;span class=&#34;math inline&#34;&gt;\(\mathbf{v_6} = (1,0,1)\)&lt;/span&gt; is:
+&lt;span class=&#34;math display&#34;&gt;\[
+\begin{align}
+0.8^{1} (1-0.8)^{0} \times 0.8^{0} (1-0.8)^{1} \times 0.8^{1} (1-0.8)^{0} \\
+= 0.8 \times 0.2 \times 0.8 \\
+= 0.128
+\end{align}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Let’s now look at the complete table of probabilities of voting profiles for &lt;span class=&#34;math inline&#34;&gt;\(N=3\)&lt;/span&gt;:&lt;/p&gt;
+&lt;table class=&#34; lightable-paper&#34; style=&#34;font-family: &amp;quot;Arial Narrow&amp;quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+v1
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+v2
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+v3
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Pr.v
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+One.Votes
+&lt;/th&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+Majority
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.008
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+No
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.032
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+No
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.032
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+No
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.128
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Yes
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.032
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+No
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.128
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Yes
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.128
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Yes
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.512
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+3
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Yes
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div id=&#34;probability-of-a-majority&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Probability of a Majority&lt;/h2&gt;
+&lt;p&gt;In the literature on jury theorems, the probability of an individual voting “yes” (guilty, etc.) is called the &lt;strong&gt;competence&lt;/strong&gt; of the juror – so clearly, a voter with &lt;span class=&#34;math inline&#34;&gt;\(p_i = 0.5\)&lt;/span&gt; is no better than chance.&lt;/p&gt;
+&lt;p&gt;From the set of voting profiles &lt;span class=&#34;math inline&#34;&gt;\(\mathbf{V}^N\)&lt;/span&gt; define a subset &lt;span class=&#34;math inline&#34;&gt;\(\mathbf{V}_M\)&lt;/span&gt; of those profiles that are majorities, that is, where the number of “ones” in the voting profile is greater than or equal to &lt;span class=&#34;math inline&#34;&gt;\(M\)&lt;/span&gt;:
+&lt;span class=&#34;math display&#34;&gt;\[
+  \mathbf{V}_M = \{ \mathbf{v}_j \in \mathbf{v}^N : \sum_{i=1}^{N} v_i \geq M \}
+\]&lt;/span&gt;
+Then the probability of a &lt;strong&gt;majority vote&lt;/strong&gt; being correct &lt;span class=&#34;math inline&#34;&gt;\(\Pr(\mathbf{V}_M)\)&lt;/span&gt; is the sum of the probability of each majority voting profile:
+&lt;span class=&#34;math display&#34;&gt;\[
+  \Pr(\mathbf{V}_M)=\sum_{\mathbf{v}_j \in \mathbf{V}_M}^{} \Pr(\mathbf{v_{j}})
+\]&lt;/span&gt;
+In our simple &lt;span class=&#34;math inline&#34;&gt;\(N=3\)&lt;/span&gt; example above, &lt;span class=&#34;math inline&#34;&gt;\(\mathbf{V}_M = \{\mathbf{v}_4, \mathbf{v}_6, \mathbf{v}_7, \mathbf{v}_8\}\)&lt;/span&gt; and the resulting probability of a majority is &lt;span class=&#34;math inline&#34;&gt;\(\Pr(M) = 0.128 + 0.128 + 0.128 + 0.512 = 0.896\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Notice that &lt;span class=&#34;math inline&#34;&gt;\(\Pr(\mathbf{V}_M) &amp;gt; p\)&lt;/span&gt;, showing that the probability of obtaining a majority vote is higher than the probability of an individual juror/voter.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;simulating-diversity-in-competence&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Simulating Diversity in Competence&lt;/h2&gt;
+&lt;p&gt;In the first simulation, we assumed that each voter has the same probability of being correct (i.e. uniform competencies or put another way, no diversity in the team). Let’s expand on this – we can simulate diversity (varying competencies) by drawing the each voting probability &lt;span class=&#34;math inline&#34;&gt;\(p_i\)&lt;/span&gt; from a Beta distribution.&lt;/p&gt;
+&lt;p&gt;We can &lt;a href=&#34;https://en.wikipedia.org/wiki/Beta_distribution&#34;&gt;parameterise&lt;/a&gt; the Beta distribution by a mode &lt;span class=&#34;math inline&#34;&gt;\(\omega\)&lt;/span&gt; and concentration &lt;span class=&#34;math inline&#34;&gt;\(\kappa &amp;gt; 2\)&lt;/span&gt; (roughly, the dispersion of the distribution around the mode) as &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-kruschke2014doing&#34; role=&#34;doc-biblioref&#34;&gt;Kruschke 2014&lt;/a&gt;)&lt;/span&gt;:
+&lt;span class=&#34;math display&#34;&gt;\[
+\alpha = \omega( \kappa - 2) + 1 \\
+\beta  = (1-\omega)(\kappa-2) + 1
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;We set the modal probability of a correct vote to be &lt;span class=&#34;math inline&#34;&gt;\(\omega = 0.7\)&lt;/span&gt; and then vary the concentration &lt;span class=&#34;math inline&#34;&gt;\(\kappa\)&lt;/span&gt; arriving at:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mode.list &amp;lt;- c(0.7)
+conc.list &amp;lt;- c(80, 40, 20, 10, 5)
+
+params &amp;lt;- expand.grid( mode = mode.list, conc = conc.list )
+
+# compute parameters for Beta(a,b)
+for( i in 1:nrow(params) ) {
+  # generate parameters of the beta distribution corresponding to mode and conc
+  this.params &amp;lt;- computeBetaParams( mode = params$mode[i], conc = params$conc[i] ) 
+  params$alpha[i] &amp;lt;- this.params$alpha
+  params$beta[i] &amp;lt;- this.params$beta
+  # compute the 90% HDI for this beta distribution
+  hdi.int &amp;lt;- computeBetaHDI( params$alpha[i], params$beta[i], delta = 0.01, mass = 0.9 ) 
+  params$HDI.lower[i] &amp;lt;- hdi.int$min
+  params$HDI.upper[i] &amp;lt;- hdi.int$max
+  params$HDI.int[i] &amp;lt;- hdi.int$max - hdi.int$min
+}
+
+cols &amp;lt;- rev( c(&amp;quot;#f2f0f7&amp;quot;,&amp;quot;#dadaeb&amp;quot;,&amp;quot;#bcbddc&amp;quot;,&amp;quot;#9e9ac8&amp;quot;,&amp;quot;#807dba&amp;quot;,&amp;quot;#6a51a3&amp;quot;,&amp;quot;#4a1486&amp;quot;) )
+
+x &amp;lt;- seq(0,1,by = 0.01)
+plot( x, dbeta( x, params$alpha[1], params$beta[1] ), type = &amp;quot;l&amp;quot;, col = cols[1], lwd = 2, lty = &amp;quot;solid&amp;quot;, ylab = &amp;quot;Density&amp;quot;, xlab = &amp;quot;x&amp;quot; )
+for( i in 2:nrow(params) ) {
+  lines( x, dbeta( x, params$alpha[i], params$beta[i] ), type = &amp;quot;l&amp;quot;, col = cols[i], lwd = 2, lty = &amp;quot;solid&amp;quot; )
+}
+legend(0.05, 6.5, legend=c(&amp;quot;80&amp;quot;, &amp;quot;40&amp;quot;, &amp;quot;20&amp;quot;, &amp;quot;10&amp;quot;, &amp;quot;5&amp;quot;),
+       col=cols, lty=1, cex=0.8, title = &amp;quot;Kappa&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/wisdom-of-crowds/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Notice that for higher values of &lt;span class=&#34;math inline&#34;&gt;\(\kappa\)&lt;/span&gt;, the Beta distribution is narrow around the mode, lower values give wider dispersions. If we draw each voter’s &lt;span class=&#34;math inline&#34;&gt;\(p_i\)&lt;/span&gt; from a Beta with &lt;span class=&#34;math inline&#34;&gt;\((\omega = 0.7, \kappa = 80)\)&lt;/span&gt; we will find that 90% of these will be between &lt;span class=&#34;math inline&#34;&gt;\([0.62,0.78]\)&lt;/span&gt; (that is, the 90% highest density interval). In contrast, sampling each &lt;span class=&#34;math inline&#34;&gt;\(p_i\)&lt;/span&gt; from a Beta with parameters &lt;span class=&#34;math inline&#34;&gt;\((\omega = 0.7, \kappa = 5)\)&lt;/span&gt;, 90% of these will be between &lt;span class=&#34;math inline&#34;&gt;\([0.31,0.94]\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Roughly, the highest density interval is wider for lower concentrations (&lt;span class=&#34;math inline&#34;&gt;\(\kappa\)&lt;/span&gt;) and therefore, on average, the diversity (i.e. the range of competencies) will be greater.&lt;/p&gt;
+&lt;p&gt;Let’s simulate one team of &lt;span class=&#34;math inline&#34;&gt;\(N = 5\)&lt;/span&gt; voters, sampling each &lt;span class=&#34;math inline&#34;&gt;\(p_i\)&lt;/span&gt; independently from &lt;span class=&#34;math inline&#34;&gt;\(\textrm{Beta}(\omega = 0.7, \kappa = 5)\)&lt;/span&gt;&lt;/p&gt;
+&lt;table class=&#34; lightable-paper&#34; style=&#34;font-family: &amp;quot;Arial Narrow&amp;quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+p1
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+p2
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+p3
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+p4
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+p5
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.877
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.425
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.802
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.778
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.588
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;In this example, the worst performing team member (two) has competence &lt;span class=&#34;math inline&#34;&gt;\(p_2 = 0.425\)&lt;/span&gt; – worse than chance – and the best performing is &lt;span class=&#34;math inline&#34;&gt;\(p_1 = 0.877\)&lt;/span&gt; which is higher than the modal probability of &lt;span class=&#34;math inline&#34;&gt;\(0.7\)&lt;/span&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## Loading required package: iterators&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Loading required package: parallel&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/wisdom-of-crowds/index_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;references&#34; class=&#34;section level1 unnumbered&#34;&gt;
+&lt;h1&gt;References&lt;/h1&gt;
+&lt;div id=&#34;refs&#34; class=&#34;references csl-bib-body hanging-indent&#34;&gt;
+&lt;div id=&#34;ref-dietrich2019jury&#34; class=&#34;csl-entry&#34;&gt;
+Dietrich, Franz, and Kai Spiekermann. 2019. &lt;span&gt;“Jury Theorems.”&lt;/span&gt; In &lt;em&gt;The Routledge Handbook of Social Epistemology&lt;/em&gt;, 386–96. Routledge.
+&lt;/div&gt;
+&lt;div id=&#34;ref-kaniovski2011optimal&#34; class=&#34;csl-entry&#34;&gt;
+Kaniovski, Serguei, and Alexander Zaigraev. 2011. &lt;span&gt;“Optimal Jury Design for Homogeneous Juries with Correlated Votes.”&lt;/span&gt; &lt;em&gt;Theory and Decision&lt;/em&gt; 71 (4): 439–59.
+&lt;/div&gt;
+&lt;div id=&#34;ref-kruschke2014doing&#34; class=&#34;csl-entry&#34;&gt;
+Kruschke, John. 2014. &lt;em&gt;Doing Bayesian Data Analysis: A Tutorial with r, JAGS, and Stan&lt;/em&gt;. Academic Press.
+&lt;/div&gt;
+&lt;div id=&#34;ref-kuncheva2003measures&#34; class=&#34;csl-entry&#34;&gt;
+Kuncheva, Ludmila I, and Christopher J Whitaker. 2003. &lt;span&gt;“Measures of Diversity in Classifier Ensembles and Their Relationship with the Ensemble Accuracy.”&lt;/span&gt; &lt;em&gt;Machine Learning&lt;/em&gt; 51 (2): 181–207.
+&lt;/div&gt;
+&lt;div id=&#34;ref-ladha1992condorcet&#34; class=&#34;csl-entry&#34;&gt;
+Ladha, Krishna K. 1992. &lt;span&gt;“The Condorcet Jury Theorem, Free Speech, and Correlated Votes.”&lt;/span&gt; &lt;em&gt;American Journal of Political Science&lt;/em&gt;, 617–34.
+&lt;/div&gt;
+&lt;div id=&#34;ref-young1988condorcet&#34; class=&#34;csl-entry&#34;&gt;
+Young, H Peyton. 1988. &lt;span&gt;“Condorcet’s Theory of Voting.”&lt;/span&gt; &lt;em&gt;American Political Science Review&lt;/em&gt; 82 (4): 1231–44.
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

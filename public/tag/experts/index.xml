@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>experts | Dan W Joyce</title>
+    <link>/tag/experts/</link>
+      <atom:link href="/tag/experts/index.xml" rel="self" type="application/rss+xml" />
+    <description>experts</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Mon, 16 May 2022 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>experts</title>
+      <link>/tag/experts/</link>
+    </image>
+    
+    <item>
+      <title>Three Heads are Better Than One</title>
+      <link>/post/wisdom-of-crowds/</link>
+      <pubDate>Mon, 16 May 2022 00:00:00 +0000</pubDate>
+      <guid>/post/wisdom-of-crowds/</guid>
+      <description>
+&lt;script src=&#34;/post/wisdom-of-crowds/index_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/post/wisdom-of-crowds/index_files/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;/post/wisdom-of-crowds/index_files/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#counting-voting-profiles&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1&lt;/span&gt; Counting Voting Profiles&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#probability-of-a-voting-profile&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2&lt;/span&gt; Probability of a Voting Profile&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#probability-of-a-majority&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3&lt;/span&gt; Probability of a Majority&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#extensions&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4&lt;/span&gt; Extensions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#references&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;5&lt;/span&gt; References&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;counting-voting-profiles&#34; class=&#34;section level1&#34; number=&#34;1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;1&lt;/span&gt; Counting Voting Profiles&lt;/h1&gt;
+&lt;p&gt;Designate a jury (e.g. a group of experts) of &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; people (jurors), each delivering a vote &lt;span class=&#34;math inline&#34;&gt;\(v_{i= \{1 \ldots N\}} \in \{0,1\}\)&lt;/span&gt; (e.g. innocent/guilty or no/yes).&lt;/p&gt;
+&lt;p&gt;Let &lt;span class=&#34;math inline&#34;&gt;\(\mathbf{V}^N\)&lt;/span&gt; be the set of all possible voting profiles for &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; jurors with size &lt;span class=&#34;math inline&#34;&gt;\(| \mathbf{V} | = 2^{N}\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;For example, with &lt;span class=&#34;math inline&#34;&gt;\(N = 3\)&lt;/span&gt; jurors, we have the following &lt;span class=&#34;math inline&#34;&gt;\(2^3 = 8\)&lt;/span&gt; possible &lt;strong&gt;voting profiles&lt;/strong&gt; as follows:&lt;/p&gt;
+&lt;table class=&#34; lightable-paper&#34; style=&#34;font-family: &amp;quot;Arial Narrow&amp;quot;, arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;caption&gt;
+&lt;span id=&#34;tab:unnamed-chunk-4&#34;&gt;Table 1.1: &lt;/span&gt;Voting profiles for N = 3
+&lt;/caption&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+v1
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+v2
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+v3
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Let &lt;span class=&#34;math inline&#34;&gt;\(\mathbf{v}_j \in \mathbf{V}^N\)&lt;/span&gt; be a &lt;strong&gt;voting profile&lt;/strong&gt; (i.e. a row in the above table) – for example, &lt;span class=&#34;math inline&#34;&gt;\(\mathbf{v}_6 = (1,0,1)\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Define a &lt;strong&gt;majority&lt;/strong&gt; as &lt;span class=&#34;math inline&#34;&gt;\(M = \lfloor N/2 \rfloor + 1\)&lt;/span&gt;. For example, for &lt;span class=&#34;math inline&#34;&gt;\(N = 5\)&lt;/span&gt; we require a majority of 3 voters/jurors to vote “yes” (“guilty”) or one with the remainder voting “no” (“innocent”) or zero.&lt;/p&gt;
+&lt;p&gt;Then, the number of &lt;strong&gt;majority voting profiles&lt;/strong&gt; is:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\sum_{k = M}^{N}C(N,k)
+\]&lt;/span&gt;
+Where &lt;span class=&#34;math inline&#34;&gt;\(C(N,k)\)&lt;/span&gt; is the binomial coefficient or &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; choose &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt;, interpreted as &lt;span class=&#34;math inline&#34;&gt;\(k\)&lt;/span&gt; ‘one’ votes in a jury of size &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;For a jury of &lt;span class=&#34;math inline&#34;&gt;\(N = 3\)&lt;/span&gt;, a majority is &lt;span class=&#34;math inline&#34;&gt;\(M = \lfloor 3/2 \rfloor + 1 = 2\)&lt;/span&gt; and we then require all combinations (rows &lt;span class=&#34;math inline&#34;&gt;\(\mathbf{v}_j \in \mathbf{V}^N\)&lt;/span&gt;) that have &lt;span class=&#34;math inline&#34;&gt;\(k=2\)&lt;/span&gt; or &lt;span class=&#34;math inline&#34;&gt;\(k=3\)&lt;/span&gt; jurors voting “one”:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\begin{align}
+C(3,2) + C(3,3) \\
+= 3 + 1 \\
+= 4
+\end{align}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Similarly, for &lt;span class=&#34;math inline&#34;&gt;\(N=5\)&lt;/span&gt; we have:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class=&#34;math inline&#34;&gt;\(\mathbf{V}^5\)&lt;/span&gt; is the set of all possible voting profiles of size &lt;span class=&#34;math inline&#34;&gt;\(| \mathbf{V} | = 2^{5} = 32\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;with a majority of &lt;span class=&#34;math inline&#34;&gt;\(M = \lfloor 5/2 \rfloor + 1 = 3\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;and &lt;span class=&#34;math inline&#34;&gt;\(C(5,3) + C(5,4) + C(5,5) = 16\)&lt;/span&gt; majority voting profiles&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;probability-of-a-voting-profile&#34; class=&#34;section level1&#34; number=&#34;2&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;2&lt;/span&gt; Probability of a Voting Profile&lt;/h1&gt;
+&lt;p&gt;Each voter &lt;span class=&#34;math inline&#34;&gt;\(v_i\)&lt;/span&gt; is assumed independent (i.e. votes without influence from other members) and a realisation of a Bernoulli trial where the probability of voting “one” (“yes,” “guilty” etc) is &lt;span class=&#34;math inline&#34;&gt;\(\Pr(v_i = 1) = p_i\)&lt;/span&gt; and conversely &lt;span class=&#34;math inline&#34;&gt;\(\Pr(v_i = 0) = (1-p_i)\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Consequently, the probility of a given voting profile &lt;span class=&#34;math inline&#34;&gt;\(\mathbf{v}_j\)&lt;/span&gt; – a single row in the table of all possible voting profiles – is given by:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+  \Pr(\mathbf{v}_j) = \prod_{i=1}^N p_{i}^{v_i} (1-p_{i})^{1-v_i}
+\]&lt;/span&gt;
+For example, with three voters, each voting “yes” with probability being &lt;span class=&#34;math inline&#34;&gt;\(p_i = p = 0.8\)&lt;/span&gt;, the probability of the voting profile &lt;span class=&#34;math inline&#34;&gt;\(\mathbf{v_6} = (1,0,1)\)&lt;/span&gt; is:
+&lt;span class=&#34;math display&#34;&gt;\[
+\begin{align}
+ 0.8^{1} (1-0.8)^{0} \times 0.8^{0} (1-0.8)^{1} \times 0.8^{1} (1-0.8)^{0} \\
+ = 0.8 \times 0.2 \times 0.8 \\
+ = 0.128
+\end{align}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Let’s now look at the complete table of probabilities of voting profiles for &lt;span class=&#34;math inline&#34;&gt;\(N=3\)&lt;/span&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;probVotingProfile &amp;lt;- function( v, p ) {
+  pr.v_i &amp;lt;- 1
+  for( i in 1:length( v ) ) {
+    pr.v_i &amp;lt;- pr.v_i *
+                ( p[i]^v[i] ) * ( 1-p[i] )^(1-v[i] )
+  }
+  return( as.numeric( pr.v_i ) )
+}
+
+# size of jury / number of voters
+N &amp;lt;- 3
+
+# the set of all voting profiles
+l &amp;lt;- rep(list(0:1), N)
+V &amp;lt;- expand.grid(l)
+names(V) &amp;lt;- paste0( &amp;quot;v&amp;quot;, seq(1:N) )
+
+# probability of a &amp;quot;yes&amp;quot; vote
+p &amp;lt;- c(0.8,0.8,0.8)
+pr.v &amp;lt;- rep(NA, nrow(V))
+
+for( j in 1:nrow(V) ) {
+  pr.v[j] &amp;lt;- probVotingProfile( V[j,], p )
+}
+
+V$Pr.v &amp;lt;- pr.v
+
+# majority
+M &amp;lt;- floor( N / 2 ) + 1
+
+V$One.Votes &amp;lt;- rowSums( V[,1:N] )
+V$Majority &amp;lt;- ifelse( V$One.Votes &amp;gt;= M, &amp;quot;Yes&amp;quot;, &amp;quot;No&amp;quot; )
+
+kbl(V, caption = &amp;quot;Voting profiles for N = 3&amp;quot;) %&amp;gt;% kable_paper(bootstrap_options = &amp;quot;striped&amp;quot;, full_width = F)&lt;/code&gt;&lt;/pre&gt;
+&lt;table class=&#34; lightable-paper&#34; style=&#34;font-family: &amp;quot;Arial Narrow&amp;quot;, arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;caption&gt;
+&lt;span id=&#34;tab:unnamed-chunk-5&#34;&gt;Table 2.1: &lt;/span&gt;Voting profiles for N = 3
+&lt;/caption&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+v1
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+v2
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+v3
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+Pr.v
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+One.Votes
+&lt;/th&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+Majority
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.008
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+No
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.032
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+No
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.032
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+No
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.128
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Yes
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.032
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+No
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.128
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Yes
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.128
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+2
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Yes
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+0.512
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+3
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+Yes
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div id=&#34;probability-of-a-majority&#34; class=&#34;section level1&#34; number=&#34;3&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;3&lt;/span&gt; Probability of a Majority&lt;/h1&gt;
+&lt;p&gt;In the literature on jury theorems, the probability of an individual voting “yes” (guilty, etc.) is called the &lt;strong&gt;competence&lt;/strong&gt; of the juror – so clearly, a voter with &lt;span class=&#34;math inline&#34;&gt;\(p_i = 0.5\)&lt;/span&gt; is no better than chance.&lt;/p&gt;
+&lt;p&gt;To allow some generality, let the vector of voter competencies (probabilities of voting “yes,” “one” or “guilty”) be &lt;span class=&#34;math inline&#34;&gt;\(\mathbf{p} = (p_1, p_2, \ldots, p_N)\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;From the set of voting profiles &lt;span class=&#34;math inline&#34;&gt;\(\mathbf{V}^N\)&lt;/span&gt; define a subset &lt;span class=&#34;math inline&#34;&gt;\(\mathbf{V}_M\)&lt;/span&gt; of those profiles that are majorities, that is, where the number of “ones” in the voting profile is greater than or equal to &lt;span class=&#34;math inline&#34;&gt;\(M\)&lt;/span&gt;:
+&lt;span class=&#34;math display&#34;&gt;\[
+  \mathbf{V}_M = \{ \mathbf{v} \in \mathbf{v}^N : \sum_{i=1}^{N} v_i \geq M \}
+\]&lt;/span&gt;
+Then the probability of a &lt;strong&gt;majority vote&lt;/strong&gt; is the sum of the probability of each majority voting profile:
+&lt;span class=&#34;math display&#34;&gt;\[
+  \Pr(M)=\sum_{\mathbf{v}_j \in \mathbf{V}_M}^{} \Pr(\mathbf{v_{j}})
+\]&lt;/span&gt;
+In our simple &lt;span class=&#34;math inline&#34;&gt;\(N=3\)&lt;/span&gt; example above, &lt;span class=&#34;math inline&#34;&gt;\(\mathbf{V}_M = \{\mathbf{v}_4, \mathbf{v}_6, \mathbf{v}_7, \mathbf{v}_8\}\)&lt;/span&gt; and the resulting probability of a majority is &lt;span class=&#34;math inline&#34;&gt;\(\Pr(M) = 0.128 + 0.128 + 0.128 + 0.512 = 0.896\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Notice that &lt;span class=&#34;math inline&#34;&gt;\(\Pr(M) &amp;gt; p\)&lt;/span&gt;, showing that the probability of obtaining a majority vote is higher than the probability of an individual juror/voter.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;extensions&#34; class=&#34;section level1&#34; number=&#34;4&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;4&lt;/span&gt; Extensions&lt;/h1&gt;
+&lt;p&gt;Cordorcet’s jury theorem is that:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If p is greater than 1/2 (each voter is more likely to vote correctly), then adding more voters increases the probability that the majority decision is correct. In the limit, the probability that the majority votes correctly approaches 1 as the number of voters increases.&lt;/li&gt;
+&lt;li&gt;On the other hand, if p is less than 1/2 (each voter is more likely to vote incorrectly), then adding more voters makes things worse: the optimal jury consists of a single voter.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;references&#34; class=&#34;section level1&#34; number=&#34;5&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;5&lt;/span&gt; References&lt;/h1&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Joseph KP Kuan | Dan W Joyce</title>
+    <link>/author/joseph-kp-kuan/</link>
+      <atom:link href="/author/joseph-kp-kuan/index.xml" rel="self" type="application/rss+xml" />
+    <description>Joseph KP Kuan</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Fri, 01 Jan 1999 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Joseph KP Kuan</title>
+      <link>/author/joseph-kp-kuan/</link>
+    </image>
+    
+    <item>
+      <title>Texture Content-Based Retrieval Using Content Descriptions</title>
+      <link>/publication/kuan-texture-1999/</link>
+      <pubDate>Fri, 01 Jan 1999 00:00:00 +0000</pubDate>
+      <guid>/publication/kuan-texture-1999/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Flexible Features in Texture Similarity</title>
+      <link>/publication/kuan-flexible-1998/</link>
+      <pubDate>Thu, 01 Jan 1998 00:00:00 +0000</pubDate>
+      <guid>/publication/kuan-flexible-1998/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

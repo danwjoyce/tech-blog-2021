@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Rohanna Rajapakse | Dan W Joyce</title>
+    <link>/author/rohanna-rajapakse/</link>
+      <atom:link href="/author/rohanna-rajapakse/index.xml" rel="self" type="application/rss+xml" />
+    <description>Rohanna Rajapakse</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Thu, 01 Jan 2004 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Rohanna Rajapakse</title>
+      <link>/author/rohanna-rajapakse/</link>
+    </image>
+    
+    <item>
+      <title>Spatial prepositions and vague quantifiers: Implementing the functional geometric framework</title>
+      <link>/publication/coventry-spatial-2004/</link>
+      <pubDate>Thu, 01 Jan 2004 00:00:00 +0000</pubDate>
+      <guid>/publication/coventry-spatial-2004/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

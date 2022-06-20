@@ -1,0 +1,1671 @@
+<!DOCTYPE html><html lang="en-us" >
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  
+  
+    <meta name="generator" content="Wowchemy 5.1.0 for Hugo" />
+  
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Dan W Joyce" />
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Introduction Multi-disciplinary teams (MDTs) assemble a group of healthcare professionals with the intention of mobilising different expertise to arrive at a collective decision or solution that is superior (or at least, no worse) than relying on a single individual." />
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/wisdom-of-crowds/" />
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+
+  
+  
+  
+    <meta name="theme-color" content="#1565c0" />
+  
+
+  
+  
+    
+    <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha256-FMvZuGapsJLjouA6k7Eo2lusoAX9i0ShlWFG6qt7SLc=" crossorigin="anonymous">
+
+    
+    
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/styles/github.min.css" crossorigin="anonymous" title="hl-light" media="print" onload="this.media='all'">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" media="print" onload="this.media='all'" disabled>
+        
+      
+    
+
+    
+    
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.css" integrity="sha512-1xoFisiGdy9nvho8EgXuXvnpR5GAMSjFwp40gSRE3NwdUdIMIKuPa7bqoUhLD0O/5tPNhteAsE5XyyMi5reQVA==" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
+
+    
+
+    
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+  
+
+  
+  
+  
+    
+      
+      <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap" media="print" onload="this.media='all'">
+    
+  
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/wowchemy.ddb2a9c79d7760a321f1b5392a04566a.css" />
+
+  
+
+
+
+  
+
+  
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+    <link rel="manifest" href="/index.webmanifest" />
+  
+
+  <link rel="icon" type="image/png" href="/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_32x32_fill_lanczos_center_2.png" />
+  <link rel="apple-touch-icon" type="image/png" href="/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_180x180_fill_lanczos_center_2.png" />
+
+  <link rel="canonical" href="/post/wisdom-of-crowds/" />
+
+  
+  
+  
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary" />
+  
+    <meta property="twitter:site" content="@@dan_w_joyce" />
+    <meta property="twitter:creator" content="@@dan_w_joyce" />
+  
+  <meta property="og:site_name" content="Dan W Joyce" />
+  <meta property="og:url" content="/post/wisdom-of-crowds/" />
+  <meta property="og:title" content="Three Heads are Better Than One | Dan W Joyce" />
+  <meta property="og:description" content="Introduction Multi-disciplinary teams (MDTs) assemble a group of healthcare professionals with the intention of mobilising different expertise to arrive at a collective decision or solution that is superior (or at least, no worse) than relying on a single individual." /><meta property="og:image" content="/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png" />
+    <meta property="twitter:image" content="/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png" /><meta property="og:locale" content="en-us" />
+  
+    
+      <meta
+        property="article:published_time"
+        content="2022-05-16T00:00:00&#43;00:00"
+      />
+    
+    <meta property="article:modified_time" content="2022-05-15T22:00:06&#43;00:00">
+  
+
+  
+
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "/post/wisdom-of-crowds/"
+  },
+  "headline": "Three Heads are Better Than One",
+  
+  "datePublished": "2022-05-16T00:00:00Z",
+  "dateModified": "2022-05-15T22:00:06Z",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Dan W Joyce"
+  },
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "Dan W Joyce",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_192x192_fill_lanczos_center_2.png"
+    }
+  },
+  "description": "Introduction Multi-disciplinary teams (MDTs) assemble a group of healthcare professionals with the intention of mobilising different expertise to arrive at a collective decision or solution that is superior (or at least, no worse) than relying on a single individual."
+}
+</script>
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+  <title>Three Heads are Better Than One | Dan W Joyce</title>
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class="page-wrapper   " data-wc-page-id="dca3e6ba4dfd4c1aeeffe821fbaf78ab" >
+
+  
+  
+  
+  
+  
+  
+  
+  
+  <script src="/js/wowchemy-init.min.f16be01fc8fb2b5885dd67ce942d1185.js"></script>
+
+  
+
+
+<aside class="search-modal" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#" aria-label="Close"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search" class="form-control"
+        aria-label="Search...">
+        
+      </div>
+
+      
+      
+
+      
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+
+  <div class="page-header">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container-xl">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Dan W Joyce</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Dan W Joyce</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#about"><span>About</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#featured"><span>Publications</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#contact"><span>Contact</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+
+      
+      
+        
+          
+          <li class="nav-item d-none d-lg-inline-flex">
+            <a class="nav-link" href="https://twitter.com/dan_w_joyce" data-toggle="tooltip" data-placement="bottom" title="Follow me on Twitter" target="_blank" rel="noopener" aria-label="Follow me on Twitter">
+              <i class="fab fa-twitter" aria-hidden="true"></i>
+            </a>
+          </li>
+        
+      
+
+      
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#" aria-label="Search"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      
+      <li class="nav-item dropdown theme-dropdown">
+        <a href="#" class="nav-link" data-toggle="dropdown" aria-haspopup="true" aria-label="Display preferences">
+          <i class="fas fa-moon" aria-hidden="true"></i>
+        </a>
+        <div class="dropdown-menu">
+          <a href="#" class="dropdown-item js-set-theme-light">
+            <span>Light</span>
+          </a>
+          <a href="#" class="dropdown-item js-set-theme-dark">
+            <span>Dark</span>
+          </a>
+          <a href="#" class="dropdown-item js-set-theme-auto">
+            <span>Automatic</span>
+          </a>
+        </div>
+      </li>
+      
+
+      
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  </div>
+
+  <div class="page-body">
+    <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1>Three Heads are Better Than One</h1>
+
+  
+  <p class="page-subtitle">The Wisdom of Crowds and MDTs</p>
+  
+
+  
+    
+
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+          Last updated on
+      
+    
+    May 15, 2022
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    9 min read
+  </span>
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder mr-1"></i><a href="/category/computation/">computation</a></span>
+  
+
+</div>
+
+    
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      
+<script src="/post/wisdom-of-crowds/index_files/kePrint/kePrint.js"></script>
+<link href="/post/wisdom-of-crowds/index_files/lightable/lightable.css" rel="stylesheet" />
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Multi-disciplinary teams (MDTs) assemble a group of healthcare professionals with the intention of mobilising different expertise to arrive at a collective decision or solution that is superior (or at least, no worse) than relying on a single individual. This is related to the <a href="https://en.wikipedia.org/wiki/Wisdom_of_the_crowd">wisdom of crowds</a> and is not without controversy. But the question I’m interested in here is: can we <strong>model</strong> and show that under certain circumstances, having more than one expert is better than a single individual?</p>
+<p>The related theory can be found in <a href="https://en.wikipedia.org/wiki/Condorcet%27s_jury_theorem">jury theorems</a> – albeit within a judicial framing – and the oldest result is Condorcet’s jury theorem dating back to 1785. Who knew.</p>
+<p>In machine learning, mixture of experts (MoE) architectures and ensemble learning appeal to the same idea: by combining a collection of imperfect decisions, you can arrive at an “overall’’ better decision.</p>
+<p>Some basics to get us started:</p>
+<ul>
+<li><p>a “jury” (or MDT) is a collection of individual voters, tasked with arriving at a decision on some issue and each having a <strong>competence</strong> which is the probability they will vote “yes” (or “guilty” if you prefer), which we’ll call <span class="math inline">\(p\)</span> and for now, we’ll assume all voters (MDT members) have equal competence. Naturally, if <span class="math inline">\(p = 0.5\)</span> then each voter is no more useful than tossing a coin to arrive at a decision.</p></li>
+<li><p>the size of our MDT (jury) <span class="math inline">\(N\)</span> will always be odd-numbered (3, 5, 7e …) to avoid tied voting</p></li>
+</ul>
+<p><strong>Condorcet’s jury theorem</strong> is:</p>
+<ul>
+<li>If <span class="math inline">\(p &gt; 0.5\)</span> – each voter is more competent than chance – then increasing the size of the jury (MDT) increases the probability that the majority decision is correct. Further, as the size of the team increases, the probability of a correct majority decision tends to 1</li>
+<li>For <span class="math inline">\(p \leq 0.5\)</span> – voters’ competence is chance-level or worse – then increasing the size of the team results in a reduction in the probability of a majority correct decision and in these circumstance, the best team is just a single voter.</li>
+</ul>
+<div id="related-literature" class="section level2">
+<h2>Related Literature</h2>
+<p>A readable introduction to the analysis and philosophy of jury theorems is given in <span class="citation">(<a href="#ref-dietrich2019jury" role="doc-biblioref">Dietrich and Spiekermann 2019</a>)</span> which discusses the flaws and assumptions of the framework. A proof and connection to statistical hypothesis testing is given by <span class="citation">(<a href="#ref-young1988condorcet" role="doc-biblioref">Young 1988</a>)</span>. For some extensions to the basic Condorcet jury theorem, <span class="citation">(<a href="#ref-ladha1992condorcet" role="doc-biblioref">Ladha 1992</a>)</span> describes how to model voting without independent voter assumptions (i.e. correlated voting) and the relationship with free speech (a little outside the scope of this blog). Asymptotic results on designing juries with correlated voting are given in <span class="citation">(<a href="#ref-kaniovski2011optimal" role="doc-biblioref">Kaniovski and Zaigraev 2011</a>)</span> – see also <a href="https://en.wikipedia.org/wiki/Condorcet%27s_jury_theorem">the wikipaedia page</a> – but we will not rely on these here, rather we’ll use simulations to allow flexibility.</p>
+</div>
+</div>
+<div id="tldr-yes-multiple-experts-win" class="section level1">
+<h1>TL;DR – Yes, Multiple Experts Win</h1>
+<p>Let’s be explicit about the assumptions in the basic Condorcet model <span class="citation">(<a href="#ref-dietrich2019jury" role="doc-biblioref">Dietrich and Spiekermann 2019</a>)</span></p>
+<ol style="list-style-type: decimal">
+<li>Voters are independent (that is, they do not influence one another; there is no “leader” directing the team)</li>
+<li>All voters are equally competent and perform better than chance</li>
+</ol>
+<p><img src="/post/wisdom-of-crowds/index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+In the figure above, we can see that if the competence of voters is chance (<span class="math inline">\(p = 0.5\)</span>) then increasing the number of voters has no effect. If the competence of voters is <span class="math inline">\(p &lt; 0.5\)</span>, adding voters makes the team’s probability of a correct majority decision <strong>worse</strong>. And as Condorcet’s jury theorem describes, for voters with above-chance competence, the size of the team increase the probability of a correct majority decision.</p>
+</div>
+<div id="mixed-competencies" class="section level1">
+<h1>Mixed Competencies</h1>
+<p>Not all members of a team will have the same competencies. If we keep the rest of the setup the same, but vary the composition (diversity) of the team allowing <span class="math inline">\(p_i\)</span> to be the probability of voting “yes” for voted <span class="math inline">\(i\)</span> – we have to resort to stochastic simulations. In the machine learning literature, there is some consensus that ``diversity’’ refers to agreement (similarity) between different team members’ output – in <span class="citation">(<a href="#ref-kuncheva2003measures" role="doc-biblioref">Kuncheva and Whitaker 2003</a>)</span></p>
+</div>
+<div id="appendix-details" class="section level1">
+<h1>Appendix &amp; Details</h1>
+<div id="counting-voting-profiles" class="section level2">
+<h2>Counting Voting Profiles</h2>
+<p>Designate a jury or MDT (e.g. a group of experts) of <span class="math inline">\(N\)</span> people (jurors, team mebers), each delivering a vote <span class="math inline">\(v_{i= \{1 \ldots N\}} \in \{0,1\}\)</span> (e.g. innocent/guilty, no/yes to a decision).</p>
+<p>Let <span class="math inline">\(\mathbf{V}^N\)</span> be the set of all possible voting profiles for <span class="math inline">\(N\)</span> jurors with size <span class="math inline">\(| \mathbf{V} | = 2^{N}\)</span></p>
+<p>For example, with <span class="math inline">\(N = 3\)</span> jurors, we have the following <span class="math inline">\(2^3 = 8\)</span> possible <strong>voting profiles</strong> as follows:</p>
+<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+v1
+</th>
+<th style="text-align:right;">
+v2
+</th>
+<th style="text-align:right;">
+v3
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+</tbody>
+</table>
+<p>Let <span class="math inline">\(\mathbf{v}_j \in \mathbf{V}^N\)</span> be a <strong>voting profile</strong> (i.e. a row in the above table) – for example, <span class="math inline">\(\mathbf{v}_6 = (1,0,1)\)</span></p>
+<p>Define a <strong>majority</strong> as <span class="math inline">\(M = \lfloor N/2 \rfloor + 1\)</span>. For example, for <span class="math inline">\(N = 5\)</span> we require a majority of 3 voters/jurors to vote “yes” (“guilty”) or one with the remainder voting “no” (“innocent”) or zero.</p>
+<p>Then, the number of <strong>majority voting profiles</strong> is:</p>
+<p><span class="math display">\[
+\sum_{k = M}^{N}C(N,k)
+\]</span>
+Where <span class="math inline">\(C(N,k)\)</span> is the binomial coefficient or <span class="math inline">\(N\)</span> choose <span class="math inline">\(k\)</span>, interpreted as <span class="math inline">\(k\)</span> ‘one’ votes in a jury of size <span class="math inline">\(N\)</span>.</p>
+<p>For a jury of <span class="math inline">\(N = 3\)</span>, a majority is <span class="math inline">\(M = \lfloor 3/2 \rfloor + 1 = 2\)</span> and we then require all combinations (rows <span class="math inline">\(\mathbf{v}_j \in \mathbf{V}^N\)</span>) that have <span class="math inline">\(k=2\)</span> or <span class="math inline">\(k=3\)</span> jurors voting “one”:</p>
+<p><span class="math display">\[
+\begin{align}
+C(3,2) + C(3,3) \\
+= 3 + 1 \\
+= 4
+\end{align}
+\]</span></p>
+<p>Similarly, for <span class="math inline">\(N=5\)</span> we have:</p>
+<ul>
+<li><span class="math inline">\(\mathbf{V}^5\)</span> is the set of all possible voting profiles of size <span class="math inline">\(| \mathbf{V} | = 2^{5} = 32\)</span></li>
+<li>with a majority of <span class="math inline">\(M = \lfloor 5/2 \rfloor + 1 = 3\)</span></li>
+<li>and <span class="math inline">\(C(5,3) + C(5,4) + C(5,5) = 16\)</span> majority voting profiles</li>
+</ul>
+</div>
+<div id="probability-of-a-voting-profile" class="section level2">
+<h2>Probability of a Voting Profile</h2>
+<p>Each voter <span class="math inline">\(v_i\)</span> is assumed independent (i.e. votes without influence from other members) and a realisation of a Bernoulli trial where the probability of voting “one” (“yes”, “guilty” etc) is <span class="math inline">\(\Pr(v_i = 1) = p_i\)</span> and conversely <span class="math inline">\(\Pr(v_i = 0) = (1-p_i)\)</span></p>
+<p>Consequently, the probability of a given voting profile <span class="math inline">\(\mathbf{v}_j\)</span> – a single row in the table of all possible voting profiles – is given by:</p>
+<p><span class="math display">\[
+  \Pr(\mathbf{v}_j) = \prod_{i=1}^N p_{i}^{v_i} (1-p_{i})^{1-v_i}
+\]</span>
+For example, with three voters, each voting “yes” with probability being <span class="math inline">\(p_i = p = 0.8\)</span>, the probability of the voting profile <span class="math inline">\(\mathbf{v_6} = (1,0,1)\)</span> is:
+<span class="math display">\[
+\begin{align}
+0.8^{1} (1-0.8)^{0} \times 0.8^{0} (1-0.8)^{1} \times 0.8^{1} (1-0.8)^{0} \\
+= 0.8 \times 0.2 \times 0.8 \\
+= 0.128
+\end{align}
+\]</span></p>
+<p>Let’s now look at the complete table of probabilities of voting profiles for <span class="math inline">\(N=3\)</span>:</p>
+<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+v1
+</th>
+<th style="text-align:right;">
+v2
+</th>
+<th style="text-align:right;">
+v3
+</th>
+<th style="text-align:right;">
+Pr.v
+</th>
+<th style="text-align:right;">
+One.Votes
+</th>
+<th style="text-align:left;">
+Majority
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.008
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+No
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.032
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+No
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.032
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+No
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.128
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.032
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+No
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.128
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.128
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.512
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="probability-of-a-majority" class="section level2">
+<h2>Probability of a Majority</h2>
+<p>In the literature on jury theorems, the probability of an individual voting “yes” (guilty, etc.) is called the <strong>competence</strong> of the juror – so clearly, a voter with <span class="math inline">\(p_i = 0.5\)</span> is no better than chance.</p>
+<p>From the set of voting profiles <span class="math inline">\(\mathbf{V}^N\)</span> define a subset <span class="math inline">\(\mathbf{V}_M\)</span> of those profiles that are majorities, that is, where the number of “ones” in the voting profile is greater than or equal to <span class="math inline">\(M\)</span>:
+<span class="math display">\[
+  \mathbf{V}_M = \{ \mathbf{v}_j \in \mathbf{v}^N : \sum_{i=1}^{N} v_i \geq M \}
+\]</span>
+Then the probability of a <strong>majority vote</strong> being correct <span class="math inline">\(\Pr(\mathbf{V}_M)\)</span> is the sum of the probability of each majority voting profile:
+<span class="math display">\[
+  \Pr(\mathbf{V}_M)=\sum_{\mathbf{v}_j \in \mathbf{V}_M}^{} \Pr(\mathbf{v_{j}})
+\]</span>
+In our simple <span class="math inline">\(N=3\)</span> example above, <span class="math inline">\(\mathbf{V}_M = \{\mathbf{v}_4, \mathbf{v}_6, \mathbf{v}_7, \mathbf{v}_8\}\)</span> and the resulting probability of a majority is <span class="math inline">\(\Pr(M) = 0.128 + 0.128 + 0.128 + 0.512 = 0.896\)</span>.</p>
+<p>Notice that <span class="math inline">\(\Pr(\mathbf{V}_M) &gt; p\)</span>, showing that the probability of obtaining a majority vote is higher than the probability of an individual juror/voter.</p>
+</div>
+<div id="simulating-diversity-in-competence" class="section level2">
+<h2>Simulating Diversity in Competence</h2>
+<p>In the first simulation, we assumed that each voter has the same probability of being correct (i.e. uniform competencies or put another way, no diversity in the team). Let’s expand on this – we can simulate diversity (varying competencies) by drawing the each voting probability <span class="math inline">\(p_i\)</span> from a Beta distribution.</p>
+<p>We can <a href="https://en.wikipedia.org/wiki/Beta_distribution">parameterise</a> the Beta distribution by a mode <span class="math inline">\(\omega\)</span> and concentration <span class="math inline">\(\kappa &gt; 2\)</span> (roughly, the dispersion of the distribution around the mode) as <span class="citation">(<a href="#ref-kruschke2014doing" role="doc-biblioref">Kruschke 2014</a>)</span>:
+<span class="math display">\[
+\alpha = \omega( \kappa - 2) + 1 \\
+\beta  = (1-\omega)(\kappa-2) + 1
+\]</span></p>
+<p>We set the modal probability of a correct vote to be <span class="math inline">\(\omega = 0.7\)</span> and then vary the concentration <span class="math inline">\(\kappa\)</span> arriving at:</p>
+<pre class="r"><code>mode.list &lt;- c(0.7)
+conc.list &lt;- c(80, 40, 20, 10, 5)
+
+params &lt;- expand.grid( mode = mode.list, conc = conc.list )
+
+# compute parameters for Beta(a,b)
+for( i in 1:nrow(params) ) {
+  # generate parameters of the beta distribution corresponding to mode and conc
+  this.params &lt;- computeBetaParams( mode = params$mode[i], conc = params$conc[i] ) 
+  params$alpha[i] &lt;- this.params$alpha
+  params$beta[i] &lt;- this.params$beta
+  # compute the 90% HDI for this beta distribution
+  hdi.int &lt;- computeBetaHDI( params$alpha[i], params$beta[i], delta = 0.01, mass = 0.9 ) 
+  params$HDI.lower[i] &lt;- hdi.int$min
+  params$HDI.upper[i] &lt;- hdi.int$max
+  params$HDI.int[i] &lt;- hdi.int$max - hdi.int$min
+}
+
+cols &lt;- rev( c(&quot;#f2f0f7&quot;,&quot;#dadaeb&quot;,&quot;#bcbddc&quot;,&quot;#9e9ac8&quot;,&quot;#807dba&quot;,&quot;#6a51a3&quot;,&quot;#4a1486&quot;) )
+
+x &lt;- seq(0,1,by = 0.01)
+plot( x, dbeta( x, params$alpha[1], params$beta[1] ), type = &quot;l&quot;, col = cols[1], lwd = 2, lty = &quot;solid&quot;, ylab = &quot;Density&quot;, xlab = &quot;x&quot; )
+for( i in 2:nrow(params) ) {
+  lines( x, dbeta( x, params$alpha[i], params$beta[i] ), type = &quot;l&quot;, col = cols[i], lwd = 2, lty = &quot;solid&quot; )
+}
+legend(0.05, 6.5, legend=c(&quot;80&quot;, &quot;40&quot;, &quot;20&quot;, &quot;10&quot;, &quot;5&quot;),
+       col=cols, lty=1, cex=0.8, title = &quot;Kappa&quot;)</code></pre>
+<p><img src="/post/wisdom-of-crowds/index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Notice that for higher values of <span class="math inline">\(\kappa\)</span>, the Beta distribution is narrow around the mode, lower values give wider dispersions. If we draw each voter’s <span class="math inline">\(p_i\)</span> from a Beta with <span class="math inline">\((\omega = 0.7, \kappa = 80)\)</span> we will find that 90% of these will be between <span class="math inline">\([0.62,0.78]\)</span> (that is, the 90% highest density interval). In contrast, sampling each <span class="math inline">\(p_i\)</span> from a Beta with parameters <span class="math inline">\((\omega = 0.7, \kappa = 5)\)</span>, 90% of these will be between <span class="math inline">\([0.31,0.94]\)</span>.</p>
+<p>Roughly, the highest density interval is wider for lower concentrations (<span class="math inline">\(\kappa\)</span>) and therefore, on average, the diversity (i.e. the range of competencies) will be greater.</p>
+<p>Let’s simulate one team of <span class="math inline">\(N = 5\)</span> voters, sampling each <span class="math inline">\(p_i\)</span> independently from <span class="math inline">\(\textrm{Beta}(\omega = 0.7, \kappa = 5)\)</span></p>
+<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+p1
+</th>
+<th style="text-align:right;">
+p2
+</th>
+<th style="text-align:right;">
+p3
+</th>
+<th style="text-align:right;">
+p4
+</th>
+<th style="text-align:right;">
+p5
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0.877
+</td>
+<td style="text-align:right;">
+0.425
+</td>
+<td style="text-align:right;">
+0.802
+</td>
+<td style="text-align:right;">
+0.778
+</td>
+<td style="text-align:right;">
+0.588
+</td>
+</tr>
+</tbody>
+</table>
+<p>In this example, the worst performing team member (two) has competence <span class="math inline">\(p_2 = 0.425\)</span> – worse than chance – and the best performing is <span class="math inline">\(p_1 = 0.877\)</span> which is higher than the modal probability of <span class="math inline">\(0.7\)</span></p>
+<pre><code>## Loading required package: iterators</code></pre>
+<pre><code>## Loading required package: parallel</code></pre>
+<p><img src="/post/wisdom-of-crowds/index_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+</div>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-dietrich2019jury" class="csl-entry">
+Dietrich, Franz, and Kai Spiekermann. 2019. <span>“Jury Theorems.”</span> In <em>The Routledge Handbook of Social Epistemology</em>, 386–96. Routledge.
+</div>
+<div id="ref-kaniovski2011optimal" class="csl-entry">
+Kaniovski, Serguei, and Alexander Zaigraev. 2011. <span>“Optimal Jury Design for Homogeneous Juries with Correlated Votes.”</span> <em>Theory and Decision</em> 71 (4): 439–59.
+</div>
+<div id="ref-kruschke2014doing" class="csl-entry">
+Kruschke, John. 2014. <em>Doing Bayesian Data Analysis: A Tutorial with r, JAGS, and Stan</em>. Academic Press.
+</div>
+<div id="ref-kuncheva2003measures" class="csl-entry">
+Kuncheva, Ludmila I, and Christopher J Whitaker. 2003. <span>“Measures of Diversity in Classifier Ensembles and Their Relationship with the Ensemble Accuracy.”</span> <em>Machine Learning</em> 51 (2): 181–207.
+</div>
+<div id="ref-ladha1992condorcet" class="csl-entry">
+Ladha, Krishna K. 1992. <span>“The Condorcet Jury Theorem, Free Speech, and Correlated Votes.”</span> <em>American Journal of Political Science</em>, 617–34.
+</div>
+<div id="ref-young1988condorcet" class="csl-entry">
+Young, H Peyton. 1988. <span>“Condorcet’s Theory of Voting.”</span> <em>American Political Science Review</em> 82 (4): 1231–44.
+</div>
+</div>
+</div>
+
+    </div>
+
+    
+
+
+
+
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tag/mixture-of-experts/">mixture of experts</a>
+  
+</div>
+
+
+
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=/post/wisdom-of-crowds/&amp;text=Three%20Heads%20are%20Better%20Than%20One" target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=/post/wisdom-of-crowds/&amp;t=Three%20Heads%20are%20Better%20Than%20One" target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Three%20Heads%20are%20Better%20Than%20One&amp;body=/post/wisdom-of-crowds/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=/post/wisdom-of-crowds/&amp;title=Three%20Heads%20are%20Better%20Than%20One" target="_blank" rel="noopener" class="share-btn-linkedin">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="whatsapp://send?text=Three%20Heads%20are%20Better%20Than%20One%20/post/wisdom-of-crowds/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=/post/wisdom-of-crowds/&amp;title=Three%20Heads%20are%20Better%20Than%20One" target="_blank" rel="noopener" class="share-btn-weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  <div class="media author-card content-widget-hr">
+    
+      
+      <img class="avatar mr-3 avatar-circle" src="/author/dan-w-joyce/avatar_hu9239ca797fad516d0c82eef67fca2cab_38244_270x270_fill_q75_lanczos_center.jpg" alt="Dan W Joyce">
+    
+
+    <div class="media-body">
+      <h5 class="card-title">Dan W Joyce</h5>
+      
+      <p class="card-text">I’m interested in how principles from computation can be used to understand clinical state and trajectories and how to augment clinical decision making using data, multivariate statistics and (cautiously) AI and ML.</p>
+      <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="/#contact" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://twitter.com/dan_w_joyce" target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/danwjoyce" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.linkedin.com/in/dan-joyce-6870166b/" target="_blank" rel="noopener">
+        <i class="fab fa-linkedin"></i>
+      </a>
+    </li>
+  
+</ul>
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  </div>
+</article>
+  </div>
+
+  <div class="page-footer">
+    
+    
+    <div class="container">
+      <footer class="site-footer">
+
+  
+
+  
+
+  
+
+  
+  
+
+
+
+
+
+
+  <p class="powered-by">
+    
+    
+    
+      
+      
+      
+      
+      
+      
+      Published with <a href="https://wowchemy.com/?utm_campaign=poweredby" target="_blank" rel="noopener">Wowchemy</a> — the free, <a href="https://github.com/wowchemy/wowchemy-hugo-modules" target="_blank" rel="noopener">open source</a> website builder that empowers creators.
+    
+  </p>
+</footer>
+
+    </div>
+    
+  </div>
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/instant.page/5.1.0/instantpage.min.js" integrity="sha512-1+qUtKoh9XZW7j+6LhRMAyOrgSQKenQ4mluTR+cvxXjP1Z54RxZuzstR/H9kgPXQsVB8IW7DMDFUJpzLjvhGSQ==" crossorigin="anonymous"></script>
+
+      
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      
+
+      
+      
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/highlight.min.js" integrity="sha512-TDKKr+IvoqZnPzc3l35hdjpHD0m+b2EC2SrLEgKDRWpxf2rFCxemkgvJ5kfU48ip+Y+m2XVKyOCD85ybtlZDmw==" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/languages/r.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/languages/python.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/languages/latex.min.js"></script>
+        
+      
+
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.js" integrity="sha512-SeiQaaDh73yrb56sTW/RgVdi/mMqNeM2oBwubFHagc5BkixSpP1fvqF47mKzPGWYSSy4RwbBunrJBQ4Co8fRWA==" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+    
+      
+      <script id="search-hit-fuse-template" type="text/x-template">
+        <div class="search-hit" id="summary-{{key}}">
+          <div class="search-hit-content">
+            <div class="search-hit-name">
+              <a href="{{relpermalink}}">{{title}}</a>
+              <div class="article-metadata search-hit-type">{{type}}</div>
+              <p class="search-hit-description">{{snippet}}</p>
+            </div>
+          </div>
+        </div>
+      </script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+      
+    
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    <script src="/js/bootstrap.bundle.min.6aed84840afc03ab4d5750157f69c120.js"></script>
+
+    
+    
+      
+      
+      
+      
+      
+      
+      
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+      
+      
+    
+    
+    <script src="/en/js/wowchemy.min.71e713848164e269bc250f377042949d.js"></script>
+
+    
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+
+
+
+</body>
+</html>

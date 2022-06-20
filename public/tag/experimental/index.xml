@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Experimental | Dan W Joyce</title>
+    <link>/tag/experimental/</link>
+      <atom:link href="/tag/experimental/index.xml" rel="self" type="application/rss+xml" />
+    <description>Experimental</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Wed, 01 Jan 2014 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Experimental</title>
+      <link>/tag/experimental/</link>
+    </image>
+    
+    <item>
+      <title>Amphetamine sensitization alters reward processing in the human striatum and amygdala.</title>
+      <link>/publication/odaly-amphetamine-2014/</link>
+      <pubDate>Wed, 01 Jan 2014 00:00:00 +0000</pubDate>
+      <guid>/publication/odaly-amphetamine-2014/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Examining belief and confidence in schizophrenia.</title>
+      <link>/publication/joyce-examining-2013/</link>
+      <pubDate>Fri, 01 Nov 2013 00:00:00 +0000</pubDate>
+      <guid>/publication/joyce-examining-2013/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>To trust or not to trust: the dynamics of social interaction in psychosis.</title>
+      <link>/publication/fett-trust-2012/</link>
+      <pubDate>Thu, 01 Mar 2012 00:00:00 +0000</pubDate>
+      <guid>/publication/fett-trust-2012/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

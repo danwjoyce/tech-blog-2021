@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Thomas P. White | Dan W Joyce</title>
+    <link>/author/thomas-p.-white/</link>
+      <atom:link href="/author/thomas-p.-white/index.xml" rel="self" type="application/rss+xml" />
+    <description>Thomas P. White</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Tue, 01 Nov 2016 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Thomas P. White</title>
+      <link>/author/thomas-p.-white/</link>
+    </image>
+    
+    <item>
+      <title>Reduced susceptibility to the sound-induced flash fusion illusion in schizophrenia.</title>
+      <link>/publication/vanes-reduced-2016/</link>
+      <pubDate>Tue, 01 Nov 2016 00:00:00 +0000</pubDate>
+      <guid>/publication/vanes-reduced-2016/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Dysfunctional Striatal Systems in Treatment-Resistant Schizophrenia.</title>
+      <link>/publication/white-dysfunctional-2016/</link>
+      <pubDate>Fri, 01 Apr 2016 00:00:00 +0000</pubDate>
+      <guid>/publication/white-dysfunctional-2016/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Eluding the illusion? Schizophrenia, dopamine and the McGurk effect.</title>
+      <link>/publication/white-eluding-2014/</link>
+      <pubDate>Wed, 01 Jan 2014 00:00:00 +0000</pubDate>
+      <guid>/publication/white-eluding-2014/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Functional magnetic resonance imaging of impaired sensory prediction in schizophrenia.</title>
+      <link>/publication/shergill-functional-2014/</link>
+      <pubDate>Wed, 01 Jan 2014 00:00:00 +0000</pubDate>
+      <guid>/publication/shergill-functional-2014/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Modulation of somatosensory processing by action.</title>
+      <link>/publication/shergill-modulation-2013/</link>
+      <pubDate>Mon, 01 Apr 2013 00:00:00 +0000</pubDate>
+      <guid>/publication/shergill-modulation-2013/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

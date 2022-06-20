@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Psychiatry/*standards | Dan W Joyce</title>
+    <link>/tag/psychiatry/standards/</link>
+      <atom:link href="/tag/psychiatry/standards/index.xml" rel="self" type="application/rss+xml" />
+    <description>Psychiatry/*standards</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Psychiatry/*standards</title>
+      <link>/tag/psychiatry/standards/</link>
+    </image>
+    
+    <item>
+      <title>Are we failing clinical trials? A case for strong aggregate outcomes.</title>
+      <link>/publication/joyce-are-2018/</link>
+      <pubDate>Mon, 01 Jan 2018 00:00:00 +0000</pubDate>
+      <guid>/publication/joyce-are-2018/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

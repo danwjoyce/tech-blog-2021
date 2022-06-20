@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>probabilistic inference | Dan W Joyce</title>
+    <link>/tag/probabilistic-inference/</link>
+      <atom:link href="/tag/probabilistic-inference/index.xml" rel="self" type="application/rss+xml" />
+    <description>probabilistic inference</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Wed, 01 Jan 2014 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>probabilistic inference</title>
+      <link>/tag/probabilistic-inference/</link>
+    </image>
+    
+    <item>
+      <title>Eluding the illusion? Schizophrenia, dopamine and the McGurk effect.</title>
+      <link>/publication/white-eluding-2014/</link>
+      <pubDate>Wed, 01 Jan 2014 00:00:00 +0000</pubDate>
+      <guid>/publication/white-eluding-2014/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

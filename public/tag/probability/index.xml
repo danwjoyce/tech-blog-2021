@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>probability | Dan W Joyce</title>
+    <link>/tag/probability/</link>
+      <atom:link href="/tag/probability/index.xml" rel="self" type="application/rss+xml" />
+    <description>probability</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Fri, 05 Nov 2021 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>probability</title>
+      <link>/tag/probability/</link>
+    </image>
+    
+    <item>
+      <title>Stuff I Always Look Up ...</title>
+      <link>/post/my-list-of-important-things/</link>
+      <pubDate>Fri, 05 Nov 2021 00:00:00 +0000</pubDate>
+      <guid>/post/my-list-of-important-things/</guid>
+      <description>
+
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#purpose&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1&lt;/span&gt; Purpose&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#posterior-predictive-distributions&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2&lt;/span&gt; Posterior Predictive Distributions&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#conditional-probability&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.1&lt;/span&gt; Conditional Probability&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#law-of-total-probability&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.2&lt;/span&gt; Law of Total Probability&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#conditional-independence&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.3&lt;/span&gt; Conditional Independence&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#bayes-theorem&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.4&lt;/span&gt; Bayes Theorem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#deriving-the-ppd&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.5&lt;/span&gt; Deriving the PPD&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#sampling-and-integration&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3&lt;/span&gt; Sampling and Integration&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#logits-probabilities-and-odds&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4&lt;/span&gt; Logits, Probabilities and Odds&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#odds&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.1&lt;/span&gt; Odds&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#odds-ratios&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.2&lt;/span&gt; Odds Ratios&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#logistic-regression&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.3&lt;/span&gt; Logistic Regression&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#references&#34;&gt;References&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;purpose&#34; class=&#34;section level1&#34; number=&#34;1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;1&lt;/span&gt; Purpose&lt;/h1&gt;
+&lt;p&gt;This is a living, annotated bibliography of stuff I need to use on a semi-regular basis, always have to look up but in my chaotic file system, can never find. It also documents some embarrassing truths – stuff like &lt;em&gt;“Is variance the square root of standard deviation, or the other way round?”&lt;/em&gt; … Of course, it’s the other way round.&lt;/p&gt;
+&lt;p&gt;So, point number one: If &lt;span class=&#34;math inline&#34;&gt;\(\sigma_X\)&lt;/span&gt; is the standard deviation of &lt;span class=&#34;math inline&#34;&gt;\(X\)&lt;/span&gt; then:
+&lt;span class=&#34;math display&#34;&gt;\[
+\mathrm{Var}(X) = \sigma^2_X
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;posterior-predictive-distributions&#34; class=&#34;section level1&#34; number=&#34;2&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;2&lt;/span&gt; Posterior Predictive Distributions&lt;/h1&gt;
+&lt;p&gt;I spent a week trying to find a derivation of equation 1.4 on pp.7 of &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-gelman2014bayesian&#34; role=&#34;doc-biblioref&#34;&gt;Gelman et al. 2014&lt;/a&gt;)&lt;/span&gt;, the posterior predictive distribution &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-rubin1984bayesianly&#34; role=&#34;doc-biblioref&#34;&gt;Rubin 1984&lt;/a&gt;)&lt;/span&gt; of new data &lt;span class=&#34;math inline&#34;&gt;\(\tilde{y}\)&lt;/span&gt; given previously observed data &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt; and a model with parameters &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt;
+&lt;span class=&#34;math display&#34; id=&#34;eq:PPD&#34;&gt;\[\begin{equation}
+p( \tilde{y} | y ) = \int p\left( \tilde{y} | \theta \right) p\left( \theta | y \right)  d\theta \tag{2.1}
+\label{eqn:finalPPD}
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;There are explanations floating around on the internet, but none I could follow because they skipped steps and left me confused.&lt;/p&gt;
+&lt;p&gt;We need a few basic laws and definitions from probability theory as follows &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-blitzstein2014introduction&#34; role=&#34;doc-biblioref&#34;&gt;Blitzstein and Hwang 2019&lt;/a&gt;)&lt;/span&gt;:&lt;/p&gt;
+&lt;div id=&#34;conditional-probability&#34; class=&#34;section level2&#34; number=&#34;2.1&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.1&lt;/span&gt; Conditional Probability&lt;/h2&gt;
+&lt;p&gt;For two variables &lt;span class=&#34;math inline&#34;&gt;\(a\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(b\)&lt;/span&gt;:
+&lt;span class=&#34;math display&#34; id=&#34;eq:condprob&#34;&gt;\[\begin{equation}
+p(a | b) = \frac{p(a,b)}{p(b)} \tag{2.2}
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Or re-arranged:
+&lt;span class=&#34;math display&#34; id=&#34;eq:condprob2&#34;&gt;\[\begin{equation}
+p(a,b) = p(a | b) p(b) \tag{2.3}
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;And for two variables &lt;span class=&#34;math inline&#34;&gt;\(a\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(b\)&lt;/span&gt;, conditioned on &lt;span class=&#34;math inline&#34;&gt;\(c\)&lt;/span&gt;:
+&lt;span class=&#34;math display&#34; id=&#34;eq:condprob3&#34;&gt;\[\begin{equation}
+p(a,b | c) = \frac{p(a,b,c)}{p(c)} \tag{2.4}
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;and the re-arrangement:
+&lt;span class=&#34;math display&#34;&gt;\[\begin{equation}
+p(a,b,c) =  p(a,b | c) p(c)
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Applying the &lt;a href=&#34;https://en.wikipedia.org/wiki/Chain_rule_(probability)&#34;&gt;chain rule of probability&lt;/a&gt;, &lt;span class=&#34;math inline&#34;&gt;\(p(a,b,c)\)&lt;/span&gt; can also be factorised as &lt;em&gt;any&lt;/em&gt; of the following:
+&lt;span class=&#34;math display&#34; id=&#34;eq:factors3&#34; id=&#34;eq:factors2&#34; id=&#34;eq:factors1&#34;&gt;\[\begin{align}
+  p(a,b,c) &amp;amp;= p(b,c|a) p(a) \tag{2.5} \\
+          &amp;amp;= p(a,c|b) p(b) \tag{2.6} \\
+          &amp;amp;= p(a,b|c) p(c) \tag{2.7}
+\end{align}\]&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;law-of-total-probability&#34; class=&#34;section level2&#34; number=&#34;2.2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.2&lt;/span&gt; Law of Total Probability&lt;/h2&gt;
+&lt;p&gt;From the joint probability &lt;span class=&#34;math inline&#34;&gt;\(p(a,b)\)&lt;/span&gt;, the marginal &lt;span class=&#34;math inline&#34;&gt;\(p(a)\)&lt;/span&gt; is:
+&lt;span class=&#34;math display&#34;&gt;\[\begin{equation}
+p(a) = \int p \left( a, b \right) db
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;And the continuous &lt;em&gt;law of total probability&lt;/em&gt; is &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-blitzstein2014introduction&#34; role=&#34;doc-biblioref&#34;&gt;Blitzstein and Hwang 2019&lt;/a&gt;)&lt;/span&gt; pp. 289:
+&lt;span class=&#34;math display&#34; id=&#34;eq:lotp2&#34;&gt;\[\begin{align}
+p(a) &amp;amp;= \int p \left( a,b \right) db \\
+     &amp;amp;= \int p \left( a|b \right) p( b )db \tag{2.8}
+\end{align}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;where we’ve used equation &lt;a href=&#34;#eq:condprob2&#34;&gt;(2.3)&lt;/a&gt; to re-write &lt;span class=&#34;math inline&#34;&gt;\(p \left( a,b \right)\)&lt;/span&gt; as &lt;span class=&#34;math inline&#34;&gt;\(p \left( a|b \right) p( b )\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Adding conditioning on &lt;span class=&#34;math inline&#34;&gt;\(c\)&lt;/span&gt; we obtain &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-blitzstein2014introduction&#34; role=&#34;doc-biblioref&#34;&gt;Blitzstein and Hwang 2019&lt;/a&gt;)&lt;/span&gt; pp. 54:
+&lt;span class=&#34;math display&#34; id=&#34;eq:lotp-cond&#34;&gt;\[\begin{align}
+\label{eqn:lotp_cont}
+p \left( a|c \right) &amp;amp;= \int p \left( a,b | c \right) db \\
+                     &amp;amp;= \int p \left( a|b,c \right) p( b | c ) db \tag{2.9}
+\end{align}\]&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;conditional-independence&#34; class=&#34;section level2&#34; number=&#34;2.3&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.3&lt;/span&gt; Conditional Independence&lt;/h2&gt;
+&lt;p&gt;Two variables &lt;span class=&#34;math inline&#34;&gt;\(a\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(c\)&lt;/span&gt; are &lt;em&gt;conditionally independent&lt;/em&gt; given a third variable &lt;span class=&#34;math inline&#34;&gt;\(b\)&lt;/span&gt; &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-blitzstein2014introduction&#34; role=&#34;doc-biblioref&#34;&gt;Blitzstein and Hwang 2019&lt;/a&gt;)&lt;/span&gt; pp. 58:
+&lt;span class=&#34;math display&#34; id=&#34;eq:condind1&#34;&gt;\[\begin{equation}
+( a \perp\!\!\!\perp c ) | b \iff p(a,c | b) = p( a | b ) p( c | b) \tag{2.10}
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bayes-theorem&#34; class=&#34;section level2&#34; number=&#34;2.4&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.4&lt;/span&gt; Bayes Theorem&lt;/h2&gt;
+&lt;p&gt;For two variables &lt;span class=&#34;math inline&#34;&gt;\(a\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(b\)&lt;/span&gt;:
+&lt;span class=&#34;math display&#34; id=&#34;eq:bayes&#34;&gt;\[\begin{equation}
+p(a|b) = \frac{p(b|a)p(a)}{p(b)} \tag{2.11}
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;deriving-the-ppd&#34; class=&#34;section level2&#34; number=&#34;2.5&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.5&lt;/span&gt; Deriving the PPD&lt;/h2&gt;
+&lt;p&gt;Starting with the fundamental Bayesian modelling framework:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;before observing the data, &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt;, the &lt;em&gt;prior distribution&lt;/em&gt; of the parameters is &lt;span class=&#34;math inline&#34;&gt;\(p(\theta)\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;we have a &lt;em&gt;sampling distribution&lt;/em&gt; of the data &lt;em&gt;given&lt;/em&gt; parameters &lt;span class=&#34;math inline&#34;&gt;\(p(y|\theta)\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;the joint distribution of &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt; is &lt;span class=&#34;math inline&#34;&gt;\(p(\theta, y) = p(\theta)p(y|\theta)\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;we then obtain the &lt;em&gt;posterior distribution&lt;/em&gt; of the parameters of the model given the observed data:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\begin{equation}
+    p(\theta|y) = \frac{p(\theta,y)}{p(y)} = \frac{p(\theta)p(y|\theta)}{p(y)}
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;So, we can think of the posterior distribution &lt;span class=&#34;math inline&#34;&gt;\(p(\theta|y)\)&lt;/span&gt; as the `output’ of Bayesian model estimation.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 1&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;We want to obtain a distribution for future values &lt;span class=&#34;math inline&#34;&gt;\(\tilde{y}\)&lt;/span&gt; given the observed (and modelled) data &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt; which is &lt;span class=&#34;math inline&#34;&gt;\(p(\tilde{y}|y)\)&lt;/span&gt; using what we know about the posterior distribution arising from parameter estimation &lt;span class=&#34;math inline&#34;&gt;\(p(\theta | y)\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;The first step is to write &lt;span class=&#34;math inline&#34;&gt;\(p(\tilde{y}|y)\)&lt;/span&gt; using the law of total probability (with conditioning): equation &lt;a href=&#34;#eq:lotp-cond&#34;&gt;(2.9)&lt;/a&gt;:
+&lt;span class=&#34;math display&#34; id=&#34;eq:step1&#34;&gt;\[\begin{equation}
+    p( \tilde{y} | y ) = \int p\left(\tilde{y},\theta | y \right) d\theta \tag{2.12}
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 2&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Re-write the integrand &lt;span class=&#34;math inline&#34;&gt;\(p\left(\tilde{y},\theta | y \right)\)&lt;/span&gt; using equation &lt;a href=&#34;#eq:condprob3&#34;&gt;(2.4)&lt;/a&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34; id=&#34;eq:step2&#34;&gt;\[\begin{equation}
+    p( \tilde{y} | y ) = \int \frac{p(\tilde{y},\theta,y)}{p(y)} d\theta \tag{2.13}
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 3&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;We assert that &lt;span class=&#34;math inline&#34;&gt;\(\tilde{y}\)&lt;/span&gt; is conditionally independent of &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt; &lt;em&gt;given&lt;/em&gt; the model parameters &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt;:
+&lt;span class=&#34;math display&#34; id=&#34;eq:condind-ppd&#34;&gt;\[\begin{equation}
+  ( \tilde{y} \perp\!\!\!\perp y ) | \theta \iff p( \tilde{y}, y | \theta) = p( \tilde{y} | \theta ) p( y | \theta) \tag{2.14}
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;To make use of the conditional independence &lt;span class=&#34;math inline&#34;&gt;\(p( \tilde{y}, y | \theta)\)&lt;/span&gt;, we have to factorise &lt;span class=&#34;math inline&#34;&gt;\(p(\tilde{y},\theta,y)\)&lt;/span&gt; in equation &lt;a href=&#34;#eq:step2&#34;&gt;(2.13)&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Let &lt;span class=&#34;math inline&#34;&gt;\(a = \tilde{y}\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(b = \theta\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(c = y\)&lt;/span&gt;; we are seeking a factorisation of &lt;span class=&#34;math inline&#34;&gt;\(p(a,b,c)\)&lt;/span&gt; as &lt;span class=&#34;math inline&#34;&gt;\(p(a,c|b)\)&lt;/span&gt; and inspecting the factorisations &lt;a href=&#34;#eq:factors1&#34;&gt;(2.5)&lt;/a&gt; through &lt;a href=&#34;#eq:factors3&#34;&gt;(2.7)&lt;/a&gt; we find that &lt;a href=&#34;#eq:factors2&#34;&gt;(2.6)&lt;/a&gt; matches:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34; id=&#34;eq:factor-cond-ind&#34;&gt;\[\begin{align}
+  p(a,b,c) &amp;amp;= p(a,c|b) p(b) \\
+  p( \tilde{y}, \theta, y) &amp;amp;= p( \tilde{y}, y | \theta) p(\theta) \tag{2.15}
+\end{align}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Substitution &lt;a href=&#34;#eq:factor-cond-ind&#34;&gt;(2.15)&lt;/a&gt; into &lt;a href=&#34;#eq:step2&#34;&gt;(2.13)&lt;/a&gt; we have:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34; id=&#34;eq:step3a&#34;&gt;\[\begin{equation}
+p(\tilde{y} | y ) = \int \frac{p(\tilde{y},y | \theta) p(\theta)}{p(y)} d \theta \tag{2.16}
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;We make use of the equality from equation &lt;a href=&#34;#eq:condind-ppd&#34;&gt;(2.14)&lt;/a&gt; i.e. that &lt;span class=&#34;math inline&#34;&gt;\(p( \tilde{y}, y | \theta) = p( \tilde{y} | \theta ) p( y | \theta)\)&lt;/span&gt; and substitute into &lt;a href=&#34;#eq:step3a&#34;&gt;(2.16)&lt;/a&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34; id=&#34;eq:step3b&#34;&gt;\[\begin{equation}
+p(\tilde{y} | y ) = \int \frac{ p( \tilde{y} | \theta ) p( y | \theta)  p(\theta)}{p(y)} d \theta \tag{2.17}
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Step 4&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Recall that we want to make use of the ‘output’ of parameter estimation, the posterior distribution of the model parameters given the observed data &lt;span class=&#34;math inline&#34;&gt;\(p(\theta|y)\)&lt;/span&gt;, and in equation &lt;a href=&#34;#eq:step3b&#34;&gt;(2.17)&lt;/a&gt; we see the term &lt;span class=&#34;math inline&#34;&gt;\(p(y|\theta)\)&lt;/span&gt;. All we need to do is re-write &lt;span class=&#34;math inline&#34;&gt;\(p(y|\theta)\)&lt;/span&gt; using Bayes rule, equation &lt;a href=&#34;#eq:bayes&#34;&gt;(2.11)&lt;/a&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\begin{equation}
+p(y|\theta) = \frac{p(\theta|y) p(y)}{p(\theta)}
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;And substitute into equation &lt;a href=&#34;#eq:step3b&#34;&gt;(2.17)&lt;/a&gt;:
+&lt;span class=&#34;math display&#34; id=&#34;eq:step4&#34;&gt;\[\begin{align}
+p(\tilde{y} | y ) &amp;amp;= \int \frac{ p( \tilde{y} | \theta ) p(\theta|y) p(y)   p(\theta)}{p(y)p(\theta)} d \theta  \\
+                  &amp;amp;= \int p( \tilde{y} | \theta ) p(\theta|y) d \theta \tag{2.18} \\
+
+\end{align}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;… and there we have it, the expression for the PPD, equation &lt;a href=&#34;#eq:PPD&#34;&gt;(2.1)&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;sampling-and-integration&#34; class=&#34;section level1&#34; number=&#34;3&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;3&lt;/span&gt; Sampling and Integration&lt;/h1&gt;
+&lt;p&gt;This one came from &lt;a href=&#34;https://twitter.com/ChadScherrer&#34;&gt;Chad Scherrer&lt;/a&gt; who posted a &lt;a href=&#34;https://twitter.com/ChadScherrer/status/1292528021568552962?s=20&#34;&gt;tweet&lt;/a&gt; about the relationship between integration and sampling and I thought this was a really helpful heuristic.&lt;/p&gt;
+&lt;p&gt;When I work through examples of Bayesian problems, my first thought is “&lt;strong&gt;how will I code this?&lt;/strong&gt;” and Chad’s tweet comes to mind, and helpfully, it follows nicely from the posterior predictive distribution example.&lt;/p&gt;
+&lt;p&gt;To paraphrase Chad’s tweet:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;To sample from &lt;span class=&#34;math inline&#34;&gt;\(p(y|x)p(x)\)&lt;/span&gt; …
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Sample &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Use the sample of &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; to sample &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Return &lt;span class=&#34;math inline&#34;&gt;\((x,y)\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;li&gt;To sample from &lt;span class=&#34;math inline&#34;&gt;\(\int p(y|x)p(x) dx\)&lt;/span&gt; …
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Sample &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Use the sample of &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; to sample &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Discard &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Return &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In practice then: we want to obtain samples from the &lt;em&gt;posterior predictive distribution&lt;/em&gt; &lt;span class=&#34;math inline&#34;&gt;\(p(\tilde{y}|y)\)&lt;/span&gt; i.e. for some new or unseen &lt;span class=&#34;math inline&#34;&gt;\(\tilde{x}\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\begin{equation}
+p(\tilde{y} | y ) = \int p( \tilde{y} | \theta ) p(\theta|y) d \theta
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Here’s how to proceed. We’ve used some Bayesian parameter estimation method (e.g. MCMC or similar) to obtain samples from &lt;span class=&#34;math inline&#34;&gt;\(p(\theta|y)\)&lt;/span&gt; and stored them as &lt;span class=&#34;math inline&#34;&gt;\(\Theta_S\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;We have a function that returns a value &lt;span class=&#34;math inline&#34;&gt;\(\tilde{y}\)&lt;/span&gt; given an input &lt;span class=&#34;math inline&#34;&gt;\(\tilde{x}\)&lt;/span&gt; and parameters &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt; such that &lt;span class=&#34;math inline&#34;&gt;\(\tilde{y} = f(\tilde{x}; \theta)\)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;For each sample &lt;span class=&#34;math inline&#34;&gt;\(\theta^{s} \in \Theta_S\)&lt;/span&gt; – one sample from &lt;span class=&#34;math inline&#34;&gt;\(p(\theta|y)\)&lt;/span&gt;&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;&lt;p&gt;Compute &lt;span class=&#34;math inline&#34;&gt;\(\tilde{y}^s = f(\tilde{x}; \theta^{s})\)&lt;/span&gt; – a sample from &lt;span class=&#34;math inline&#34;&gt;\(p(\tilde{y}|\theta)\)&lt;/span&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Store &lt;span class=&#34;math inline&#34;&gt;\(\tilde{y}^s\)&lt;/span&gt; and throw away &lt;span class=&#34;math inline&#34;&gt;\(\theta^{s}\)&lt;/span&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Our resulting collection of &lt;span class=&#34;math inline&#34;&gt;\(\tilde{y}^s\)&lt;/span&gt; are samples from the PPD from which we can then take expected values, quantiles etc.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;logits-probabilities-and-odds&#34; class=&#34;section level1&#34; number=&#34;4&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;4&lt;/span&gt; Logits, Probabilities and Odds&lt;/h1&gt;
+&lt;p&gt;Can never remember these relations, so wrote them down explicitly for future reference.&lt;/p&gt;
+&lt;div id=&#34;odds&#34; class=&#34;section level2&#34; number=&#34;4.1&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.1&lt;/span&gt; Odds&lt;/h2&gt;
+&lt;p&gt;If &lt;span class=&#34;math inline&#34;&gt;\(p_A\)&lt;/span&gt; is the probability of event &lt;span class=&#34;math inline&#34;&gt;\(A\)&lt;/span&gt; then:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;span class=&#34;math inline&#34;&gt;\(\textrm{odds}_A = \frac{1}{(1-p_A)}\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;given the odds, we recover the probability as &lt;span class=&#34;math inline&#34;&gt;\(p_A = \frac{\textrm{odds}_A}{1+\textrm{odds}_A}\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;the &lt;strong&gt;log odds&lt;/strong&gt; are given by &lt;span class=&#34;math inline&#34;&gt;\(\ln(\textrm{odds}_A) = \ln \left( \frac{1}{1-p_A} \right) = \textrm{logit}(p_A) = \ln(p_A) - \ln(1-p_A)\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;So, odds of 1.0 equals a probability &lt;span class=&#34;math inline&#34;&gt;\(p_A = 0.5\)&lt;/span&gt; – the probability of the event occurring is at chance level.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;odds-ratios&#34; class=&#34;section level2&#34; number=&#34;4.2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.2&lt;/span&gt; Odds Ratios&lt;/h2&gt;
+&lt;p&gt;For two events, &lt;span class=&#34;math inline&#34;&gt;\(A\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(B\)&lt;/span&gt; with probabilities &lt;span class=&#34;math inline&#34;&gt;\(p_A\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(p_B\)&lt;/span&gt;:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;span class=&#34;math inline&#34;&gt;\(\textrm{odds}_A = \frac{1}{(1-p_A)}\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\textrm{odds}_B = \frac{1}{(1-p_B)}\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;the &lt;strong&gt;odds ratio&lt;/strong&gt; &lt;span class=&#34;math inline&#34;&gt;\(\textrm{OR}_{AB} = \frac{\textrm{odds}_A}{\textrm{odds}_B} = \frac{1-p_B}{1-p_A}\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div id=&#34;logistic-regression&#34; class=&#34;section level2&#34; number=&#34;4.3&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.3&lt;/span&gt; Logistic Regression&lt;/h2&gt;
+&lt;p&gt;In logistic regression applied to clinical situations, we are usually interested in a single “thing” associated with two discrete and mutually-exclusive events (e.g. &lt;span class=&#34;math inline&#34;&gt;\(A\)&lt;/span&gt; = “dying” or &lt;span class=&#34;math inline&#34;&gt;\(B\)&lt;/span&gt; = “not dying”) – the thing either occurs or it does &lt;em&gt;not&lt;/em&gt; occur. In these circumstances &lt;span class=&#34;math inline&#34;&gt;\(p_B = 1 - p_A\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;To convert to the language of regression, denote an outcome &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt; (for example, death, experiencing a side effect, obtaining a positive response to a treatment) then:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;the probability that &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt; occurred is &lt;span class=&#34;math inline&#34;&gt;\(p_y\)&lt;/span&gt; (equivalent to &lt;span class=&#34;math inline&#34;&gt;\(p_A\)&lt;/span&gt; in the example above)&lt;/li&gt;
+&lt;li&gt;the corresponding probability &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt; &lt;strong&gt;does not&lt;/strong&gt; occur (&lt;span class=&#34;math inline&#34;&gt;\(¬y\)&lt;/span&gt;) is &lt;span class=&#34;math inline&#34;&gt;\(1-p_y\)&lt;/span&gt; (equivalent to &lt;span class=&#34;math inline&#34;&gt;\(p_B\)&lt;/span&gt; in the example above)&lt;/li&gt;
+&lt;li&gt;the odds of &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt; occurring are &lt;span class=&#34;math inline&#34;&gt;\(\textrm{odds}_{y} = \frac{1}{(1-p_y)}\)&lt;/span&gt; and the odds of &lt;span class=&#34;math inline&#34;&gt;\(¬y\)&lt;/span&gt; are &lt;span class=&#34;math inline&#34;&gt;\(\textrm{odds}_{¬y} = \frac{1}{1-(1-p_y)} = \frac{1}{p_y}\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;the odds ratio of &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(¬y\)&lt;/span&gt; is then &lt;span class=&#34;math inline&#34;&gt;\(\textrm{OR}_{(y,¬y)} = \frac{p_y}{1-p_y}\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Further reading: Chapter 13 of &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-gelman2020regression&#34; role=&#34;doc-biblioref&#34;&gt;Gelman, Hill, and Vehtari 2020&lt;/a&gt;)&lt;/span&gt; walks through all this with examples and code in R. On the web, Jay Rotella has a &lt;a href=&#34;https://www.montana.edu/rotella/documents/502/Prob_odds_log-odds.pdf&#34;&gt;nice PDF walk through&lt;/a&gt; of the same material with elaboration and graphical examples in R.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;references&#34; class=&#34;section level1 unnumbered&#34;&gt;
+&lt;h1&gt;References&lt;/h1&gt;
+&lt;div id=&#34;refs&#34; class=&#34;references csl-bib-body hanging-indent&#34;&gt;
+&lt;div id=&#34;ref-blitzstein2014introduction&#34; class=&#34;csl-entry&#34;&gt;
+Blitzstein, Joseph K, and Jessica Hwang. 2019. &lt;em&gt;Introduction to Probability&lt;/em&gt;. 2nd ed. Chapman; Hall/CRC.
+&lt;/div&gt;
+&lt;div id=&#34;ref-gelman2020regression&#34; class=&#34;csl-entry&#34;&gt;
+Gelman, Andrew, Jennifer Hill, and Aki Vehtari. 2020. &lt;em&gt;Regression and Other Stories&lt;/em&gt;. Cambridge University Press.
+&lt;/div&gt;
+&lt;div id=&#34;ref-gelman2014bayesian&#34; class=&#34;csl-entry&#34;&gt;
+Gelman, Andrew, Hal S Stern, John B Carlin, David B Dunson, Aki Vehtari, and Donald B Rubin. 2014. &lt;em&gt;Bayesian Data Analysis&lt;/em&gt;. 3rd ed. Chapman; Hall/CRC.
+&lt;/div&gt;
+&lt;div id=&#34;ref-rubin1984bayesianly&#34; class=&#34;csl-entry&#34;&gt;
+Rubin, Donald B. 1984. &lt;span&gt;“Bayesianly Justifiable and Relevant Frequency Calculations for the Applied Statistician.”&lt;/span&gt; &lt;em&gt;The Annals of Statistics&lt;/em&gt; 12 (4): 1151–72.
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

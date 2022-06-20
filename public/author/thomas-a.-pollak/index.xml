@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Thomas A. Pollak | Dan W Joyce</title>
+    <link>/author/thomas-a.-pollak/</link>
+      <atom:link href="/author/thomas-a.-pollak/index.xml" rel="self" type="application/rss+xml" />
+    <description>Thomas A. Pollak</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Tue, 01 Jan 2019 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Thomas A. Pollak</title>
+      <link>/author/thomas-a.-pollak/</link>
+    </image>
+    
+    <item>
+      <title>Associations Between Non-neurological Autoimmune Disorders and Psychosis: A Meta-analysis.</title>
+      <link>/publication/cullen-associations-2019/</link>
+      <pubDate>Tue, 01 Jan 2019 00:00:00 +0000</pubDate>
+      <guid>/publication/cullen-associations-2019/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

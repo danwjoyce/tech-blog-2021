@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Andrey Kormilitzin | Dan W Joyce</title>
+    <link>/author/andrey-kormilitzin/</link>
+      <atom:link href="/author/andrey-kormilitzin/index.xml" rel="self" type="application/rss+xml" />
+    <description>Andrey Kormilitzin</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Thu, 02 Dec 2021 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Andrey Kormilitzin</title>
+      <link>/author/andrey-kormilitzin/</link>
+    </image>
+    
+    <item>
+      <title>CHRONOSIG: Digital Triage for Secondary Mental Healthcare using Natural Language Processing - rationale and protocol</title>
+      <link>/publication/joyce-2021-chronosig/</link>
+      <pubDate>Thu, 02 Dec 2021 00:00:00 +0000</pubDate>
+      <guid>/publication/joyce-2021-chronosig/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

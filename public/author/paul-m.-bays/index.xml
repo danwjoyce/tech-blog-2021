@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Paul M. Bays | Dan W Joyce</title>
+    <link>/author/paul-m.-bays/</link>
+      <atom:link href="/author/paul-m.-bays/index.xml" rel="self" type="application/rss+xml" />
+    <description>Paul M. Bays</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Wed, 01 Jan 2014 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Paul M. Bays</title>
+      <link>/author/paul-m.-bays/</link>
+    </image>
+    
+    <item>
+      <title>Functional magnetic resonance imaging of impaired sensory prediction in schizophrenia.</title>
+      <link>/publication/shergill-functional-2014/</link>
+      <pubDate>Wed, 01 Jan 2014 00:00:00 +0000</pubDate>
+      <guid>/publication/shergill-functional-2014/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Modulation of somatosensory processing by action.</title>
+      <link>/publication/shergill-modulation-2013/</link>
+      <pubDate>Mon, 01 Apr 2013 00:00:00 +0000</pubDate>
+      <guid>/publication/shergill-modulation-2013/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Photic Stimulation | Dan W Joyce</title>
+    <link>/tag/photic-stimulation/</link>
+      <atom:link href="/tag/photic-stimulation/index.xml" rel="self" type="application/rss+xml" />
+    <description>Photic Stimulation</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Tue, 01 Nov 2016 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Photic Stimulation</title>
+      <link>/tag/photic-stimulation/</link>
+    </image>
+    
+    <item>
+      <title>Reduced susceptibility to the sound-induced flash fusion illusion in schizophrenia.</title>
+      <link>/publication/vanes-reduced-2016/</link>
+      <pubDate>Tue, 01 Nov 2016 00:00:00 +0000</pubDate>
+      <guid>/publication/vanes-reduced-2016/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Aging effects on functional auditory and visual processing using fMRI with variable sensory loading.</title>
+      <link>/publication/cliff-aging-2013/</link>
+      <pubDate>Wed, 01 May 2013 00:00:00 +0000</pubDate>
+      <guid>/publication/cliff-aging-2013/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Spatial language, visual attention, and perceptual simulation.</title>
+      <link>/publication/coventry-spatial-2010/</link>
+      <pubDate>Mon, 01 Mar 2010 00:00:00 +0000</pubDate>
+      <guid>/publication/coventry-spatial-2010/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

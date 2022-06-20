@@ -1,0 +1,1610 @@
+<!DOCTYPE html><html lang="en-us" >
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  
+  
+    <meta name="generator" content="Wowchemy 5.1.0 for Hugo" />
+  
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Dan W Joyce" />
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Here’s the problem set-up: we have a group of diseases/disorders/conditions (A,B,C and D) and associated known treatments (RxA, RxB, RxC and RxD). We want to build graphs that represent associations between the conditions and treatments for a group of patients." />
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/2021-11-02-tensors/tensor-connectivity-matrices/" />
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+
+  
+  
+  
+    <meta name="theme-color" content="#1565c0" />
+  
+
+  
+  
+    
+    <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha256-FMvZuGapsJLjouA6k7Eo2lusoAX9i0ShlWFG6qt7SLc=" crossorigin="anonymous">
+
+    
+    
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/styles/github.min.css" crossorigin="anonymous" title="hl-light" media="print" onload="this.media='all'">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" media="print" onload="this.media='all'" disabled>
+        
+      
+    
+
+    
+    
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.css" integrity="sha512-1xoFisiGdy9nvho8EgXuXvnpR5GAMSjFwp40gSRE3NwdUdIMIKuPa7bqoUhLD0O/5tPNhteAsE5XyyMi5reQVA==" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
+
+    
+
+    
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+  
+
+  
+  
+  
+    
+      
+      <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap" media="print" onload="this.media='all'">
+    
+  
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/wowchemy.ddb2a9c79d7760a321f1b5392a04566a.css" />
+
+  
+
+
+
+  
+
+  
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+    <link rel="manifest" href="/index.webmanifest" />
+  
+
+  <link rel="icon" type="image/png" href="/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_32x32_fill_lanczos_center_2.png" />
+  <link rel="apple-touch-icon" type="image/png" href="/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_180x180_fill_lanczos_center_2.png" />
+
+  <link rel="canonical" href="/post/2021-11-02-tensors/tensor-connectivity-matrices/" />
+
+  
+  
+  
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary" />
+  
+    <meta property="twitter:site" content="@@dan_w_joyce" />
+    <meta property="twitter:creator" content="@@dan_w_joyce" />
+  
+  <meta property="og:site_name" content="Dan W Joyce" />
+  <meta property="og:url" content="/post/2021-11-02-tensors/tensor-connectivity-matrices/" />
+  <meta property="og:title" content="Tensor Decompositions and Noisy Graphs | Dan W Joyce" />
+  <meta property="og:description" content="Here’s the problem set-up: we have a group of diseases/disorders/conditions (A,B,C and D) and associated known treatments (RxA, RxB, RxC and RxD). We want to build graphs that represent associations between the conditions and treatments for a group of patients." /><meta property="og:image" content="/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png" />
+    <meta property="twitter:image" content="/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png" /><meta property="og:locale" content="en-us" />
+  
+    
+      <meta
+        property="article:published_time"
+        content="2020-09-17T00:00:00&#43;00:00"
+      />
+    
+    <meta property="article:modified_time" content="2020-09-17T00:00:00&#43;00:00">
+  
+
+  
+
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "/post/2021-11-02-tensors/tensor-connectivity-matrices/"
+  },
+  "headline": "Tensor Decompositions and Noisy Graphs",
+  
+  "datePublished": "2020-09-17T00:00:00Z",
+  "dateModified": "2020-09-17T00:00:00Z",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Dan W Joyce"
+  },
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "Dan W Joyce",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_192x192_fill_lanczos_center_2.png"
+    }
+  },
+  "description": "Here’s the problem set-up: we have a group of diseases/disorders/conditions (A,B,C and D) and associated known treatments (RxA, RxB, RxC and RxD). We want to build graphs that represent associations between the conditions and treatments for a group of patients."
+}
+</script>
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+  <title>Tensor Decompositions and Noisy Graphs | Dan W Joyce</title>
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class="page-wrapper   " data-wc-page-id="62130f17a00a185994bc1a76b75b629d" >
+
+  
+  
+  
+  
+  
+  
+  
+  
+  <script src="/js/wowchemy-init.min.f16be01fc8fb2b5885dd67ce942d1185.js"></script>
+
+  
+
+
+<aside class="search-modal" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#" aria-label="Close"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search" class="form-control"
+        aria-label="Search...">
+        
+      </div>
+
+      
+      
+
+      
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+
+  <div class="page-header">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container-xl">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Dan W Joyce</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Dan W Joyce</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#about"><span>About</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#featured"><span>Publications</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#contact"><span>Contact</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+
+      
+      
+        
+          
+          <li class="nav-item d-none d-lg-inline-flex">
+            <a class="nav-link" href="https://twitter.com/dan_w_joyce" data-toggle="tooltip" data-placement="bottom" title="Follow me on Twitter" target="_blank" rel="noopener" aria-label="Follow me on Twitter">
+              <i class="fab fa-twitter" aria-hidden="true"></i>
+            </a>
+          </li>
+        
+      
+
+      
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#" aria-label="Search"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      
+      <li class="nav-item dropdown theme-dropdown">
+        <a href="#" class="nav-link" data-toggle="dropdown" aria-haspopup="true" aria-label="Display preferences">
+          <i class="fas fa-moon" aria-hidden="true"></i>
+        </a>
+        <div class="dropdown-menu">
+          <a href="#" class="dropdown-item js-set-theme-light">
+            <span>Light</span>
+          </a>
+          <a href="#" class="dropdown-item js-set-theme-dark">
+            <span>Dark</span>
+          </a>
+          <a href="#" class="dropdown-item js-set-theme-auto">
+            <span>Automatic</span>
+          </a>
+        </div>
+      </li>
+      
+
+      
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  </div>
+
+  <div class="page-body">
+    <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1>Tensor Decompositions and Noisy Graphs</h1>
+
+  
+
+  
+    
+
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    Sep 17, 2020
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    21 min read
+  </span>
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder mr-1"></i><a href="/category/r/">R</a>, <a href="/category/tensors/">tensors</a>, <a href="/category/graphs/">graphs</a></span>
+  
+
+</div>
+
+    
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      
+
+
+<p>Here’s the problem set-up: we have a group of diseases/disorders/conditions (A,B,C and D) and associated known treatments (RxA, RxB, RxC and RxD). We want to build <a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)#Definitions">graphs</a> that represent associations between the conditions and treatments for a group of patients. We are given time-ordered data (from their medical records) that records a sequence of recorded episodes (but not the precise dates of each) of both conditions and treatments. Ultimately, we want to discover patterns of common treatments and conditions to derive some understanding of multimorbidity.</p>
+<p>An example:</p>
+<p><img src="/img/figs-tensors/tod-1.png" width="80%" /></p>
+<p>The circles represent mentions of disorders and the squares treatment episodes. Here, we can see someone with a life-long condition (A) for which they had continuous treatment (or at least, at the resolution of recording, whenever A was mentioned, RxA was also). At some point, they develop an episode of condition B and on the second occurrence, they’re prescribed treatment RxB. And so on. We can see that we could represent each time-ordered series as a binary indicator vector, for instance condition B = (0,0,1,1,0,0,1,1,1) and treatment RxD = (0,0,0,0,0,1,1,0,0).</p>
+<p>We can construct a graph where nodes/vertices are the conditions and treatments, and the edges between represent relationships. In this example, A and RxA <em>always</em> co-occur together so if an edge represents co-occurence, this would be a very strong association. Another method of constructing the graph is to systematically time-lag each condition/treatment vector and see if there’s a consistent pattern of e.g. condition B always preceding RxB. To do this, we use pairwise <a href="https://en.wikipedia.org/wiki/Transfer_entropy">transfer entropy</a> (which generalises the notion of Granger temporality) for each pair of conditions and treatments.</p>
+<p>If we do this for the above time-ordered data, we get the following directed graph (note, squares are treatments and circles conditions):</p>
+<p><img src="/img/figs-tensors/graph-tod-1.png" width="80%" /></p>
+<p>This graph can be parsimoniously represented as an adjacency matrix: rows and columns represent conditions/treatments and the <span class="math inline">\((i,j)\)</span>th element is the strength of association (i.e. that condition/treatment <span class="math inline">\(i\)</span> precedes condition/treatment <span class="math inline">\(j\)</span>). For the graph above, the adjacency matrix looks like:</p>
+<p><img src="/img/figs-tensors/conn-matrix-1.png" width="60%" /></p>
+<p>Importantly, it’s an asymmetric directed graph, so the direction (as well as the strength) of associations matter. Ultimately, for this blogpost, it doesn’t really matter how the graph is constructed, just that we have a bunch of graphs represented as adjacency matrices.</p>
+<p>For this simulation, we built 4 example time-ordered sequences of conditions/treatments and then derived the adjacency matrices as before, resulting in the following 4 exemplar graphs:</p>
+<p><img src="/img/figs-tensors/four-exemplar-graphs.png" width="80%" /></p>
+<p>Then, we derive 25 noisy variations of each examplar, giving us 100 samples as follows: <img src="/img/figs-tensors/all-connect-matrix.png" width="80%" /></p>
+<p>Now assume that we are given the 100 noisy samples and we want to discover underlying graphs (which of course, in this simulated example, we know is 4 and we know what they look like). We can see glimpses of the original 4 exemplars in the table of samples, but if we take the “average” graph (adjacency matrix) we’d get this: <img src="/img/figs-tensors/avrg-connect-matrix.png" width="60%" /></p>
+<p><a href="https://en.wikipedia.org/wiki/Graph_partition">Graph partitioning</a> methods try and tease out collections (or communities) of nodes/edges that form discrete graphs by selecting and cutting edges. One approach to this is spectral partitioning where first, we derive the Laplacian matrix (from the adjacency matrix) and perform eigen- or singular value decomposition (SVD) on it – to me, this seems like magic: you can carve up a graph (represented as an adjacency matrix) using linear algebra. I recently learned about non-negative matrix factorisation from a paper by <span class="citation">Hassaine et al. (2020)</span> on multimorbidity in clinical data which prompted me to read the original paper <span class="citation">(Lee and Seung 1999)</span> and a bit like SVD, seemed like more magic to me. Further, <span class="citation">Hassaine et al. (2020)</span> described using tensors – collections of matrices – for a similar task.</p>
+<p>So here we have our problem: given a bunch of 100 noisy adjacency matrices above, extract the underlying ‘exemplar’ or prototype graphs. The case presented here is not dissimilar to ideas in image processing – each matrix is a noisy image and we want to find some underlying latent structure. If each of the 100 noisy adjacency matrices is a sample, it seems logical to ‘stack’ them up and see what can be learned from this ‘stack’. A series of matrices can be stacked up into a multidimensional array structure (a tensor) and there’s a literature on how to perform decomposition (akin to SVD) on tensors. So you can see how the logic proceeds: if matrix decompositions (like SVD) can can be used to partition a single graph (connectivity matrix), then maybe tensors can help tease out common structure in a stack of adjacency matrices.</p>
+<div id="tensors" class="section level1">
+<h1><span class="header-section-number">1</span> Tensors</h1>
+<p>There are plenty of great online resources on <a href="https://en.wikipedia.org/wiki/Tensor#Definition">tensors</a> and multilinear algerbra. One source that I found spectacularly helpful was <a href="https://www.alexejgossmann.com/">Alexej Gossman’s</a> tutorial on Tucker and Rank-1 decompositions, not least because it serves as an introduction to programming with tensors in R. A frequently-cited and comprehensive tutorial paper is <span class="citation">(Kolda and Bader 2009)</span> which contains the formal details alluded to here and from which we borrow notation. Much of what follows are notes to help me remember the core concepts.</p>
+<p>A tensor is essentially a multi-dimensional array – much the same as the notion of a multi-dimensional array of numbers in programmning languages – and generalises familiar objects like vectors and matrices.</p>
+<p>A tensor has an <strong>order</strong> which equates the number of dimensions of the array.</p>
+<p>An <strong>order one</strong> tensor is a vector <span class="math inline">\(\mathbf{v} = \left[ v_1, v_2, \ldots, v_{I_1} \right]\)</span> with <span class="math inline">\(I_1\)</span> elements (i.e. is of length <span class="math inline">\(I_1\)</span>). A vector of real numbers is denoted <span class="math inline">\(\mathbf{v} \in \mathbb{R}^{I_1}\)</span> (and in what follows, all our tensors will contain real elements).</p>
+<p>An <strong>order two</strong> tensor is a matrix <span class="math inline">\(\mathbf{M} \in \mathbb{R}^{I_1 \times I_2}\)</span> with <span class="math inline">\(I_1\)</span> rows and <span class="math inline">\(I_2\)</span> columns.</p>
+<p>Before getting carried away, a simple motivating example. Take the matrix <span class="math inline">\(\mathbf{M} \in \mathbb{R}^{2 \times 3}\)</span></p>
+<pre class="r"><code>M &lt;- matrix( c(1,2,3,4,5,6), nrow = 2, ncol = 3, byrow = TRUE )
+M</code></pre>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    1    2    3
+## [2,]    4    5    6</code></pre>
+<p>If we want the first <em>row</em> of the matrix <span class="math inline">\(\mathbf{M}\)</span> we’ll write this as <span class="math inline">\(\mathbf{M}_{1:}\)</span> which we read as “set the row index <span class="math inline">\(i_1 = 1\)</span> and retrieve <em>all</em> columns” yielding (1, 2, 3). Similarly, if we want the third <em>column</em> of <span class="math inline">\(\mathbf{M}\)</span> we’ll write this as <span class="math inline">\(\mathbf{M}_{:3}\)</span>, to be read as “set the column index <span class="math inline">\(i_2 = 3\)</span> and retrieve all rows” yielding (3, 6).</p>
+<div id="modes-and-fibres" class="section level2">
+<h2><span class="header-section-number">1.1</span> Modes and Fibres</h2>
+<p>Translating to the language of tensors; instead of discussing rows or columns, we generalise to <strong>fibres</strong> and <strong>modes</strong>:</p>
+<ul>
+<li>a matrix is a 2nd order tensor with indices <span class="math inline">\(i_1\)</span> and <span class="math inline">\(i_2\)</span></li>
+<li>index <span class="math inline">\(i_1\)</span> refers to the <strong>first mode</strong></li>
+<li>index <span class="math inline">\(i_2\)</span> refers to the <strong>second mode</strong></li>
+</ul>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    1    2    3
+## [2,]    4    5    6</code></pre>
+<p>Then, we have:</p>
+<ul>
+<li>the <strong>mode-1 fibres</strong> of the matrix above are the columns denoted by <span class="math inline">\(\mathbf{M}_{:j}\)</span> which are (1, 4), (2, 5) and (3, 6),</li>
+<li>the <strong>mode-2 fibres</strong> are the rows of the matrix above, denoted by <span class="math inline">\(\mathbf{M}_{i:}\)</span> which are (1, 2, 3) and (4, 5, 6)</li>
+</ul>
+<p>Fibres of a tensor are obtained by ‘fixing’ all but one of the mode indices.</p>
+</div>
+<div id="third-order-tensors-and-slices" class="section level2">
+<h2><span class="header-section-number">1.2</span> Third Order Tensors and Slices</h2>
+<p>Now we come to <strong>third order</strong> tensors <span class="math inline">\(\mathbf{\mathcal{X}} \in \mathbb{R}^{I_1 \times I_2 \times I_3}\)</span> representing a “cuboid” of elements with three modes and indices ranging from <span class="math inline">\(i_1 = 1 \ldots I_1\)</span>, <span class="math inline">\(i_2 = 1 \ldots I_2\)</span> and <span class="math inline">\(i_3 = 1 \ldots I_3\)</span>.</p>
+<p>Let’s illustrate this by first of all defining two matrices of size <span class="math inline">\(2 \times 3\)</span>:</p>
+<pre class="r"><code>X1 &lt;- matrix( c(1,2,3,4,5,6), nrow = 2, ncol = 3, byrow = TRUE )
+X2 &lt;- matrix( c(7,8,9,10,11,12), nrow = 2, ncol = 3, byrow = TRUE )
+print(X1)</code></pre>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    1    2    3
+## [2,]    4    5    6</code></pre>
+<pre class="r"><code>print(X2)</code></pre>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    7    8    9
+## [2,]   10   11   12</code></pre>
+<p>And now, glue them together in the third mode with <code>X1</code> at the front and <code>X2</code> behind:</p>
+<pre class="r"><code>X &lt;- as.tensor( abind( X1, X2, along = 3 ) )
+print(X@data)</code></pre>
+<pre><code>## , , 1
+## 
+##      [,1] [,2] [,3]
+## [1,]    1    2    3
+## [2,]    4    5    6
+## 
+## , , 2
+## 
+##      [,1] [,2] [,3]
+## [1,]    7    8    9
+## [2,]   10   11   12</code></pre>
+<p>By “stacking” <code>X1</code> and <code>X2</code> we’ve built the tensor <span class="math inline">\(\mathbf{\mathcal{X}} \in \mathbb{R}^{2 \times 3 \times 2}\)</span>.</p>
+<p>This illustrates <strong>slices</strong> – by fixing all the indices except two, we obtain a matrix that represents a ‘cut’ through the tensor in two of the modes. The <strong>frontal slices</strong> are <span class="math inline">\(\mathbf{X}_{::k}\)</span> and are simply the two matrices <code>X1</code> and <code>X2</code> in the code above. Note that we use the R package <a href="https://cran.r-project.org/package=rTensor"><code>rTensor</code></a> which provides a class for tensor representations.</p>
+<p>We can slice the tensor on different modes, obtaining <strong>horizontal slices</strong> <span class="math inline">\(\mathbf{X}_{i::}\)</span></p>
+<pre class="r"><code>X[1,,]@data</code></pre>
+<pre><code>##      [,1] [,2]
+## [1,]    1    7
+## [2,]    2    8
+## [3,]    3    9</code></pre>
+<pre class="r"><code>X[2,,]@data</code></pre>
+<pre><code>##      [,1] [,2]
+## [1,]    4   10
+## [2,]    5   11
+## [3,]    6   12</code></pre>
+<p>And <strong>lateral slices</strong> <span class="math inline">\(\mathbf{X}_{:j:}\)</span></p>
+<pre class="r"><code>X[,1,]@data</code></pre>
+<pre><code>##      [,1] [,2]
+## [1,]    1    7
+## [2,]    4   10</code></pre>
+<pre class="r"><code>X[,2,]@data</code></pre>
+<pre><code>##      [,1] [,2]
+## [1,]    2    8
+## [2,]    5   11</code></pre>
+<pre class="r"><code>X[,3,]@data</code></pre>
+<pre><code>##      [,1] [,2]
+## [1,]    3    9
+## [2,]    6   12</code></pre>
+<p>We’re not going to need more than 3rd order tensors for what follows, so we won’t generalise further.</p>
+</div>
+<div id="matricization-and-vectorization-of-tensors" class="section level2">
+<h2><span class="header-section-number">1.3</span> Matricization and Vectorization of Tensors</h2>
+<p>Order 3 tensors are cuboids and this is intutive. But if the order is higher, it becomes very hard to visualise, manipulate and define operations on tensors.</p>
+<p>One simple transformation is to <strong>vectorize</strong> the tensor, which simply means ‘flattening’ the tensor into a vector following some convention for how elements are “read out” by systematically varying the indices with respect to each other (e.g. <span class="math inline">\(i_1\)</span> varies slower than <span class="math inline">\(i_2\)</span>). We denote this operation <span class="math inline">\(\text{vec}(\mathcal{X})\)</span> which gives:</p>
+<pre class="r"><code>rTensor::vec(X)</code></pre>
+<pre><code>##  [1]  1  4  2  5  3  6  7 10  8 11  9 12</code></pre>
+<p>Notice that this look like a vector of the column fibres of each frontal slice – i.e. (1, 4)<span class="math inline">\(^T\)</span>, (2, 5)<span class="math inline">\(^T\)</span>, (3, 6)<span class="math inline">\(^T\)</span> … concatenated together.</p>
+<p><strong>Matricization</strong> is the transforming of a tensor into a matrix represention by <strong>unfolding</strong> the tensor along a mode. This helps us visualise as well as understand operations on tensors. The sources to understand this in detail are <span class="citation">Kolda and Bader (2009)</span> and <span class="citation">Bader and Kolda (2006)</span>.</p>
+<p>An <strong>n-mode matricization</strong> of a tensor yields a matrix with columns being the mode-n fibres of the tensor.</p>
+<p>Take our <span class="math inline">\(2 \times 3 \times 2\)</span> tensor <span class="math inline">\(\mathcal{X}\)</span>:</p>
+<pre class="r"><code>X@data</code></pre>
+<pre><code>## , , 1
+## 
+##      [,1] [,2] [,3]
+## [1,]    1    2    3
+## [2,]    4    5    6
+## 
+## , , 2
+## 
+##      [,1] [,2] [,3]
+## [1,]    7    8    9
+## [2,]   10   11   12</code></pre>
+<p>If we unfold the tensor along the <em>first</em> mode we get the two frontal slices (matrices) <span class="math inline">\(\mathbf{X}_{::1}\)</span> and <span class="math inline">\(\mathbf{X}_{::2}\)</span> concatenated side-by-side as a matrix <span class="math inline">\(\left[ \mathbf{X}_{::1} \mid \mathbf{X}_{::2} \right]\)</span> and we denote this with a bracketed subscript indicating the mode <span class="math inline">\(\mathbf{X}_{(1)}\)</span></p>
+<pre class="r"><code>k_unfold(X, m = 1)</code></pre>
+<pre><code>## Numeric Tensor of 2 Modes
+## Modes:  2 6 
+## Data: 
+##      [,1] [,2] [,3] [,4] [,5] [,6]
+## [1,]    1    2    3    7    8    9
+## [2,]    4    5    6   10   11   12</code></pre>
+<p>And if we unfold on the second mode <span class="math inline">\(\mathbf{X}_{(2)}\)</span> we get the transposed frontal slices arranged side-by-side <span class="math inline">\(\left[ \mathbf{X}^{\intercal}_{::1} \mid \mathbf{X}^{\intercal}_{::2} \right]\)</span></p>
+<pre class="r"><code>k_unfold(X, m = 2)</code></pre>
+<pre><code>## Numeric Tensor of 2 Modes
+## Modes:  3 4 
+## Data: 
+##      [,1] [,2] [,3] [,4]
+## [1,]    1    4    7   10
+## [2,]    2    5    8   11
+## [3,]    3    6    9   12</code></pre>
+<p>Finally, unfolding in the third mode <span class="math inline">\(\mathcal{X}_{(3)}\)</span> we get:</p>
+<pre class="r"><code>k_unfold(X, m = 3)</code></pre>
+<pre><code>## Numeric Tensor of 2 Modes
+## Modes:  2 6 
+## Data: 
+##      [,1] [,2] [,3] [,4] [,5] [,6]
+## [1,]    1    4    2    5    3    6
+## [2,]    7   10    8   11    9   12</code></pre>
+<p>Which is the matrix : <span class="math display">\[
+  \begin{bmatrix}
+    \text{vec}(\mathcal{X}_{::1})^T \\
+    \text{vec}(\mathcal{X}_{::2})^T
+  \end{bmatrix}
+\]</span> That is, the first and second rows are the vectorization of the first and second frontal slices respectively:</p>
+<pre class="r"><code>rbind( vec(X[,,1]), vec(X[,,2] ) )</code></pre>
+<pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6]
+## [1,]    1    4    2    5    3    6
+## [2,]    7   10    8   11    9   12</code></pre>
+</div>
+<div id="tensor-matrix-products" class="section level2">
+<h2><span class="header-section-number">1.4</span> Tensor-Matrix Products</h2>
+<p>An important operation is the product of a tensor and a matrix along the <span class="math inline">\(n\)</span>th mode, or the <strong>n-mode product</strong>. Restricting out attention to order 3 tensors (“cubes”) – we multiply the tensor <span class="math inline">\(\mathbf{\mathcal{X}}^{I_1 \times I_2 \times I_3}\)</span> with a matrix <span class="math inline">\(\mathbf{M} \in \mathbb{R}^{J \times I_n}\)</span> where <span class="math inline">\(n\)</span> is mode 1, 2 or 3.</p>
+<p>To my mind, the definition of the n-mode product is most easily understood in terms of matricization (unfolding), matrix products and the folding the result back into a tensor. The expression for the element-wise calculation is given in <span class="citation">(Kolda and Bader 2009)</span> pp. 460.</p>
+<p>For example, take the matrix <span class="math inline">\(\mathbf{Q} \in \mathbb{R}^{3 \times 2}\)</span>:</p>
+<pre class="r"><code>Q &lt;- matrix( c(1,1,2,2,3,3), nrow = 3, ncol = 2, byrow = TRUE )
+print(Q)</code></pre>
+<pre><code>##      [,1] [,2]
+## [1,]    1    1
+## [2,]    2    2
+## [3,]    3    3</code></pre>
+<p>To multiply <span class="math inline">\(\mathbf{Q}\)</span> by mode <span class="math inline">\(n\)</span> of the tensor <span class="math inline">\(\mathbf{\mathcal{X}}\)</span> we perform this sequence of operations:</p>
+<ol style="list-style-type: decimal">
+<li>Let <span class="math inline">\(\mathbf{X}_{(n)}\)</span> be the <span class="math inline">\(n\)</span> mode unfolding of <span class="math inline">\(\mathbf{\mathcal{X}}\)</span></li>
+<li>Compute the matrix product <span class="math inline">\(\mathbf{X&#39;}_{(n)} = \mathbf{Q} \mathbf{X}_{(n)}\)</span></li>
+<li>Fold <span class="math inline">\(\mathbf{X&#39;}_{(n)}\)</span> along the <span class="math inline">\(n\)</span>-th mode</li>
+</ol>
+<p>Note, this only makes sense if the dimensions of the matrix <span class="math inline">\(\mathbf{Q}\)</span> are conformable with the unfolding of the tensor i.e. that the number of columns in <span class="math inline">\(\mathbf{Q}\)</span> equals <span class="math inline">\(I_n\)</span>, the size of mode <span class="math inline">\(n\)</span> in the tensor</p>
+<p>Let’s do this for the first mode of our example. Here’s our tensor <span class="math inline">\(\mathbf{\mathcal{X}}\)</span> again:</p>
+<pre class="r"><code>print(X@data)</code></pre>
+<pre><code>## , , 1
+## 
+##      [,1] [,2] [,3]
+## [1,]    1    2    3
+## [2,]    4    5    6
+## 
+## , , 2
+## 
+##      [,1] [,2] [,3]
+## [1,]    7    8    9
+## [2,]   10   11   12</code></pre>
+<p>Mode 1 of <span class="math inline">\(\mathbf{\mathcal{X}}\)</span> is of size <span class="math inline">\(I_1 = 2\)</span> and our matrix <span class="math inline">\(\mathbf{Q}\)</span> has two columns, so we’re good.</p>
+<ol style="list-style-type: decimal">
+<li>Unfold <span class="math inline">\(\mathbf{\mathcal{X}}\)</span> along the first mode <span class="math inline">\(\mathbf{X}_{(1)}\)</span></li>
+</ol>
+<pre class="r"><code># mode to take product with
+n &lt;- 1
+X_1 &lt;- k_unfold( X, n )@data
+print(X_1)</code></pre>
+<pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6]
+## [1,]    1    2    3    7    8    9
+## [2,]    4    5    6   10   11   12</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Compute the matrix product <span class="math inline">\(\mathbf{X&#39;}_{(1)} = \mathbf{Q} \mathbf{X}_{(1)}\)</span></li>
+</ol>
+<pre class="r"><code>X_1_prime &lt;- Q %*% X_1
+print( X_1_prime )</code></pre>
+<pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6]
+## [1,]    5    7    9   17   19   21
+## [2,]   10   14   18   34   38   42
+## [3,]   15   21   27   51   57   63</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Fold <span class="math inline">\(\mathbf{X&#39;}_{(1)}\)</span> along the <span class="math inline">\(n\)</span>-th mode</li>
+</ol>
+<pre class="r"><code># compute the required modes for the resulting folded tensor
+Q.dims &lt;- dim(Q)
+modes.X_prime &lt;- X@modes
+modes.X_prime[n] &lt;- Q.dims[1]
+# fold
+Q_by_X.1 &lt;- k_fold( X_1_prime, n, modes.X_prime )
+print( Q_by_X.1@data )</code></pre>
+<pre><code>## , , 1
+## 
+##      [,1] [,2] [,3]
+## [1,]    5    7    9
+## [2,]   10   14   18
+## [3,]   15   21   27
+## 
+## , , 2
+## 
+##      [,1] [,2] [,3]
+## [1,]   17   19   21
+## [2,]   34   38   42
+## [3,]   51   57   63</code></pre>
+<p>Naturally, there’s a function to do this for us in one simple step:</p>
+<pre class="r"><code>rTensor::ttm( X, Q, m = 1)@data</code></pre>
+<pre><code>## , , 1
+## 
+##      [,1] [,2] [,3]
+## [1,]    5    7    9
+## [2,]   10   14   18
+## [3,]   15   21   27
+## 
+## , , 2
+## 
+##      [,1] [,2] [,3]
+## [1,]   17   19   21
+## [2,]   34   38   42
+## [3,]   51   57   63</code></pre>
+</div>
+</div>
+<div id="matrix-decompositions" class="section level1">
+<h1><span class="header-section-number">2</span> Matrix Decompositions</h1>
+<p>We can now venture into the decompositions, or factorizations, of matrices and tensors.</p>
+<div id="singular-value-decomposition" class="section level2">
+<h2><span class="header-section-number">2.1</span> Singular Value Decomposition</h2>
+<pre class="r"><code>set.seed(314159)
+A &lt;- matrix(  c(1,0,0,1,
+                1,0,0,1,
+                1,1,1,1,
+                1,0,0,1,
+                1,0,0,1), ncol = 4, nrow = 5, byrow = TRUE)
+
+
+A &lt;- A + runif( 4*5, -0.1, 0.3)
+
+UDV &lt;- svd(A)
+U &lt;- UDV$u
+D &lt;- diag(UDV$d)
+V &lt;- UDV$v
+
+recon.4 &lt;- U[,1:4] %*% D[1:4,1:4] %*% t(V[,1:4])
+recon.2 &lt;- U[,1:2] %*% D[1:2,1:2] %*% t(V[,1:2])
+
+par(mfrow=c(1,3),
+      mar = c(0.5,0.5,2,0.5),
+      pty = &quot;s&quot;)
+    image( t(A), xaxt = &quot;n&quot;, yaxt = &quot;n&quot;, col = viridis(256), main = &quot;Original&quot; )
+    image( t(recon.4), xaxt = &quot;n&quot;, yaxt = &quot;n&quot;, col = viridis(256), main = &quot;k=4&quot; )
+    image( t(recon.2), xaxt = &quot;n&quot;, yaxt = &quot;n&quot;, col = viridis(256), main = &quot;k=2&quot; )</code></pre>
+<p><img src="/post/2020-09-17-tensor-connectivity-matrices_files/figure-html/unnamed-chunk-25-1.png" width="672" /> This diagram shows on the left, an original image (a sort of noisy “H” shape) represented by a matrix <span class="math inline">\(\mathbf{M} \in \mathbb{R}^{5 \times 4}\)</span>.</p>
+<p>We subject this to a <a href="https://en.wikipedia.org/wiki/Singular_value_decomposition">singular valued decomposition</a>: <span class="math display">\[
+  \mathbf{M} = \mathbf{UDV}^{\intercal}
+\]</span> where the factor matrices are:</p>
+<ul>
+<li><span class="math inline">\(D\)</span> is the diagonal matrix of singular values, with largest value in the top left, descending to the smallest along the diagonal:</li>
+</ul>
+<pre class="r"><code>print(D)</code></pre>
+<pre><code>##          [,1]     [,2]      [,3]      [,4]
+## [1,] 3.504158 0.000000 0.0000000 0.0000000
+## [2,] 0.000000 1.323071 0.0000000 0.0000000
+## [3,] 0.000000 0.000000 0.2577888 0.0000000
+## [4,] 0.000000 0.000000 0.0000000 0.1509413</code></pre>
+<ul>
+<li><span class="math inline">\(U\)</span> is a matrix of <span class="math inline">\(5 \times 4\)</span> left singular vectors of <span class="math inline">\(\mathbf{M}\)</span></li>
+</ul>
+<pre class="r"><code>print(U)</code></pre>
+<pre><code>##            [,1]       [,2]         [,3]        [,4]
+## [1,] -0.4365701 -0.2339371  0.813531383 -0.01200304
+## [2,] -0.4120556 -0.2359644 -0.512436719  0.37115595
+## [3,] -0.5058560  0.8584828 -0.003890147  0.06573130
+## [4,] -0.3961206 -0.1703899 -0.263178631 -0.86250248
+## [5,] -0.4762509 -0.3515234 -0.079354732  0.33744341</code></pre>
+<ul>
+<li><span class="math inline">\(V\)</span> is a matrix of <span class="math inline">\(4 \times 4\)</span> right singular vectors of <span class="math inline">\(\mathbf{M}\)</span></li>
+</ul>
+<pre class="r"><code>print(V)</code></pre>
+<pre><code>##            [,1]       [,2]        [,3]        [,4]
+## [1,] -0.6951074 -0.2107143 -0.68594850 -0.04358657
+## [2,] -0.1943603  0.5802217 -0.03149829  0.79030037
+## [3,] -0.2231139  0.7589987  0.03175303 -0.61084605
+## [4,] -0.6551869 -0.2070343  0.72627423  0.01981508</code></pre>
+<p>We can now ‘reconstruct’ an approximation to the original image <span class="math inline">\(\widetilde{\mathbf{M}} = \mathbf{UDV^{\intercal}}\)</span> and this is shown in the middle picture with <span class="math inline">\(k = 4\)</span> denoting that we use all 4 of the singular vectors.</p>
+<p>The “magic” alluded to earlier is when we use a <strong>truncated</strong> version of the SVD – take the first <span class="math inline">\(1 \ldots k\)</span> singular vectors and use these to reconstruct the image: <span class="math display">\[
+  \widetilde{\mathbf{M}} = \mathbf{U}_{:k} \mathbf{D}_{kk} \mathbf{V}^{\intercal}_{:k}
+\]</span> With <span class="math inline">\(k=2\)</span>, we get the third image on the right; a reconstructed image using half the vectors (i.e. compressed) which additionally helps de-noise the original image.</p>
+</div>
+<div id="non-negative-matrix-factorisation" class="section level2">
+<h2><span class="header-section-number">2.2</span> Non-Negative Matrix Factorisation</h2>
+<p>Another decomposition (factorisation) is the <strong>non-negative</strong> matrix factorisation or NMF (see <span class="citation">Lee and Seung (1999)</span> for details). Here, we factor: <span class="math display">\[
+  \mathbf{M} = \mathbf{WH}^{\intercal}
+\]</span> subject to the constraint that the factor matrices <span class="math inline">\(\mathbf{W}\)</span> and <span class="math inline">\(\mathbf{H}\)</span> are non-negative (cf. the matrices <span class="math inline">\(\mathbf{U}\)</span> and <span class="math inline">\(\mathbf{V}\)</span> in SVD as shown above). This results in an algorithm for estimating the factor matrices which is iterative for each element of <span class="math inline">\(\mathbf{W}\)</span> and <span class="math inline">\(\mathbf{H}\)</span>. The remarkable feature of NMF is that the resulting factor matrices have a component-parts interpretation as follows; the columns of <span class="math inline">\(\mathbf{H}\)</span> are <strong>encodings</strong> and columns of <span class="math inline">\(\mathbf{W}\)</span> are <strong>weights</strong> that map encodings to weighted-sums in <span class="math inline">\(\mathbf{M}\)</span>.</p>
+<p>This means, we can use a truncated NMF decomposition to partition “component parts” of <span class="math inline">\(\mathbf{M}\)</span>.</p>
+<p>As an example, with the same noisy “H” image, we apply NMF truncating to <span class="math inline">\(k=2\)</span> and reconstruct:</p>
+<pre class="r"><code>nmf.1 &lt;- NMF(A, J=2)
+W &lt;- nmf.1$U
+H &lt;- nmf.1$V
+
+recon.nmf &lt;- W %*% t(H)
+
+
+par(mfrow=c(1,2),
+      mar = c(0.5,0.5,2,0.5),
+      pty = &quot;s&quot;)
+    image( t(A), xaxt = &quot;n&quot;, yaxt = &quot;n&quot;, col = viridis(256), main = &quot;Original&quot; )
+    image( t(recon.nmf), xaxt = &quot;n&quot;, yaxt = &quot;n&quot;, col = viridis(256), main = &quot;NMF (k = 2)&quot; )    </code></pre>
+<p><img src="/post/2020-09-17-tensor-connectivity-matrices_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
+<p>The result is very similar to SVD. The “magic” here is in the following trick – take each column of <span class="math inline">\(\mathbf{W}_{:i}\)</span> and multiply it by the corresponding column of <span class="math inline">\(\mathbf{H}^{\intercal}_{:i}\)</span> and we get:</p>
+<pre class="r"><code>recon.nmf.1 &lt;- W[,1] %*% t(H[,1])
+recon.nmf.2 &lt;- W[,2] %*% t(H[,2])
+recon.nmf.sum &lt;- recon.nmf.1 + recon.nmf.2
+
+par(mfrow=c(1,3),
+      mar = c(0.5,0.5,2,0.5),
+      pty = &quot;s&quot;)
+    image( t(recon.nmf.1), xaxt = &quot;n&quot;, yaxt = &quot;n&quot;, col = viridis(256), main = &quot;W x H (1st column)&quot; )    
+    image( t(recon.nmf.2), xaxt = &quot;n&quot;, yaxt = &quot;n&quot;, col = viridis(256), main = &quot;W x H (2nd column)&quot; )
+    image( t(recon.nmf.sum), xaxt = &quot;n&quot;, yaxt = &quot;n&quot;, col = viridis(256), main = &quot;Sum&quot; )</code></pre>
+<p><img src="/post/2020-09-17-tensor-connectivity-matrices_files/figure-html/unnamed-chunk-30-1.png" width="672" /> So we see that the columns of the factor matrices capture component parts of the source matrix and reconstruction is the sum of those component parts. This is a direct consequence of imposing the constraint that the elements of <span class="math inline">\(\mathbf{M} = \mathbf{WH}^{\intercal}\)</span> must be non-negative.</p>
+<p>We can repeat the experiment with <span class="math inline">\(k=3\)</span>:</p>
+<pre class="r"><code>set.seed(314150)
+nmf.2 &lt;- NMF(A, J=3,  algorithm = &quot;Frobenius&quot;)
+W &lt;- nmf.2$U
+H &lt;- nmf.2$V
+
+recon.nmf &lt;- W %*% t(H)
+
+recon.nmf.1 &lt;- W[,1] %*% t(H[,1])
+recon.nmf.2 &lt;- W[,2] %*% t(H[,2])
+recon.nmf.3 &lt;- W[,3] %*% t(H[,3])
+recon.nmf.sum &lt;- recon.nmf.1 + recon.nmf.2 + recon.nmf.3
+
+par(mfrow=c(1,4),
+      mar = c(0.5,0.5,2,0.5),
+      pty = &quot;s&quot;)
+
+    image( t(recon.nmf.1), xaxt = &quot;n&quot;, yaxt = &quot;n&quot;, col = viridis(256), main = &quot;W x H (1st column)&quot; )    
+    image( t(recon.nmf.2), xaxt = &quot;n&quot;, yaxt = &quot;n&quot;, col = viridis(256), main = &quot;W x H (2nd column)&quot; )
+    image( t(recon.nmf.3), xaxt = &quot;n&quot;, yaxt = &quot;n&quot;, col = viridis(256), main = &quot;W x H (3rd column)&quot; )
+    image( t(recon.nmf.sum), xaxt = &quot;n&quot;, yaxt = &quot;n&quot;, col = viridis(256), main = &quot;Sum&quot; )</code></pre>
+<p><img src="/post/2020-09-17-tensor-connectivity-matrices_files/figure-html/unnamed-chunk-31-1.png" width="672" /> Notice now that the three components are the right and left vertical ‘bars’ and the one horizontal bar. The problem is, with <span class="math inline">\(k=2\)</span> the solution found by NMF is stable (i.e. it always extracts a component with the two vertical bars, and one hortizontal) but with <span class="math inline">\(k=3\)</span> the solution varied significantly between runs of the iterative NMF algorithm; sometimes local optima are found which make sense, other times we get less meaningful decompositions. These variable results are not shown here because we fix the pseudo-random number generator seed for reproducibility.</p>
+<p>One of the problems with applying NMF is finding the right <span class="math inline">\(k\)</span> that reflects the desired component-parts decomposition in the problem domain.</p>
+</div>
+</div>
+<div id="tensor-decomposition" class="section level1">
+<h1><span class="header-section-number">3</span> Tensor Decomposition</h1>
+<p>For a survey of tensor decomposition techniques, <span class="citation">Kolda and Bader (2009)</span> is the go-to source. Here, we’ll focus on one decomposition that mirrors NMF for tensors, the <strong>non-negative Tucker decomposition</strong> (NTD) for mode-3 tensors. Instead of having a target matrix, decomposed by multiplying factor matrices together, we have a more complex problem of factorising a cuboid. Recall our example: 100 noisy samples derived from 4 ‘prototypical’ graph adjacency matrices.</p>
+<p>With tensors, the intuitions from matrix decomposition apply, but instead of dealing with products of matrices, we now have a more complex situation shown below:</p>
+<p><img src="/img/figs-tensors/tucker-schematic.png" width="80%" /></p>
+<p>The Tucker decomposition is then: <span class="math display">\[
+\mathcal{X} = \mathcal{G} \times_1 \mathbf{A} \times_2 \mathbf{B} \times_3 \mathbf{C} 
+\]</span></p>
+<p>Here:</p>
+<ul>
+<li><span class="math inline">\(\mathcal{X}\)</span> is the tensor of dimensions <span class="math inline">\(I_1 \times I_2 \times I_3\)</span> which for our application represents the <span class="math inline">\(8 \times 8\)</span> adjacency matrices stacked in the third mode to build a tensor of size <span class="math inline">\(8 \times 8 \times 100\)</span></li>
+<li><span class="math inline">\(\mathcal{G}\)</span> is the <strong>core tensor</strong> which has dimensions <span class="math inline">\(R_1 \times R_2 \times R_3\)</span> and is smaller than the dimensions of <span class="math inline">\(\mathcal{X}\)</span> where each <span class="math inline">\(R_j \leq I_j\)</span> – therefore, the core tensor “compresses” the information in <span class="math inline">\(\mathcal{X}\)</span></li>
+<li><span class="math inline">\(\mathbf{A}\)</span>, <span class="math inline">\(\mathbf{B}\)</span> and <span class="math inline">\(\mathbf{C}\)</span> are the <strong>factor matrices</strong> which have dimensions <span class="math inline">\(I_1 \times R_1\)</span>, <span class="math inline">\(I_2 \times R_2\)</span> and <span class="math inline">\(I_3 \times R_3\)</span> respectively.</li>
+</ul>
+<p>By analogy with principal components analysis, the factor matrices <span class="math inline">\(\mathbf{A}\)</span>, <span class="math inline">\(\mathbf{B}\)</span> and <span class="math inline">\(\mathbf{C}\)</span> are the principal components in each of the modes and the core tensor represents the interactions between the components <span class="citation">(Kolda and Bader 2009)</span>.</p>
+<p>The iterative algorithm for computing the factor matrices and core tensor subject to non-negativity constraints can be found in in Chapter 7 of <span class="citation">(Cichocki et al. 2009)</span> and connections to latent structure and statistics can be found in <span class="citation">(Shashua and Hazan 2005)</span>. Here, we use the <a href="https://cran.r-project.org/package=nnTensor"><code>nnTensor</code></a> package implementation for NTD.</p>
+</div>
+<div id="application" class="section level1">
+<h1><span class="header-section-number">4</span> Application</h1>
+<p>Let’s return to the example we started with, recovering adjacency matrices from 100 noisy samples.</p>
+<p>The code for what follows is computationally expensive, so is posted seperately on GITHUB LINK.</p>
+<div id="finding-an-appropriate-rank-for-the-core-tensor" class="section level2">
+<h2><span class="header-section-number">4.1</span> Finding an Appropriate Rank for the Core Tensor</h2>
+<p>The example of NMF on the “H” image above demonstrates that knowing <em>in advance</em> what the expected components are helps decide on the truncation (or reduced rank) to use. In the tensor example of 100 adjacency matrices, assume we don’t know that there are four prototypical adjacency matrices in advance. We need to decide on the size of the core tensor (and the corresponding factor matrices) without this information.</p>
+<p>Recall also that the core tensor is a compressed representation of the data in each of the three modes.</p>
+<p>Here’s the approach; we use NTD to obtain a compressed representation and treat the factor matrix <span class="math inline">\(\mathbf{C}\)</span> (corresponding to the third mode of the tensor <span class="math inline">\(\mathcal{X}\)</span>) as a projection (i.e. dimensionality reduction) to locate a candidate number of clusters for all 100 samples.</p>
+<ol style="list-style-type: decimal">
+<li>Compute a low-rank NTD with <span class="math inline">\(R_1 = R_2 = 8\)</span> and <span class="math inline">\(R_3 = 3\)</span> – so, compressing over the third mode (the ‘stacking’ of the adjacency matrices) but leaving the modes corresponding to the adjacency matrix rows/columns uncompressed. Reducing on <span class="math inline">\(R_3 = 3\)</span> is somewhat arbitrary, but allows us to visualise the resulting factor matrix <span class="math inline">\(\mathbf{C}\)</span> in Step 2</li>
+<li>Take the factor matrix <span class="math inline">\(\mathbf{C} \in \mathbb{R}^{100 \times 3}\)</span> which represents each of the 100 adjacency matrices projected in a space <span class="math inline">\(\mathbb{R}^3\)</span></li>
+<li>Perform <em>k</em>-means clustering in <span class="math inline">\(\mathbb{R}^3\)</span> with multiple re-starts over a range of candidate cluster numbers (e.g. 2 through to 10 clusters); for each number of clusters, use the Gap statistic to ascertain the optimal number of clusters.</li>
+<li>Repeat steps 1–3 a number of times (say, 20) recording the optimum number of clusters located in Step 3</li>
+<li>Take the mode number of clusters <span class="math inline">\(\#c\)</span></li>
+</ol>
+<p>We repeat steps 1–3 because (as for NMF) NTD uses an iterative algorithm not guaranteed to find a global optimum and often, NTD locates quite different factorisations for different initialisations.</p>
+<p>On our example data, here’s what we obtain:</p>
+<p><img src="/img/figs-tensors/r3-clusters.png" width="80%" /></p>
+<p>Each plot is one of three projections of <span class="math inline">\(\mathbf{C}\)</span> (it looks a lot cooler as a 3D plot but it’s harder to see the clusters clearly).</p>
+<div id="refs" class="references">
+<div id="ref-bader2006algorithm">
+<p>Bader, Brett W, and Tamara G Kolda. 2006. “Algorithm 862: MATLAB Tensor Classes for Fast Algorithm Prototyping.” <em>ACM Transactions on Mathematical Software (TOMS)</em> 32 (4). ACM New York, NY, USA: 635–53.</p>
+</div>
+<div id="ref-cichocki2009nonnegative">
+<p>Cichocki, Andrzej, Rafal Zdunek, Anh Huy Phan, and Shun-ichi Amari. 2009. <em>Nonnegative Matrix and Tensor Factorizations: Applications to Exploratory Multi-Way Data Analysis and Blind Source Separation</em>. John Wiley &amp; Sons.</p>
+</div>
+<div id="ref-hassaine2020untangling">
+<p>Hassaine, Abdelaali, Gholamreza Salimi-Khorshidi, Dexter Canoy, and Kazem Rahimi. 2020. “Untangling the Complexity of Multimorbidity with Machine Learning.” <em>Mechanisms of Ageing and Development</em> 190: 111325. <a href="https://doi.org/10.1016/j.mad.2020.111325" class="uri">https://doi.org/10.1016/j.mad.2020.111325</a>.</p>
+</div>
+<div id="ref-kolda2009tensor">
+<p>Kolda, Tamara G, and Brett W Bader. 2009. “Tensor Decompositions and Applications.” <em>SIAM Review</em> 51 (3). SIAM: 455–500.</p>
+</div>
+<div id="ref-lee1999learning">
+<p>Lee, Daniel D, and H Sebastian Seung. 1999. “Learning the Parts of Objects by Non-Negative Matrix Factorization.” <em>Nature</em> 401 (6755). Nature Publishing Group: 788–91.</p>
+</div>
+<div id="ref-shashua2005non">
+<p>Shashua, Amnon, and Tamir Hazan. 2005. “Non-Negative Tensor Factorization with Applications to Statistics and Computer Vision.” In <em>Proceedings of the 22nd International Conference on Machine Learning</em>, 792–99.</p>
+</div>
+</div>
+</div>
+</div>
+
+    </div>
+
+    
+
+
+
+
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tag/r/">R</a>
+  
+  <a class="badge badge-light" href="/tag/clinical-data/">clinical data</a>
+  
+  <a class="badge badge-light" href="/tag/multimorbidity/">multimorbidity</a>
+  
+</div>
+
+
+
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=/post/2021-11-02-tensors/tensor-connectivity-matrices/&amp;text=Tensor%20Decompositions%20and%20Noisy%20Graphs" target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=/post/2021-11-02-tensors/tensor-connectivity-matrices/&amp;t=Tensor%20Decompositions%20and%20Noisy%20Graphs" target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Tensor%20Decompositions%20and%20Noisy%20Graphs&amp;body=/post/2021-11-02-tensors/tensor-connectivity-matrices/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=/post/2021-11-02-tensors/tensor-connectivity-matrices/&amp;title=Tensor%20Decompositions%20and%20Noisy%20Graphs" target="_blank" rel="noopener" class="share-btn-linkedin">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="whatsapp://send?text=Tensor%20Decompositions%20and%20Noisy%20Graphs%20/post/2021-11-02-tensors/tensor-connectivity-matrices/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=/post/2021-11-02-tensors/tensor-connectivity-matrices/&amp;title=Tensor%20Decompositions%20and%20Noisy%20Graphs" target="_blank" rel="noopener" class="share-btn-weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  <div class="media author-card content-widget-hr">
+    
+      
+      <img class="avatar mr-3 avatar-circle" src="/author/dan-w-joyce/avatar_hu9239ca797fad516d0c82eef67fca2cab_38244_270x270_fill_q75_lanczos_center.jpg" alt="Dan W Joyce">
+    
+
+    <div class="media-body">
+      <h5 class="card-title">Dan W Joyce</h5>
+      
+      <p class="card-text">I’m interested in how principles from computation can be used to understand clinical state and trajectories and how to augment clinical decision making using data, multivariate statistics and (cautiously) AI and ML.</p>
+      <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="/#contact" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://twitter.com/dan_w_joyce" target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/danwjoyce" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.linkedin.com/in/dan-joyce-6870166b/" target="_blank" rel="noopener">
+        <i class="fab fa-linkedin"></i>
+      </a>
+    </li>
+  
+</ul>
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  </div>
+</article>
+  </div>
+
+  <div class="page-footer">
+    
+    
+    <div class="container">
+      <footer class="site-footer">
+
+  
+
+  
+
+  
+
+  
+  
+
+
+
+
+
+
+  <p class="powered-by">
+    
+    
+    
+      
+      
+      
+      
+      
+      
+      Published with <a href="https://wowchemy.com/?utm_campaign=poweredby" target="_blank" rel="noopener">Wowchemy</a> — the free, <a href="https://github.com/wowchemy/wowchemy-hugo-modules" target="_blank" rel="noopener">open source</a> website builder that empowers creators.
+    
+  </p>
+</footer>
+
+    </div>
+    
+  </div>
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/instant.page/5.1.0/instantpage.min.js" integrity="sha512-1+qUtKoh9XZW7j+6LhRMAyOrgSQKenQ4mluTR+cvxXjP1Z54RxZuzstR/H9kgPXQsVB8IW7DMDFUJpzLjvhGSQ==" crossorigin="anonymous"></script>
+
+      
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      
+
+      
+      
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/highlight.min.js" integrity="sha512-TDKKr+IvoqZnPzc3l35hdjpHD0m+b2EC2SrLEgKDRWpxf2rFCxemkgvJ5kfU48ip+Y+m2XVKyOCD85ybtlZDmw==" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/languages/r.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/languages/python.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/languages/latex.min.js"></script>
+        
+      
+
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.js" integrity="sha512-SeiQaaDh73yrb56sTW/RgVdi/mMqNeM2oBwubFHagc5BkixSpP1fvqF47mKzPGWYSSy4RwbBunrJBQ4Co8fRWA==" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+    
+      
+      <script id="search-hit-fuse-template" type="text/x-template">
+        <div class="search-hit" id="summary-{{key}}">
+          <div class="search-hit-content">
+            <div class="search-hit-name">
+              <a href="{{relpermalink}}">{{title}}</a>
+              <div class="article-metadata search-hit-type">{{type}}</div>
+              <p class="search-hit-description">{{snippet}}</p>
+            </div>
+          </div>
+        </div>
+      </script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+      
+    
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    <script src="/js/bootstrap.bundle.min.6aed84840afc03ab4d5750157f69c120.js"></script>
+
+    
+    
+      
+      
+      
+      
+      
+      
+      
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+      
+      
+    
+    
+    <script src="/en/js/wowchemy.min.71e713848164e269bc250f377042949d.js"></script>
+
+    
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+
+
+
+</body>
+</html>

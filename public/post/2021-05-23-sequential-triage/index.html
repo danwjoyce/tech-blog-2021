@@ -1,0 +1,1658 @@
+<!DOCTYPE html><html lang="en-us" >
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  
+  
+    <meta name="generator" content="Wowchemy 5.1.0 for Hugo" />
+  
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Dan W Joyce" />
+
+  
+  
+  
+    
+  
+  <meta name="description" content="In clinical decision making for serious but rare events, there has been discussion about how to use predictive models as tools in decision making.
+One example is in decision making for assessment and treatment in people at risk of suicide." />
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/2021-05-23-sequential-triage/" />
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+
+  
+  
+  
+    <meta name="theme-color" content="#1565c0" />
+  
+
+  
+  
+    
+    <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha256-FMvZuGapsJLjouA6k7Eo2lusoAX9i0ShlWFG6qt7SLc=" crossorigin="anonymous">
+
+    
+    
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/styles/github.min.css" crossorigin="anonymous" title="hl-light" media="print" onload="this.media='all'">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" media="print" onload="this.media='all'" disabled>
+        
+      
+    
+
+    
+    
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.css" integrity="sha512-1xoFisiGdy9nvho8EgXuXvnpR5GAMSjFwp40gSRE3NwdUdIMIKuPa7bqoUhLD0O/5tPNhteAsE5XyyMi5reQVA==" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
+
+    
+
+    
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+  
+
+  
+  
+  
+    
+      
+      <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap" media="print" onload="this.media='all'">
+    
+  
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/wowchemy.ddb2a9c79d7760a321f1b5392a04566a.css" />
+
+  
+
+
+
+  
+
+  
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+    <link rel="manifest" href="/index.webmanifest" />
+  
+
+  <link rel="icon" type="image/png" href="/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_32x32_fill_lanczos_center_2.png" />
+  <link rel="apple-touch-icon" type="image/png" href="/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_180x180_fill_lanczos_center_2.png" />
+
+  <link rel="canonical" href="/post/2021-05-23-sequential-triage/" />
+
+  
+  
+  
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary" />
+  
+    <meta property="twitter:site" content="@@dan_w_joyce" />
+    <meta property="twitter:creator" content="@@dan_w_joyce" />
+  
+  <meta property="og:site_name" content="Dan W Joyce" />
+  <meta property="og:url" content="/post/2021-05-23-sequential-triage/" />
+  <meta property="og:title" content="Sequential Clinical Decision Making | Dan W Joyce" />
+  <meta property="og:description" content="In clinical decision making for serious but rare events, there has been discussion about how to use predictive models as tools in decision making.
+One example is in decision making for assessment and treatment in people at risk of suicide." /><meta property="og:image" content="/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png" />
+    <meta property="twitter:image" content="/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png" /><meta property="og:locale" content="en-us" />
+  
+    
+      <meta
+        property="article:published_time"
+        content="2020-07-22T00:00:00&#43;00:00"
+      />
+    
+    <meta property="article:modified_time" content="2020-07-22T00:00:00&#43;00:00">
+  
+
+  
+
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "/post/2021-05-23-sequential-triage/"
+  },
+  "headline": "Sequential Clinical Decision Making",
+  
+  "datePublished": "2020-07-22T00:00:00Z",
+  "dateModified": "2020-07-22T00:00:00Z",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Dan W Joyce"
+  },
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "Dan W Joyce",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_192x192_fill_lanczos_center_2.png"
+    }
+  },
+  "description": "In clinical decision making for serious but rare events, there has been discussion about how to use predictive models as tools in decision making.\nOne example is in decision making for assessment and treatment in people at risk of suicide."
+}
+</script>
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+  <title>Sequential Clinical Decision Making | Dan W Joyce</title>
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class="page-wrapper   " data-wc-page-id="8598048b1365ce1704c91793e68bf7b4" >
+
+  
+  
+  
+  
+  
+  
+  
+  
+  <script src="/js/wowchemy-init.min.f16be01fc8fb2b5885dd67ce942d1185.js"></script>
+
+  
+
+
+<aside class="search-modal" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#" aria-label="Close"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search" class="form-control"
+        aria-label="Search...">
+        
+      </div>
+
+      
+      
+
+      
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+
+  <div class="page-header">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container-xl">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Dan W Joyce</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Dan W Joyce</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#about"><span>About</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#featured"><span>Publications</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#contact"><span>Contact</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+
+      
+      
+        
+          
+          <li class="nav-item d-none d-lg-inline-flex">
+            <a class="nav-link" href="https://twitter.com/dan_w_joyce" data-toggle="tooltip" data-placement="bottom" title="Follow me on Twitter" target="_blank" rel="noopener" aria-label="Follow me on Twitter">
+              <i class="fab fa-twitter" aria-hidden="true"></i>
+            </a>
+          </li>
+        
+      
+
+      
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#" aria-label="Search"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      
+      <li class="nav-item dropdown theme-dropdown">
+        <a href="#" class="nav-link" data-toggle="dropdown" aria-haspopup="true" aria-label="Display preferences">
+          <i class="fas fa-moon" aria-hidden="true"></i>
+        </a>
+        <div class="dropdown-menu">
+          <a href="#" class="dropdown-item js-set-theme-light">
+            <span>Light</span>
+          </a>
+          <a href="#" class="dropdown-item js-set-theme-dark">
+            <span>Dark</span>
+          </a>
+          <a href="#" class="dropdown-item js-set-theme-auto">
+            <span>Automatic</span>
+          </a>
+        </div>
+      </li>
+      
+
+      
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  </div>
+
+  <div class="page-body">
+    <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1>Sequential Clinical Decision Making</h1>
+
+  
+
+  
+    
+
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    Jul 22, 2020
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    19 min read
+  </span>
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder mr-1"></i><a href="/category/clinical-decision-support/">clinical decision support</a>, <a href="/category/decision-theory/">decision theory</a></span>
+  
+
+</div>
+
+    
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      
+<script src="/post/2021-05-23-sequential-triage/index_files/header-attrs/header-attrs.js"></script>
+<script src="/post/2021-05-23-sequential-triage/index_files/kePrint/kePrint.js"></script>
+<link href="/post/2021-05-23-sequential-triage/index_files/lightable/lightable.css" rel="stylesheet" />
+
+
+<p>In clinical decision making for serious but rare events, there has been discussion about how to use predictive models as tools in decision making.</p>
+<p>One example is in decision making for assessment and treatment in people at risk of suicide. A systematic review <span class="citation"><a href="#ref-kessler2019suicide" role="doc-biblioref">Kessler et al.</a> (<a href="#ref-kessler2019suicide" role="doc-biblioref">2019</a>)</span> of “suicide prediction models” cites the very real concern that the low positive predictive value (PPV) of current state-of-the-art models renders them at least clinically useless and at worst obviously dangerous. Most published models, however, attempt to predict the absolute risk of suicide based on some feature data (i.e. covariates, independent variables or predictors) for individuals – that is, these models attempt to identify people at risk of suicide. A central tennet of Kessler <em>et al</em>’s argument is that <strong>net benefit</strong> – rather than positive predictive value – is the appropriate decision-theoretic framework and in effect, predictive models might be better used as tools for screening out cases (of course, their argument and analysis is far more detailed but this is what I’m focusing on here). Kessler <em>et al</em> describe how to improve the clinical utility of suicide prediction models by embedding them in a clinical triaging system and using thresholds for intervening (or not) derived from <a href="https://www.mskcc.org/departments/epidemiology-biostatistics/biostatistics/decision-curve-analysis">decision curve analysis</a> <span class="citation"><a href="#ref-Vickers2016" role="doc-biblioref">Vickers, Van Calster, and Steyerberg</a> (<a href="#ref-Vickers2016" role="doc-biblioref">2016</a>)</span>.</p>
+<p>Kessler <em>et al</em>’s proposal is that if there is a high prevalence of <em>negative</em> cases in routine clinical practice, then such a staged triaging system would enable scarce (and often, intrusive) clinical resources to be directed towards cases which are uncertain. In this post, we consider positive and negative predictive value, net benefit as well as examining a sequential triage model of clinical decision support.</p>
+<div id="predictive-values" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Predictive Values</h1>
+<p>With an assumed representative sample of a population, let <span class="math inline">\(Y\)</span> be the output of the decision rule/system, and <span class="math inline">\(E\)</span> be whether or not the event occurred:</p>
+<ul>
+<li><span class="math inline">\(Y = 1\)</span> represents the decision that a case is <strong>positive</strong>, and <span class="math inline">\(Y = 0\)</span> represents a <strong>negative</strong> decision</li>
+<li><span class="math inline">\(E = 1\)</span> represents the serious event <strong>occuring</strong>, <span class="math inline">\(E = 0\)</span> that it did not</li>
+</ul>
+Consider the following hypothetical confusion matrix for a decision system on a representative validation sample of 1000 people:
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="empty-cells: hide;border-bottom:hidden;" colspan="1">
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Event (E)
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+0
+</th>
+<th style="text-align:right;">
+1
+</th>
+</tr>
+</thead>
+<tbody>
+<tr grouplength="2">
+<td colspan="3" style="border-bottom: 1px solid;">
+<strong>Decision (Y)</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 4em;width: 6em; " indentlevel="2">
+0
+</td>
+<td style="text-align:right;width: 6em; ">
+900
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 4em;width: 6em; " indentlevel="2">
+1
+</td>
+<td style="text-align:right;width: 6em; ">
+80
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+</tbody>
+</table>
+<p>There are 20 serious events in 1000 cases. The model gives a correct decision for 900/980 negative events (true negatives, TN) and decides that 80 negative cases are in fact positve (false positives; FP). The model performs poorly on decisions with positive cases; it decides 10/20 positive events are positive (true positives, TP) and makes the potentially catastrophic decision that 10/20 positives are in fact negatives (false negatives, FN).</p>
+<p>So, we find that :</p>
+<ul>
+<li>Sensitivity = <span class="math inline">\(\Pr(Y = 1 \mid E = 1)\)</span> = <span class="math inline">\(TP/(TP+FN)\)</span> = 0.5; the probability that the decision was positive, given the event was positive</li>
+<li>Specificity = <span class="math inline">\(\Pr(Y = 0 \mid E = 0)\)</span> = <span class="math inline">\(TN/(TN+FP)\)</span> = 0.918; the probability that the decision was negative, given the event was negative</li>
+<li>The prevalence of the serious event is 0.02</li>
+</ul>
+<p>As noted in the Altman and Bland classic <span class="citation">(<a href="#ref-altman-pred-values1994" role="doc-biblioref">Altman and Bland 1994</a>)</span>, “the whole point of a diagnostic test is to use it to make a diagnosis, so we need to know the probability that the test will give the correct diagnosis” and sensitivity and specificity of the test (here, the decision rule) aren’t sufficient.</p>
+<p>The important point is, in a clinical situation, we are interested in the conditional probabilities <span class="math inline">\(\Pr(E \mid Y)\)</span> (the probability of the event given the decision rule output).</p>
+<p>However, we only have the conditionals <span class="math inline">\(\Pr(Y \mid E )\)</span> and conditional probabilities do not commute so <span class="math inline">\(\Pr( Y \mid E) \neq \Pr( E \mid Y)\)</span>. Failure to recognise this difference is the <a href="https://en.wikipedia.org/wiki/Prosecutor%27s_fallacy">prosecutor’s fallacy</a> or the fallacy of the <a href="https://rationalwiki.org/wiki/Confusion_of_the_inverse">transposed conditional</a> <span class="citation">(<a href="#ref-blitzstein2019introduction" role="doc-biblioref">Blitzstein and Hwang 2019</a>)</span> Chapter 2.8.</p>
+<p>We will need to enumerate the probabilities of other conditions (i.e. states of <span class="math inline">\(E\)</span> and <span class="math inline">\(Y\)</span>), so:</p>
+<ul>
+<li><span class="math inline">\(\Pr(Y = 1 \mid E = 0)\)</span> is the false positive rate, or 1-specificity = <span class="math inline">\(1-\Pr(Y=0 \mid E=0)\)</span> = <span class="math inline">\(FP/(FP+TN)\)</span> = 0.082</li>
+<li><span class="math inline">\(\Pr(Y = 0 \mid E = 1)\)</span> is the false negative rate, or 1-sensitivity = <span class="math inline">\(1-\Pr(Y=1 \mid E=1)\)</span> = <span class="math inline">\(FN/(FN+TP)\)</span> = 0.5</li>
+</ul>
+<div id="deriving-ppv-and-npv" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> Deriving PPV and NPV</h2>
+<p>The definition of <a href="https://en.wikipedia.org/wiki/Conditional_probability">conditional probability</a> means that, for the conditions <strong>we want</strong>, we can state:
+<span class="math display">\[
+  \Pr(E \mid Y) = \frac{\Pr(E,Y)}{\Pr(Y)}
+\]</span>
+Or, by rearranging:
+<span class="math display">\[
+  \Pr(E,Y) = \Pr(E \mid Y) \Pr(Y)
+\]</span>
+Applying the same argument for the conditionals <strong>we have</strong> <span class="math inline">\(\Pr(Y \mid E)\)</span> (sensitivity and specificity):</p>
+<p><span class="math display">\[
+  \Pr(Y,E) = \Pr(Y \mid E) \Pr(E)
+\]</span></p>
+<p>The <strong>joint probability</strong> of two events are commutative (unlike conditionals) therefore <span class="math inline">\(\Pr(E,Y) = \Pr(Y,E)\)</span> and we can equate:
+<span class="math display">\[
+  \Pr(E \mid Y) \Pr(Y) = \Pr(Y \mid E) \Pr(E)
+\]</span>
+Noting again that we are interested in <span class="math inline">\(\Pr(E \mid Y)\)</span> we can solve:
+<span class="math display">\[
+  \Pr(E \mid Y) = \frac{\Pr(Y \mid E) \Pr(E)}{\Pr(Y)}
+\]</span>
+This is Bayes formula.</p>
+</div>
+<div id="sec-calc-PPV-NPV" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> Example Calculation</h2>
+<p>Using our example above, here’s want we want, and what we have available:
+<span class="math display">\[
+\Pr(E=1 \mid Y=1) = \frac{ \overbrace{\Pr( Y=1 \mid E=1)}^\text{sensitivity} \overbrace{\Pr(E=1)}^\text{prevalence} } 
+                    { \underbrace{\Pr(Y=1)}_\text{prob. of +ve decision} }
+\]</span>
+We can calculate the denominator <span class="math inline">\(\Pr(Y=1)\)</span>, the unconditional probability of a positive decision, using the <a href="https://en.wikipedia.org/wiki/Law_of_total_probability">law of total probability</a>:
+<span class="math display">\[
+\begin{aligned}
+\Pr(Y=1) =&amp; \overbrace{\Pr( Y=1 \mid E=1)}^\text{sensitivity} \overbrace{\Pr(E=1)}^\text{prevalence} + \\
+         &amp;\underbrace{\Pr( Y=1 \mid E=0)}_\text{1-specificity} \underbrace{\Pr(E=0)}_\text{1-prevalence}
+\end{aligned}
+\]</span></p>
+<p>The calculation step-by-step is:</p>
+<ol style="list-style-type: decimal">
+<li>Compute the denominator <span class="math inline">\(\Pr(Y=1) = 0.5 \times 0.02 + (1-0.918) \times (1-0.02) = 0.09\)</span></li>
+<li>Substitute sensitivity and prevalence in the numerator:</li>
+</ol>
+<p><span class="math display">\[
+  \Pr(E=1 \mid Y=1) = \frac{ \overbrace{0.5}^\text{sensitivity} \times \overbrace{0.02}^\text{prevalence} } 
+                    { \underbrace{0.09}_\text{prob. of +ve decision} } = 0.11
+  \]</span>
+Which delivers the <strong>positive predictive value</strong>.</p>
+<p>We can similarly derive the <strong>negative predictive value</strong>:</p>
+<p><span class="math display">\[
+\Pr(E=0 \mid Y=0) = \frac{ \overbrace{\Pr( Y=0 \mid E=0)}^\text{specificity} \overbrace{\Pr(E=0)}^\text{1-prevalence} } 
+                    { \underbrace{\Pr(Y=0)}_\text{prob. of -ve decision} }
+\]</span>
+And our denominator in this case:
+<span class="math display">\[
+\begin{aligned}
+  \Pr(Y=0) =&amp; \overbrace{\Pr( Y=0 \mid E=1)}^\text{1-sensitivity} \overbrace{\Pr(E=1)}^\text{prevalence} + \\
+            &amp; \underbrace{\Pr( Y=0 \mid E=0)}_\text{specificity} \underbrace{\Pr(E=0)}_\text{1-prevalence}
+\end{aligned}
+\]</span>
+Plugging in the numbers:</p>
+<ol style="list-style-type: decimal">
+<li>Compute the denominator <span class="math inline">\(\Pr(Y=0) = (1-0.5) \times 0.02 + 0.918 \times (1-0.02) = 0.91\)</span></li>
+<li>Substitute specificity and prevalence in the numerator:</li>
+</ol>
+<p><span class="math display">\[
+  \Pr(E=0 \mid Y=0) = \frac{ \overbrace{0.918}^\text{specificity} \times \overbrace{0.98}^\text{1-prevalence} } 
+                    { \underbrace{0.91}_\text{prob. of -ve decision} } = 0.987
+  \]</span></p>
+<p>This hypothetical decision system is useful for correctly deciding on negative cases, but performs poorly on identifying positive cases.</p>
+</div>
+</div>
+<div id="simulation" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Simulation</h1>
+<p>Now suppose that we have two (or more) clinical tests to help identify patients at risk for a relatively rare but serious event; for example, <span class="math inline">\(X_1\)</span> is a relatively cheap and easy-to-administer instrument or questionnaire. <span class="math inline">\(X_2\)</span> is a semi-structured interview or clinical examination which is time consuming, requires expertise to administer and is therefore significantly more costly than <span class="math inline">\(X_1\)</span>.</p>
+<p>Further, we have a development sample of 5000 people for which we have the results for <span class="math inline">\(X_1\)</span>, <span class="math inline">\(X_2\)</span> and we know who in this sample experienced the serious event.</p>
+<p>We next build a model that attempts to predict the rare, serious event (<span class="math inline">\(Y = 1\)</span>) on the basis of a patient’s <span class="math inline">\(X_1\)</span> results and denote this <span class="math inline">\(y = F_{X_1}(x)\)</span>. Note, no claim is made that this model is well designed.</p>
+<p>Assume the somewhat luxurious position that we have a further 5000 validation cases from the same population – so we can examine the model’s performance on data it was not ‘trained’ on.</p>
+<p>Let’s look at the calibration of the model on the validation sample:</p>
+<p><img src="/post/2021-05-23-sequential-triage/index_files/figure-html/unnamed-chunk-5-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>It’s important to note that:</p>
+<ul>
+<li>the <strong>model</strong> <span class="math inline">\(F_{X_1}\)</span> delivers a prediction in the form of a continuous estimate of the absolute probability of the serious event <em>given</em> the screening instrument <span class="math inline">\(X_1\)</span>.</li>
+<li>there is <strong>no decision rule</strong> here; so we can’t discuss PPV or NPV</li>
+<li>the model is poorly calibrated: which is unsurprising given the serious event is rare – in the 5000 validation samples there were 240 serious events (<span class="math inline">\(E = 1\)</span>) representing a small prevalence of 0.048</li>
+<li>the model appears to <strong>under estimate</strong> the probability of a serious event; for example, if the model predicts a probability of a serious event of 0.25, the actual probability is closer to 0.5.</li>
+</ul>
+<p>We can repeat the same analysis for the other, more costly instrument <span class="math inline">\(X_2\)</span>; as for the cheaper instrument, we train a model <span class="math inline">\(F_{X_2}\)</span> and then we have access to a validation sample on which we can examine the calibration:</p>
+<p><img src="/post/2021-05-23-sequential-triage/index_files/figure-html/unnamed-chunk-6-1.png" width="70%" style="display: block; margin: auto;" />
+Again, not great calibration.</p>
+</div>
+<div id="sec-decision-rules" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Decision Rules</h1>
+<p>Returning to the idea that Kessler <em>et al</em> discussed, how can we design a decision rule that makes use of these two tests ?</p>
+<div id="sec-ROC-curve" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> ROC Curves</h2>
+<p>A common approach to designing a decision rule is to vary a threshold over the output of <span class="math inline">\(F_{X_1}\)</span> and plot the ROC curve; then, find an “optimal” threshold that maximises the sensitivity/specificity tradeoff.</p>
+<pre><code>## Setting levels: control = 0, case = 1</code></pre>
+<pre><code>## Setting direction: controls &lt; cases</code></pre>
+<p><img src="/post/2021-05-23-sequential-triage/index_files/figure-html/unnamed-chunk-7-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>The confusion matrix for the decision rule with the threshold = 0.074 shown in the ROC curve above is:</p>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="empty-cells: hide;border-bottom:hidden;" colspan="1">
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Event (E)
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+0
+</th>
+<th style="text-align:right;">
+1
+</th>
+</tr>
+</thead>
+<tbody>
+<tr grouplength="2">
+<td colspan="3" style="border-bottom: 1px solid;">
+<strong>Decision (Y)</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 4em;width: 6em; " indentlevel="2">
+0
+</td>
+<td style="text-align:right;width: 6em; ">
+3953
+</td>
+<td style="text-align:right;">
+44
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 4em;width: 6em; " indentlevel="2">
+1
+</td>
+<td style="text-align:right;width: 6em; ">
+807
+</td>
+<td style="text-align:right;">
+196
+</td>
+</tr>
+</tbody>
+</table>
+<p>The usual measures:</p>
+<ul>
+<li>Sensitivity = 0.8167</li>
+<li>Specificity = 0.8305</li>
+</ul>
+<p>We can compute the <em>more</em> clinically relevant probabilties as follows (as for Section <a href="#sec-calc-PPV-NPV">1.2</a>):</p>
+<ul>
+<li>Positive predictive value: <span class="math inline">\(\Pr( E = 1 \mid Y = 1 )\)</span> = 0.195</li>
+<li>Negative predictive value: <span class="math inline">\(\Pr( E = 0 \mid Y = 0 )\)</span> = 0.989</li>
+</ul>
+<p>Critically, however, false negatives (44) are catastrophic here because the event, although rare, is serious (i.e. the death of a patient); but <span class="math inline">\(X_1\)</span> is correctly identifying a high number (3953) of negative cases correctly.</p>
+<p>As discussed <a href="https://danwjoyce.netlify.app/post/loss-functions-and-posteriors/">here</a> and more persuasively <a href="https://www.fharrell.com/post/backwards-probs/">here</a> sensitivity and specificity do not take account of the loss or utility of the decision and neither do PPV and NPV.</p>
+<p>To understand why this neglect of utility (or loss) is important, take the above confusion matrix and then assume the decision rule declares one additional <strong>false negative</strong>, so that:</p>
+<ul>
+<li>the number of <strong>false negatives</strong> (FN) = 45</li>
+<li>the <em>actual</em> number of positive events is of course, unchanged at 240</li>
+<li>so conversely, the <strong>true positive</strong> rate drops by one so TP = 195</li>
+<li>the revised <strong>sensitivity</strong> is then 0.8125 – a decrease in decision rule performance of 0.0042</li>
+</ul>
+<p>Reverse the experiment, so that the decision rule improves marginally and declares one additional <strong>true positive</strong>:</p>
+<ul>
+<li>the number of <strong>true positives</strong> increases by one, TP = 197</li>
+<li>the number of <strong>false negatives</strong> decreases by one, FN = 43</li>
+<li>the revised <strong>sensitivity</strong> is then 0.8208 – an increase in decision rule performance of 0.0041</li>
+</ul>
+<p>The change in performance (the “score”) for one additional correct or incorrectly classified positive case is symmetric and of the order <span class="math inline">\(1/N\)</span>, where <span class="math inline">\(N\)</span> is the sample size.</p>
+<p>Clearly, an <strong>additional false negative</strong> should penalise the overall performance score <em>differently</em> than the reward for an additional true positive.</p>
+<p>Optimising the threshold (decision rule) by maximising the sensitivity-specificity tradeoff (e.g. using the <a href="https://en.wikipedia.org/wiki/Youden%27s_J_statistic">Yourdon J statistic</a>) is not the only method of choosing the threshold and we might for example, choose a decision rule that favours performance of different cells of the confusion matrix. A decision theoretic framework like <strong>net benefit</strong> allows one systematic treatment.</p>
+</div>
+</div>
+<div id="decision-curve-analysis" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Decision Curve Analysis</h1>
+<p>Here, we are trying to implement a decision rule whereby a patient is triaged to a more costly “test” (<span class="math inline">\(X_2\)</span>) on the basis of a more available or less costly test <span class="math inline">\(X_1\)</span>.</p>
+<p>We can adopt a decision-theoretic approach (see previous posts <a href="https://danwjoyce.netlify.app/post/decisions-and-loss-functions/">here</a>) and design a loss (conversely, a utility) function for a decision rule (threshold).</p>
+<p>Assume that we continue to insist on a “hard” decision rule that decides, on the basis of <span class="math inline">\(F_{X_1}\)</span>, whether to further investigate (triage to <span class="math inline">\(X_2\)</span>) or, decide that the serious event is unlikely so no further follow-up is necessary and the patient can be discharged.</p>
+<p>In this situation, we can construct the confusion matrix below:</p>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="empty-cells: hide;border-bottom:hidden;" colspan="1">
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Event (E)
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+0
+</th>
+<th style="text-align:left;">
+1
+</th>
+</tr>
+</thead>
+<tbody>
+<tr grouplength="2">
+<td colspan="3" style="border-bottom: 1px solid;">
+<strong>Decision (Y)</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 4em;width: 6em; " indentlevel="2">
+0
+</td>
+<td style="text-align:left;width: 6em; ">
+TN
+</td>
+<td style="text-align:left;">
+FN
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 4em;width: 6em; " indentlevel="2">
+1
+</td>
+<td style="text-align:left;width: 6em; ">
+FP
+</td>
+<td style="text-align:left;">
+TP
+</td>
+</tr>
+</tbody>
+</table>
+<p>And then assign a loss to each cell e.g. the loss for a true negative is <span class="math inline">\(L_{TN}\)</span>, for a false negative <span class="math inline">\(L_{FN}\)</span> and so on.</p>
+<p>For a given decision rule (here, the decision rule can be equated with the threshold value <span class="math inline">\(\tau\)</span> over <span class="math inline">\(F_{X_1}\)</span>) we can compute the <strong>expected loss</strong>:
+<span class="math display">\[
+  L( \tau ) = \frac{1}{N} \left( \#TN \cdot L_{TN} + \#FN \cdot L_{FN} + \#FP \cdot L_{FP} + \#TP \cdot L_{TP} \right)
+\]</span></p>
+<p>where <span class="math inline">\(\#TN\)</span> is the number of true negatives under the decision rule <span class="math inline">\(\tau\)</span> etc. and <span class="math inline">\(N\)</span> is the sample size. We then systematically vary <span class="math inline">\(\tau\)</span> and choose our final decision rule on the basis of minimum loss.</p>
+<p>The difficulty is that it is often hard to quantify losses (or value, utility) either absolutely or relatively for each cell of the confusion matrix – the example of Kessler <em>et al</em> examines predictive models for suicide, where a false negative would be catastrophic; is the loss incurred for a false negative 10, 100 or 1000 times ‘worse’ than a true negative ?</p>
+<p>An alternative, proposed by <span class="citation"><a href="#ref-Vickers2016" role="doc-biblioref">Vickers, Van Calster, and Steyerberg</a> (<a href="#ref-Vickers2016" role="doc-biblioref">2016</a>)</span>, is to first set up a decision tree representing decisions to intervene / not intervene for the combinations shown in the standard confusion matrix. We then assume that the loss of <strong>not intervening</strong> when we should (a <strong>false negative</strong>) is fixed at unity and the loss of a <strong>false positive</strong> is defined relative to this for a given threshold <span class="math inline">\(\tau\)</span>. After some algebra, the loss attributable to a <strong>false positive</strong> is:
+<span class="math display">\[
+\frac{\tau}{1-\tau}
+\]</span>
+Then, the <strong>net benefit</strong> of a decision rule (value of <span class="math inline">\(\tau\)</span>) is then:
+<span class="math display">\[
+NB(\tau) = \frac{\#TP}{N} - \frac{\#FP}{N} \left( \frac{\tau}{1-\tau} \right)
+\]</span>
+In this equation, true positives are weighted one, and false positives weighted <span class="math inline">\(\tau /( 1-\tau)\)</span>. As the cost of a false positive is a function of the threshold we can deduce the relative costs. For example, if <span class="math inline">\(\tau = 1/3\)</span>, the cost of a false positive is half the cost of a true positive.</p>
+<p>A <strong>decision curve</strong> is then the plot of <span class="math inline">\(NB(\tau)\)</span> against <span class="math inline">\(\tau\)</span> as follows:</p>
+<p><img src="/post/2021-05-23-sequential-triage/index_files/figure-html/unnamed-chunk-13-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>The solid black line is the net benefit of the model <span class="math inline">\(F_{X_1}\)</span> at each threshold level. The grey horizontal line (at <span class="math inline">\(NB(\tau) = 0\)</span>) is the net benefit of assuming all patients are negative. The black dotted line is the net benefit of the decision rule: “assume all patients are positive and intervene” which is of course wasteful, but offers comparison to the net benefit of each decision rule <span class="math inline">\(\tau\)</span>. The red solid vertical line shows the threshold located by maximising the sensitivity/specificity tradeoff in Section <a href="#sec-ROC-curve">3.1</a>. Finally, the red dashed line identifies the threshold at which net benefit departs (exceeds) the “assume all positive” line.</p>
+<p>The region for which <span class="math inline">\(NB(\tau)\)</span> is greater than zero are the thresholds for which the model outperforms “assume all patients are negative.” An advantage of decision curve analysis is that one can vary <span class="math inline">\(\tau\)</span> and see the relationship between the model performance and a default strategy of assuming everyone requires intervention – the point at which the black solid line departs from the black dotted line.</p>
+<p>Of note, decision curve analysis is not intended to be a method of locating a threshold; in fact, <span class="citation"><a href="#ref-vickers2006decision" role="doc-biblioref">Vickers and Elkin</a> (<a href="#ref-vickers2006decision" role="doc-biblioref">2006</a>)</span> discuss the method in the context of shared decision making where the clinician <em>and</em> patient’s prefence for the relative cost of a false positive are factored into deciding the utility of a decision to intervene.</p>
+<p>However, as an experiment, let’s choose a threshold at the point where the net benefit departs from the default “assume all patients are positive and intervene” – shown as the red dotted line in the right panel at 0.01. This results in zero false negatives (serious errors), 240 true positives, 506 true negatives and 4252 false positives.</p>
+<p>To put this in the context of a sequential triage model, 4252 patients who are actually negative would be triaged for the <span class="math inline">\(X_2\)</span> assessment.</p>
+</div>
+<div id="sequential-triage" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Sequential Triage</h1>
+<p><img src="triage-model.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>The proposal Kessler <em>et al</em> put forward is a sequential triage model; above, we have sketched (schematically) the two-stage approach described here.</p>
+<p>Here, <span class="math inline">\(\mathcal{P}_1\)</span> is the total sample (of size <span class="math inline">\(N_1\)</span>, containing <span class="math inline">\(N^{+ve}_{1}\)</span> and <span class="math inline">\(N^{-ve}_{1}\)</span> positive and negative cases respectively) who have been assessed using <span class="math inline">\(X_1\)</span> and a decision made on the basis of the prediction <span class="math inline">\(F_{X_1}\)</span> and decision rule <span class="math inline">\(\tau_1\)</span>. Cases are then discharged on the basis of the decision; of those discharged, <strong>serious errors</strong> and <strong>appropriate discharges</strong> are analogous to the number of false negative <span class="math inline">\(\#FN_{X_1}\)</span> and true negative <span class="math inline">\(\#TN_{X_1}\)</span> decisions respectively.</p>
+<p>Those identified as likely positive by the decision <span class="math inline">\(\tau_1\)</span> form the triaged subset <span class="math inline">\(\mathcal{P}_2\)</span> of size <span class="math inline">\(N_2\)</span>, who proceed to the more resource intensive assessment <span class="math inline">\(X_2\)</span>. A similar decision system <span class="math inline">\(F_{X_2}\)</span> with rule <span class="math inline">\(\tau_2\)</span> then either discharges or (in this example) recommends admission to hospital.</p>
+<p>Note that:</p>
+<ul>
+<li><span class="math inline">\(N_2 = N^{+ve}_2 + N^{-ve}_2\)</span> – the size of triaged set <span class="math inline">\(\mathcal{P}_2\)</span> depends on the number of <em>actually</em> positive and negative cases triaged.</li>
+<li>In the sequential arrangement, <span class="math inline">\(\mathcal{P}_2\)</span> <em>depends</em> on the performance of <span class="math inline">\(X_1\)</span>. For example, if a case is incorrectly discharged at <span class="math inline">\(X_1\)</span>, then <span class="math inline">\(X_2\)</span> does not have an opportunity to ‘correct’ that error, so: <span class="math inline">\(N^{+ve}_{2} = N^{+ve}_{1} - \#FN_{X_1}\)</span>.</li>
+</ul>
+<p>With this in mind, we now attempt to define measures of performance in terms <strong>safety</strong> and <strong>efficiency</strong></p>
+<div id="safety" class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> Safety</h2>
+<p>From the discussion in Section <a href="#sec-calc-PPV-NPV">1.2</a>, decision systems with favourable NPV (but poor PPV) might be helpful in screening out candidates at <span class="math inline">\(X_1\)</span> and triaging suspected positive cases to <span class="math inline">\(X_2\)</span>.</p>
+<p>We define a <strong>safe</strong> decision system as having these properties:</p>
+<ul>
+<li>at each stage (i.e. at <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span>), anyone with a <strong>high</strong> or <strong>uncertain</strong> probability of being positive is appropriately triaged</li>
+<li>serious errors are <strong>minimised</strong> by <em>not</em> discharging people inappropriately, which means it should minimise <strong>false negatives</strong></li>
+</ul>
+<p>We’ll define the <strong>total safety</strong> of the system as a function of the number of serious errors made by both <span class="math inline">\(F_{X_1}\)</span> and <span class="math inline">\(F_{X_2}\)</span>:
+<span class="math display">\[
+\begin{aligned}
+  S_{Total}(\tau_1, \tau_2) &amp;= 1 - \frac{\#FN_{X_1}+\#FN_{X_2}}{N^{+ve}_{1}+N^{+ve}_{2}} \\
+                            &amp;= 1 - \frac{\#FN_{X_1}+\#FN_{X_2}}{N^{+ve}_{1}+(N^{+ve}_{1} - \#FN_{X_1})} \\
+                            &amp;= 1 - \frac{\#FN_{X_1}+\#FN_{X_2}}{2N^{+ve}_{1} - \#FN_{X_1}}
+\end{aligned}
+\]</span>
+As a concrete example (with respect to the diagram above and using the same validation set used in the decision curve and ROC analysis above):</p>
+<ul>
+<li><span class="math inline">\(\mathcal{P}_1\)</span> is of size <span class="math inline">\(N_1\)</span> = 5000 with <span class="math inline">\(N^{+ve}_1\)</span> = 240 actual positive and <span class="math inline">\(N^{-ve}_1\)</span> = 4760 actual negative cases</li>
+</ul>
+<p>After administering <span class="math inline">\(X_1\)</span>, using the threshold <span class="math inline">\(\tau_1 = 0.10\)</span> for <span class="math inline">\(F_{X_1}\)</span> results in:</p>
+<ul>
+<li>80 serious errors or inappropriate discharges equal to false negatives, <span class="math inline">\(\#FN_{X_1}\)</span></li>
+<li>4321 appropriate discharges – equal to the true negatives, <span class="math inline">\(\#TN_{X_1}\)</span></li>
+<li>Resulting in <span class="math inline">\(N_2\)</span> = 599 cases triaged into <span class="math inline">\(\mathcal{P_2}\)</span> equating to the sum of false and true positive cases (i.e. those declared positive by <span class="math inline">\(F_{X_1}\)</span> with <span class="math inline">\(\tau\)</span> = 0.10)</li>
+<li>Of these 599 cases, <span class="math inline">\(N^{+ve}_2\)</span> = 160 and <span class="math inline">\(N^{-ve}_2\)</span> = 439</li>
+</ul>
+<p>Now, let’s assume <span class="math inline">\(\tau_2 = 0.36\)</span>, for <span class="math inline">\(F_{X_2}\)</span> applied to <span class="math inline">\(\mathcal{P}_2\)</span>. We arrive at:</p>
+<ul>
+<li>57 serious errors, equating to <span class="math inline">\(\#FN_{X_2}\)</span></li>
+<li>430 appropriate discharges, the true negatives <span class="math inline">\(\#TN_{X_2}\)</span></li>
+<li>Resulting in <span class="math inline">\(N_3\)</span> = 112 cases which will be admitted, consisting of <span class="math inline">\(N^{+ve}_3\)</span> = 103 actually positive cases (appropriate admissions) and <span class="math inline">\(N^{-ve}_3\)</span> = 9 actually negative cases (inappropriate admissions)</li>
+</ul>
+<p>Substituting these numbers in the equation above for safety:</p>
+<p><span class="math display">\[
+\begin{aligned}
+  S_{Total}(\tau_1, \tau_2) &amp;= 1 - \frac{\#FN_{X_1}+\#FN_{X_2}}{2N^{+ve}_{1} - \#FN_{X_1}} \\
+                            &amp;= 1 - \frac{80 + 57}{480 - 80} \\
+                            &amp;= 0.6575
+\end{aligned}
+\]</span>
+If the decisions made by <span class="math inline">\(F_{X_1}\)</span> and <span class="math inline">\(F_{X_2}\)</span> resulted in no serious errors, we would have zero false negatives and <span class="math inline">\(S_{Total}\)</span> would attain a maximum of one.</p>
+</div>
+<div id="efficiency" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span> Efficiency</h2>
+<p>Now consider efficiency defined as the <strong>ratio</strong> of useful <strong>product</strong> to <strong>resource</strong> consumed.</p>
+<p>Here, the denominator – resource consumption – is as follows:</p>
+<ul>
+<li>all patients <span class="math inline">\(N_1\)</span> will have <span class="math inline">\(X_1\)</span> administered and be passed through the prediction model <span class="math inline">\(F_{X_1}\)</span>, so resource consumed is <span class="math inline">\(N_1\)</span></li>
+<li>a subset of patients declared positive by the decision rule <span class="math inline">\(\tau_1\)</span> are triaged to <span class="math inline">\(\mathcal{P}_2\)</span> which is composed of <span class="math inline">\(N^{+ve}_2\)</span> and <span class="math inline">\(N^{-ve}_2\)</span> actual positive and negative cases respectively</li>
+<li>all patients in <span class="math inline">\(\mathcal{P}_2\)</span> are administed <span class="math inline">\(X_2\)</span> – so resource consumed is <span class="math inline">\(N_2\)</span></li>
+</ul>
+<p>The numerator – useful product – needs elaboration. First consider the efficiency of <span class="math inline">\(\tau_1\)</span>, which will be perfectly efficient if all actual negative cases are discharged (and <em>do not</em> end up in <span class="math inline">\(\mathcal{P_2}\)</span>) and all positive cases are triaged.</p>
+<p><span class="math display">\[
+  E_{X_1}( \tau_1 ) = \frac{\#TP_{X_1} + \#TN_{X_1}}{N_1}
+\]</span>
+Which attains a maximum efficiency of one when <span class="math inline">\(\#TN_{X_1} = N^{-ve}_{1}\)</span> and <span class="math inline">\(\#TP_{X_1} = N^{+ve}_{1}\)</span> (recall that <span class="math inline">\(N_1 = N^{+ve}_1 + N^{-ve}_2\)</span>)</p>
+<p>A similar definition holds for <span class="math inline">\(X_2\)</span> :</p>
+<p><span class="math display">\[
+  E_{X_2}( \tau_2 ) = \frac{\#TP_{X_2} + \#TN_{X_2}}{N_2}
+\]</span>
+And we allow <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span> to contribute equally to a total efficiency in the range <span class="math inline">\([0,1]\)</span> defined as:
+<span class="math display">\[
+  E_{Total}( \tau_1, \tau_2 ) = \frac{1}{2} \left[ E_{X_1}( \tau_1 ) + E_{X_2}( \tau_2 )  \right]
+\]</span></p>
+</div>
+<div id="performance-of-sequential-triage" class="section level2" number="5.3">
+<h2><span class="header-section-number">5.3</span> Performance of Sequential Triage</h2>
+<p><img src="/post/2021-05-23-sequential-triage/index_files/figure-html/unnamed-chunk-17-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<p>The plots show safety (left) and efficiency (right) in contours of size 0.1. So, if <span class="math inline">\(\tau_1\)</span> is less than around 0.05 and <span class="math inline">\(\tau_2\)</span> is less than approximately 1.5, the sequential triage system has overall safety &gt; 0.9.</p>
+<p>However, the tension is that: for the same range of decision thresholds, the efficiency can reach a maximum of 0.747 but this results in upto 31 serious errors.</p>
+</div>
+</div>
+<div id="concluding-remarks" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> Concluding Remarks</h1>
+<p>A few observations:</p>
+<ol style="list-style-type: decimal">
+<li>There is no clear way of robustly setting the decision rules <span class="math inline">\(\tau_1\)</span> and <span class="math inline">\(\tau_2\)</span> based on performance measures for sequential triage unless one is prepared to accept that efficiency and safety trade-off</li>
+<li>Using decision curve analysis <strong>properly</strong> invites setting the decision threshold according to a tradeoff that rightly involves how much risk the patient and clinician want to take: i.e. net benefit provides a weight to false positives (harm attributable to intervening when it is unnecessary) as a function of the decision threshold.</li>
+<li>The analyses above were all conducted on the improbably ideal situation where a) we had 5000 exemplars to train a system on, both with measurements/assessments <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span> b) we had access to another ‘batch’ of 5000 exemplars to validate the model on which we attempt to define performance and optimise the system’s performance</li>
+<li>When deploying this system, at best, patients arrive in small batches or singularly (certainly not in clusters of 100s or 1000s) – the above analyses are then at best, informative for an actuarial or economic analysis if we were <em>forced</em> to choose a decision rule to evaluate the triage system’s performance</li>
+</ol>
+<p>By their very nature, predictions <span class="math inline">\(F_{X_1}\)</span> and <span class="math inline">\(F_{X_2}\)</span> are probabilistic and discrete thresholds coerce these uncertain forecasts into definitive decisions. It seems unlikely that in the case of rare, serious events anyone would rely on a decision support system that gave discrete answers (and indeed, decision curve analysis emphasises the role of clinician expertise and patient preference in deciding on the intervention threshold)</p>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-altman-pred-values1994" class="csl-entry">
+Altman, Douglas G, and J Martin Bland. 1994. <span>“Statistics Notes: Diagnostic Tests 2: Predictive Values.”</span> <em>Bmj</em> 309 (6947): 102.
+</div>
+<div id="ref-blitzstein2019introduction" class="csl-entry">
+Blitzstein, Joseph K, and Jessica Hwang. 2019. <em>Introduction to Probability</em>. <span>CRC</span> Press.
+</div>
+<div id="ref-kessler2019suicide" class="csl-entry">
+Kessler, Ronald C, Robert M Bossarte, Alex Luedtke, Alan M Zaslavsky, and Jose R Zubizarreta. 2019. <span>“Suicide Prediction Models: A Critical Review of Recent Research with Recommendations for the Way Forward.”</span> <em>Molecular Psychiatry</em>, 1–12.
+</div>
+<div id="ref-vickers2006decision" class="csl-entry">
+Vickers, Andrew J, and Elena B Elkin. 2006. <span>“Decision Curve Analysis: A Novel Method for Evaluating Prediction Models.”</span> <em>Medical Decision Making</em> 26 (6): 565–74.
+</div>
+<div id="ref-Vickers2016" class="csl-entry">
+Vickers, Andrew J, Ben Van Calster, and Ewout W Steyerberg. 2016. <span>“Net Benefit Approaches to the Evaluation of Prediction Models, Molecular Markers, and Diagnostic Tests.”</span> <em>BMJ</em> 352. <a href="https://doi.org/10.1136/bmj.i6">https://doi.org/10.1136/bmj.i6</a>.
+</div>
+</div>
+</div>
+
+    </div>
+
+    
+
+
+
+
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tag/risk/">risk</a>
+  
+  <a class="badge badge-light" href="/tag/decision-support/">decision support</a>
+  
+  <a class="badge badge-light" href="/tag/thresholds/">thresholds</a>
+  
+  <a class="badge badge-light" href="/tag/decision-rules/">decision rules</a>
+  
+  <a class="badge badge-light" href="/tag/positive-predictive-value/">positive predictive value</a>
+  
+  <a class="badge badge-light" href="/tag/negative-predictive-value/">negative predictive value</a>
+  
+  <a class="badge badge-light" href="/tag/decision-curve-analysis/">decision curve analysis</a>
+  
+</div>
+
+
+
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=/post/2021-05-23-sequential-triage/&amp;text=Sequential%20Clinical%20Decision%20Making" target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=/post/2021-05-23-sequential-triage/&amp;t=Sequential%20Clinical%20Decision%20Making" target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Sequential%20Clinical%20Decision%20Making&amp;body=/post/2021-05-23-sequential-triage/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=/post/2021-05-23-sequential-triage/&amp;title=Sequential%20Clinical%20Decision%20Making" target="_blank" rel="noopener" class="share-btn-linkedin">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="whatsapp://send?text=Sequential%20Clinical%20Decision%20Making%20/post/2021-05-23-sequential-triage/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=/post/2021-05-23-sequential-triage/&amp;title=Sequential%20Clinical%20Decision%20Making" target="_blank" rel="noopener" class="share-btn-weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  <div class="media author-card content-widget-hr">
+    
+      
+      <img class="avatar mr-3 avatar-circle" src="/author/dan-w-joyce/avatar_hu9239ca797fad516d0c82eef67fca2cab_38244_270x270_fill_q75_lanczos_center.jpg" alt="Dan W Joyce">
+    
+
+    <div class="media-body">
+      <h5 class="card-title">Dan W Joyce</h5>
+      
+      <p class="card-text">I’m interested in how principles from computation can be used to understand things like clinical state, trajectories and how to augment clinical decision making using data, multivariate statistics and (cautiously) AI and ML.</p>
+      <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="/#contact" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://twitter.com/dan_w_joyce" target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/danwjoyce" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.linkedin.com/in/dan-joyce-6870166b/" target="_blank" rel="noopener">
+        <i class="fab fa-linkedin"></i>
+      </a>
+    </li>
+  
+</ul>
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <div class="article-widget content-widget-hr">
+    <h3>Related</h3>
+    <ul>
+      
+      <li><a href="/post/decisions-and-loss-functions/">Decisions and Loss Functions - A more clinical focus</a></li>
+      
+      <li><a href="/post/loss-functions-and-posteriors/">Loss, Risk and Point Summaries of Posterior Distributions</a></li>
+      
+    </ul>
+  </div>
+  
+
+
+
+
+
+  </div>
+</article>
+  </div>
+
+  <div class="page-footer">
+    
+    
+    <div class="container">
+      <footer class="site-footer">
+
+  
+
+  
+
+  
+
+  
+  
+
+
+
+
+
+
+  <p class="powered-by">
+    
+    
+    
+      
+      
+      
+      
+      
+      
+      Published with <a href="https://wowchemy.com/?utm_campaign=poweredby" target="_blank" rel="noopener">Wowchemy</a> — the free, <a href="https://github.com/wowchemy/wowchemy-hugo-modules" target="_blank" rel="noopener">open source</a> website builder that empowers creators.
+    
+  </p>
+</footer>
+
+    </div>
+    
+  </div>
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/instant.page/5.1.0/instantpage.min.js" integrity="sha512-1+qUtKoh9XZW7j+6LhRMAyOrgSQKenQ4mluTR+cvxXjP1Z54RxZuzstR/H9kgPXQsVB8IW7DMDFUJpzLjvhGSQ==" crossorigin="anonymous"></script>
+
+      
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      
+
+      
+      
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/highlight.min.js" integrity="sha512-TDKKr+IvoqZnPzc3l35hdjpHD0m+b2EC2SrLEgKDRWpxf2rFCxemkgvJ5kfU48ip+Y+m2XVKyOCD85ybtlZDmw==" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/languages/r.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/languages/python.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/languages/latex.min.js"></script>
+        
+      
+
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.js" integrity="sha512-SeiQaaDh73yrb56sTW/RgVdi/mMqNeM2oBwubFHagc5BkixSpP1fvqF47mKzPGWYSSy4RwbBunrJBQ4Co8fRWA==" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+    
+      
+      <script id="search-hit-fuse-template" type="text/x-template">
+        <div class="search-hit" id="summary-{{key}}">
+          <div class="search-hit-content">
+            <div class="search-hit-name">
+              <a href="{{relpermalink}}">{{title}}</a>
+              <div class="article-metadata search-hit-type">{{type}}</div>
+              <p class="search-hit-description">{{snippet}}</p>
+            </div>
+          </div>
+        </div>
+      </script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+      
+    
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    <script src="/js/bootstrap.bundle.min.6aed84840afc03ab4d5750157f69c120.js"></script>
+
+    
+    
+      
+      
+      
+      
+      
+      
+      
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+      
+      
+    
+    
+    <script src="/en/js/wowchemy.min.71e713848164e269bc250f377042949d.js"></script>
+
+    
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>David DeRoure | Dan W Joyce</title>
+    <link>/author/david-deroure/</link>
+      <atom:link href="/author/david-deroure/index.xml" rel="self" type="application/rss+xml" />
+    <description>David DeRoure</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Sat, 01 Jan 2000 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>David DeRoure</title>
+      <link>/author/david-deroure/</link>
+    </image>
+    
+    <item>
+      <title>SoFAR with DIM agents: An agent framework for distributed information management</title>
+      <link>/publication/moreau-sofar-2000/</link>
+      <pubDate>Sat, 01 Jan 2000 00:00:00 +0000</pubDate>
+      <guid>/publication/moreau-sofar-2000/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

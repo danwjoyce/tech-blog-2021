@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Matthew Broadbent | Dan W Joyce</title>
+    <link>/author/matthew-broadbent/</link>
+      <atom:link href="/author/matthew-broadbent/index.xml" rel="self" type="application/rss+xml" />
+    <description>Matthew Broadbent</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Fri, 14 May 2021 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Matthew Broadbent</title>
+      <link>/author/matthew-broadbent/</link>
+    </image>
+    
+    <item>
+      <title>Changes in daily mental health service use and mortality at the commencement and lifting of COVID-19 ‘lockdown’ policy in 10 UK sites: a regression discontinuity in time design</title>
+      <link>/publication/bakolis2021/</link>
+      <pubDate>Fri, 14 May 2021 00:00:00 +0000</pubDate>
+      <guid>/publication/bakolis2021/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

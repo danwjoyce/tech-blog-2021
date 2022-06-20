@@ -1,0 +1,998 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>R code | Dan W Joyce</title>
+    <link>/category/r-code/</link>
+      <atom:link href="/category/r-code/index.xml" rel="self" type="application/rss+xml" />
+    <description>R code</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Thu, 02 Apr 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>R code</title>
+      <link>/category/r-code/</link>
+    </image>
+    
+    <item>
+      <title>Decisions and Loss Functions - A more clinical focus</title>
+      <link>/post/decisions-and-loss-functions/</link>
+      <pubDate>Thu, 02 Apr 2020 00:00:00 +0000</pubDate>
+      <guid>/post/decisions-and-loss-functions/</guid>
+      <description>
+&lt;script src=&#34;/post/decisions-and-loss-functions/index_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/post/decisions-and-loss-functions/index_files/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;/post/decisions-and-loss-functions/index_files/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+
+
+&lt;p&gt;In the previous post, loss functions where considered in the context of estimating measures of central tendency for distributions. In this post, I want to look at the computation of loss functions in situations that might arise in a clinical predictive model. This is all textbook stuff – see &lt;a href=&#34;#sec-further-reading&#34;&gt;Further Reading&lt;/a&gt; – but I wanted to summarise it in a way I understood when in a year’s time, I wonder what the code does.&lt;/p&gt;
+&lt;p&gt;I realised that the notation in the last post was sloppy, so for this post, I’ll adopt the conventions in &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-berger1985statistical&#34; role=&#34;doc-biblioref&#34;&gt;Berger 1985&lt;/a&gt;)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;The basic setup is:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;There is a finite set of available actions, &lt;span class=&#34;math inline&#34;&gt;\(\mathscr{A} = \{ a_1, a_2, \ldots, a_j \}\)&lt;/span&gt; – in the examples that follow, we’ll restrict our attention to a choice between two actions of “do nothing” or “intervene/treat” respectively but there is no loss of generality in assuming this.&lt;/li&gt;
+&lt;li&gt;There are uncertain quantities representing “states of the world” &lt;span class=&#34;math inline&#34;&gt;\(\Theta = \{ \theta_1, \theta_2, \ldots, \theta_i \}\)&lt;/span&gt; about which we can obtain data and that can affect our decision about which action to take. Here, these states will reflect something about a patient.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Then, our task will be to choose the best action from &lt;span class=&#34;math inline&#34;&gt;\(\mathscr{A}\)&lt;/span&gt; given information about states &lt;span class=&#34;math inline&#34;&gt;\(\Theta\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Information about the states &lt;span class=&#34;math inline&#34;&gt;\(\Theta\)&lt;/span&gt; will come from a putative predictive model: as in the previous post, measurements (the “input” to the model) for a given patient &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; are given to the predictive model &lt;span class=&#34;math inline&#34;&gt;\(Y = F(x)\)&lt;/span&gt; that delivers scores (the “output”) as realisations of &lt;span class=&#34;math inline&#34;&gt;\(Y \in [0,1]\)&lt;/span&gt;. Importantly, for any &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;, we can access samples from the posterior distribution &lt;span class=&#34;math inline&#34;&gt;\(\pi_{F}(Y|x)\)&lt;/span&gt; (rather than relying on a single point prediction, such as the mean of the posterior).&lt;/p&gt;
+&lt;div id=&#34;setup&#34; class=&#34;section level1&#34; number=&#34;1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;1&lt;/span&gt; Setup&lt;/h1&gt;
+&lt;p&gt;To begin with, assume the simplest case of there being two states &lt;span class=&#34;math inline&#34;&gt;\(\Theta = \{ \theta_1, \theta_2 \}\)&lt;/span&gt; which correspond to a patient being “negative” or “positive” (respectively) for some event or outcome. Our repetoire of actions is &lt;span class=&#34;math inline&#34;&gt;\(\mathscr{A} = \{ a_1, a_2 \}\)&lt;/span&gt; representing “do nothing” and “intervene/treat” respectively. This only serves a pedagogical need when developing the ideas, not because it represents a principled or sound modelling decision.&lt;/p&gt;
+&lt;p&gt;For a single example patient &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;, the output of the model suggests the they are most likely negative (i.e. the probability mass is concentrated near zero):&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
+library(gridExtra)
+library(kableExtra)
+library(latex2exp)
+library(reshape2)
+
+# globals for presentation
+basictheme &amp;lt;- theme_minimal() + 
+  theme(axis.title = element_text(size = 14),
+        axis.text = element_text(size = 12),
+        plot.title = element_text(size = rel(1.25), face = &amp;quot;bold&amp;quot;, hjust = 0.5 ))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(3141)
+range01 &amp;lt;- function(x){(x-min(x))/(max(x)-min(x))}
+samples &amp;lt;- range01( rgamma( 2000, shape = 2, scale = 2) )
+df &amp;lt;- data.frame( y = samples )
+ggplot( df, aes( y ) ) +
+  geom_density( fill = &amp;quot;#fa9fb5&amp;quot;) + 
+  ylab(&amp;quot;Density\n&amp;quot;) + 
+  xlab(&amp;quot;\nScore (Y)&amp;quot;) + basictheme&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/decisions-and-loss-functions/index_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We now require a mapping from the samples &lt;span class=&#34;math inline&#34;&gt;\(y \sim \pi_{F}(Y|x)\)&lt;/span&gt; to &lt;span class=&#34;math inline&#34;&gt;\(\Theta\)&lt;/span&gt; because the domain of &lt;span class=&#34;math inline&#34;&gt;\(\pi_{F}\)&lt;/span&gt; will be the interval &lt;span class=&#34;math inline&#34;&gt;\([0,1]\)&lt;/span&gt; and to get started, we need to “quantise” to two states.&lt;/p&gt;
+&lt;p&gt;Define the distribution over states &lt;span class=&#34;math inline&#34;&gt;\(\pi_{\Theta}\)&lt;/span&gt; as follows:&lt;/p&gt;
+&lt;span class=&#34;math display&#34;&gt;\[\begin{aligned}
+\pi_{\Theta}(\theta_{1}) &amp;amp;= \Pr_{\pi_{F}}( Y \leq 0.5 ) \\
+\pi_{\Theta}(\theta_{2})  &amp;amp;= \Pr_{\pi_{F}}( Y &amp;gt; 0.5 )
+\end{aligned}\]&lt;/span&gt;
+&lt;p&gt;So, we basically histogram the samples into two bins either side of 0.5, representing the probability of a patient being negative (&lt;span class=&#34;math inline&#34;&gt;\(\theta_1\)&lt;/span&gt;) or positive (&lt;span class=&#34;math inline&#34;&gt;\(\theta_2\)&lt;/span&gt;). A terrible idea, which we will reverse later.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pdfFromSamples &amp;lt;- function(a, b, delta, samples) {
+  H &amp;lt;- hist( samples, plot = FALSE, breaks = seq(a, b, by = delta) )
+  ret &amp;lt;- data.frame(
+    mids  = H$mids,
+    freq  = H$counts
+  )
+  ret$P &amp;lt;- ret$freq / sum(ret$freq)
+  return(ret)
+}
+
+pdf.Y &amp;lt;- pdfFromSamples(0,1,delta = 1/2, samples)
+pdf.Y$theta &amp;lt;- factor( c(1,2) )
+
+pdf.plot &amp;lt;- ggplot( pdf.Y, aes( x = theta, y = P ) ) + 
+  geom_col( fill = &amp;quot;#fa9fb5&amp;quot; ) + 
+  scale_x_discrete(labels = pdf.Y$theta ) +
+  xlab(TeX(&amp;quot;$\\theta&amp;quot;)) +
+  ylab(TeX(&amp;#39;$\\pi(\\theta)&amp;#39;)) +
+  basictheme
+
+print( pdf.plot )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/decisions-and-loss-functions/index_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;According to our blunt assignment of states to output from the predictive model, the probability the patient is negative is &lt;span class=&#34;math inline&#34;&gt;\(\pi_{\Theta}(\theta_{1})\)&lt;/span&gt; = 0.921 and positive &lt;span class=&#34;math inline&#34;&gt;\(\pi_{\Theta}(\theta_{2})\)&lt;/span&gt; = 0.079.&lt;/p&gt;
+&lt;p&gt;With this setup, (two actions, two states) we can “tabulate” the combinations of actions and states (the &lt;a href=&#34;https://en.wikipedia.org/wiki/Cartesian_product&#34;&gt;Cartesian product&lt;/a&gt;: &lt;span class=&#34;math inline&#34;&gt;\(\Theta \times \mathscr{A}\)&lt;/span&gt;):&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;loss-actions.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In each “cell” or combination &lt;span class=&#34;math inline&#34;&gt;\((\theta,a)\)&lt;/span&gt; we then assign a &lt;strong&gt;loss&lt;/strong&gt; &lt;span class=&#34;math inline&#34;&gt;\(L(\theta,a) \leq 0\)&lt;/span&gt; which describes the &lt;strong&gt;cost&lt;/strong&gt; incurred for taking action &lt;span class=&#34;math inline&#34;&gt;\(a\)&lt;/span&gt; when the state &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt; obtains. Generally, we will adopt the convention that losses represent costs or penalties for actions with respect to states.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;example-loss-matrix&#34; class=&#34;section level1&#34; number=&#34;2&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;2&lt;/span&gt; Example Loss Matrix&lt;/h1&gt;
+&lt;p&gt;Equipped with this toy example we assign losses:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;A &amp;lt;- c(&amp;quot;a1:&amp;lt;br&amp;gt;do nothing&amp;quot;,&amp;quot;a2:&amp;lt;br&amp;gt;intervene&amp;quot;)
+Theta &amp;lt;- c(&amp;quot;&amp;lt;b&amp;gt;theta1:&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;negative&amp;quot;, &amp;quot;&amp;lt;b&amp;gt;theta2:&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;positive&amp;quot;)
+
+loss.matrix &amp;lt;- matrix( c( 0.0,  -0.5,
+                          -1.0, 0 ), 
+                       nrow = 2, ncol = 2, byrow = TRUE)
+rownames(loss.matrix) &amp;lt;- Theta
+colnames(loss.matrix) &amp;lt;- A
+
+knitr::kable( loss.matrix, 
+              format = &amp;quot;html&amp;quot;, 
+              align = &amp;#39;c&amp;#39;, 
+              full_width = FALSE, 
+              position = &amp;#39;c&amp;#39;,
+              escape = FALSE ) %&amp;gt;%
+        kable_styling(position = &amp;quot;center&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;table class=&#34;table&#34; style=&#34;margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+a1:&lt;br&gt;do nothing
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+a2:&lt;br&gt;intervene
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+&lt;b&gt;theta1:&lt;/b&gt;&lt;br&gt;negative
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+-0.5
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+&lt;b&gt;theta2:&lt;/b&gt;&lt;br&gt;positive
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+-1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.0
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;As a use example, assume we decide &lt;span class=&#34;math inline&#34;&gt;\(a_2\)&lt;/span&gt; (intervene) and the state of the patient turns out to be &lt;span class=&#34;math inline&#34;&gt;\(\theta_1\)&lt;/span&gt; (negative) we incur a loss of &lt;span class=&#34;math inline&#34;&gt;\(L(\theta_1,a_2) = -0.5\)&lt;/span&gt; to reflect unnecessary costs of e.g. further investigations, inconvenience to the patient etc. If we select &lt;span class=&#34;math inline&#34;&gt;\(a_1\)&lt;/span&gt; and the state is &lt;span class=&#34;math inline&#34;&gt;\(\theta_1\)&lt;/span&gt; (equating to doing nothing and the patient is negative) we incur zero loss because this was an appropriate action given the circumstances.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bayesian-expected-loss&#34; class=&#34;section level1&#34; number=&#34;3&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;3&lt;/span&gt; Bayesian Expected Loss&lt;/h1&gt;
+&lt;p&gt;Following &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-berger1985statistical&#34; role=&#34;doc-biblioref&#34;&gt;Berger 1985&lt;/a&gt;)&lt;/span&gt;, we define the Bayesian expected loss (BEL) for action &lt;span class=&#34;math inline&#34;&gt;\(a_j\)&lt;/span&gt; with respect to the discrete distribution &lt;span class=&#34;math inline&#34;&gt;\(\pi_{\Theta}\)&lt;/span&gt; as
+&lt;span class=&#34;math display&#34;&gt;\[
+\rho(\pi_{\Theta},a_j) = \mathbb{E}_{\pi_{\Theta}} \left[ L(\theta,a_j\right] = \sum_{i}L(\theta_i,a_j)\pi_{\Theta}(\theta_i)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Bayesian expected loss (BEL)
+BEL &amp;lt;- function( a, p.pi, loss.matrix ) {
+   sum( loss.matrix[ , a ] * p.pi )
+}
+
+# compute BEL for each action a:
+rho.A &amp;lt;- data.frame( 
+  A = factor(c(&amp;quot;a1&amp;quot;,&amp;quot;a2&amp;quot;)),
+  rho = rep(NA,2)
+)
+
+# for each action
+for( j in 1:2 ) {
+  rho.A$rho[j] &amp;lt;- BEL( j, pdf.Y$P, loss.matrix )
+}
+
+bel.plot &amp;lt;- ggplot( rho.A, aes(x = A, y = rho) ) +
+  geom_col( fill = &amp;quot;#d6604d&amp;quot; ) + 
+  basictheme
+
+grid.arrange( pdf.plot, bel.plot, nrow = 1, ncol = 2 )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/decisions-and-loss-functions/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Note that the upper bound of the BEL is zero.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;conditional-bayes-decision-principal&#34; class=&#34;section level1&#34; number=&#34;4&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;4&lt;/span&gt; Conditional Bayes Decision Principal&lt;/h1&gt;
+&lt;p&gt;Having established the BEL for each action, the conditional bayes decision principle (CBD) for deciding on an action &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-berger1985statistical&#34; role=&#34;doc-biblioref&#34;&gt;Berger 1985&lt;/a&gt;)&lt;/span&gt; is:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;choose &lt;span class=&#34;math inline&#34;&gt;\(a_{j} \in \mathscr{A}\)&lt;/span&gt; such that &lt;span class=&#34;math inline&#34;&gt;\(a_j\)&lt;/span&gt; &lt;strong&gt;minimises&lt;/strong&gt; the BEL : &lt;span class=&#34;math inline&#34;&gt;\(\underset{j}{\mathrm{arg\,max}} \; \rho( \pi_{\Theta}, a_j )\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In code: the resulting vector for &lt;span class=&#34;math inline&#34;&gt;\(\rho( \pi_{\Theta}, a )\)&lt;/span&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;knitr::kable( rho.A, 
+              format = &amp;quot;html&amp;quot;, 
+              align = &amp;#39;c&amp;#39;, 
+              full_width = FALSE, 
+              position = &amp;#39;c&amp;#39;,
+              escape = FALSE ) %&amp;gt;%
+        kable_styling(position = &amp;quot;center&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;table class=&#34;table&#34; style=&#34;margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+A
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+rho
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+a1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+-0.0790
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+a2
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+-0.4605
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;And the action that minimises the BEL:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;print( min.bel.CBD &amp;lt;- which.max( rho.A$rho ) )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the example above, we find the action 1 (i.e. &lt;span class=&#34;math inline&#34;&gt;\(a_1\)&lt;/span&gt; = “do nothing”) minimises the BEL. This fits with our intuition given the patient is most likely negative: &lt;span class=&#34;math inline&#34;&gt;\(\pi_{\Theta}(\theta_1) &amp;gt; \pi_{\Theta}(\theta_1)\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;developing-the-loss-function&#34; class=&#34;section level1&#34; number=&#34;5&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;5&lt;/span&gt; Developing the Loss Function&lt;/h1&gt;
+&lt;p&gt;Consider a different patient where the posterior distribution &lt;span class=&#34;math inline&#34;&gt;\(\pi_{F}(Y|x)\)&lt;/span&gt;, the output of the predictive model, looks like:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;samples &amp;lt;- range01( c(rnorm( 1000, mean = 0, sd = 2 ), rnorm( 1000, mean = 10, sd = 3) ) )
+df &amp;lt;- data.frame( y = samples )
+ggplot( df, aes( y ) ) +
+  geom_density( fill = &amp;quot;#fa9fb5&amp;quot;) + 
+  ylab(&amp;quot;Density\n&amp;quot;) + 
+  xlab(&amp;quot;\nScore (Y)&amp;quot;) + basictheme&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/decisions-and-loss-functions/index_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;
+In this example, there’s uncertainty about the patient being negative or positive.&lt;/p&gt;
+&lt;p&gt;This time, we’ll quantise into &lt;em&gt;three&lt;/em&gt; equal-sized intervals over the range &lt;span class=&#34;math inline&#34;&gt;\([0,1]\)&lt;/span&gt; (again, an unprincipled decision made only for demonstration) and map to three states:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pdf.Y &amp;lt;- pdfFromSamples(0,1,delta=1/3,samples)
+pdf.Y$theta &amp;lt;- factor( seq(1,3,by=1) )
+
+pdf.plot &amp;lt;- ggplot( pdf.Y, aes( x = theta, y = P ) ) + 
+  geom_col( fill = &amp;quot;#fa9fb5&amp;quot; ) + 
+  scale_x_discrete(labels = pdf.Y$theta ) +
+  xlab(TeX(&amp;quot;$\\theta&amp;quot;)) +
+  ylab(TeX(&amp;#39;$\\pi(\\theta)&amp;#39;)) +
+  basictheme
+
+print( pdf.plot )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/decisions-and-loss-functions/index_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The loss matrix will now be a &lt;span class=&#34;math inline&#34;&gt;\(3 \times 2\)&lt;/span&gt; matrix:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;A &amp;lt;- c(&amp;quot;a1:&amp;lt;br&amp;gt;do nothing&amp;quot;,&amp;quot;a2:&amp;lt;br&amp;gt;intervene&amp;quot;)
+Theta &amp;lt;- c(&amp;quot;&amp;lt;b&amp;gt;theta1:&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;negative&amp;quot;, 
+           &amp;quot;&amp;lt;b&amp;gt;theta2:&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;equivocal&amp;quot;,  
+           &amp;quot;&amp;lt;b&amp;gt;theta3:&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;positive&amp;quot;)
+
+loss.matrix &amp;lt;- matrix( c( 0.0,  -0.5,
+                          -0.5,  -0.2,
+                          -1.0, 0 ), 
+                       nrow = 3, ncol = 2, byrow = TRUE)
+rownames(loss.matrix) &amp;lt;- Theta
+colnames(loss.matrix) &amp;lt;- A
+
+knitr::kable( loss.matrix, 
+              format = &amp;quot;html&amp;quot;, 
+              align = &amp;#39;c&amp;#39;, 
+              full_width = FALSE, 
+              position = &amp;#39;c&amp;#39;,
+              escape = FALSE ) %&amp;gt;%
+        kable_styling(position = &amp;quot;center&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;table class=&#34;table&#34; style=&#34;margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+a1:&lt;br&gt;do nothing
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+a2:&lt;br&gt;intervene
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+&lt;b&gt;theta1:&lt;/b&gt;&lt;br&gt;negative
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+-0.5
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+&lt;b&gt;theta2:&lt;/b&gt;&lt;br&gt;equivocal
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+-0.5
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+-0.2
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+&lt;b&gt;theta3:&lt;/b&gt;&lt;br&gt;positive
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+-1.0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.0
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Bearing in mind that states are uncertain, the logic behind this loss matrix is as follows:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;For &lt;span class=&#34;math inline&#34;&gt;\(a_1\)&lt;/span&gt; (do nothing) : no cost is incurred if the patient is likely negative (&lt;span class=&#34;math inline&#34;&gt;\(\theta_1\)&lt;/span&gt;). If the patient is most likely positive (&lt;span class=&#34;math inline&#34;&gt;\(\theta_3\)&lt;/span&gt;) and we do nothing, this is evidently the wrong decision and we incur the maximum penalty of -1.0. If there is some equivocation &lt;span class=&#34;math inline&#34;&gt;\((\theta_2\)&lt;/span&gt;) – we penalise by half the maximum cost to discourage doing nothing (equating to loss aversion)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;For &lt;span class=&#34;math inline&#34;&gt;\(a_2\)&lt;/span&gt; (intervene) : for &lt;span class=&#34;math inline&#34;&gt;\(\theta_1\)&lt;/span&gt; we incur a cost (-0.5) for intervening when unnecessary. Naturally, for &lt;span class=&#34;math inline&#34;&gt;\(\theta_3\)&lt;/span&gt;, the correct thing to do is intervene so this has no penalty associated. For the equivocal case, &lt;span class=&#34;math inline&#34;&gt;\(\theta_2\)&lt;/span&gt;, we should certainly not ignore these cases but simply intervening (i.e. with zero penalty) is inappropriate. So we incur a small penalty (-0.2) to nudge us away from intervening as the default.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Notice that in designing the loss matrix, we are trying to capture domain knowledge about the &lt;em&gt;deployment&lt;/em&gt; of the model – for example, the loss attached to doing nothing (when there is equivocation about the negative/positive state of the patient) pushes us to be cautious and intervene.&lt;/p&gt;
+&lt;p&gt;Let’s look at the resulting BEL:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# compute BEL for each action a:
+rho.A &amp;lt;- data.frame( 
+  A = factor(c(&amp;quot;a1&amp;quot;,&amp;quot;a2&amp;quot;)),
+  rho = rep(NA,2)
+)
+
+# for each action
+for( j in 1:2 ) {
+  rho.A$rho[j] &amp;lt;- BEL( j, pdf.Y$P, loss.matrix )
+}
+
+bel.plot &amp;lt;- ggplot( rho.A, aes(x = A, y = rho) ) +
+  geom_col( fill = &amp;quot;#d6604d&amp;quot; ) + 
+  basictheme
+
+grid.arrange( pdf.plot, bel.plot, nrow = 1, ncol = 2 )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/decisions-and-loss-functions/index_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;knitr::kable( rho.A, 
+              format = &amp;quot;html&amp;quot;, 
+              align = &amp;#39;c&amp;#39;, 
+              full_width = FALSE, 
+              position = &amp;#39;c&amp;#39;,
+              escape = FALSE ) %&amp;gt;%
+        kable_styling(position = &amp;quot;center&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;table class=&#34;table&#34; style=&#34;margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+A
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+rho
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+a1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+-0.35125
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+a2
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+-0.30530
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;print( min.bel.CBD &amp;lt;- which.max( rho.A$rho ) )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 2&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The action that minimises &lt;span class=&#34;math inline&#34;&gt;\(\rho(\pi_{\Theta},a)\)&lt;/span&gt; is &lt;span class=&#34;math inline&#34;&gt;\(a_2\)&lt;/span&gt; – as can be seen, the probability mass for &lt;span class=&#34;math inline&#34;&gt;\(\theta_2\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\theta_3\)&lt;/span&gt; (and the associated losses) is driving the decision to intervene i.e. be cautious.&lt;/p&gt;
+&lt;p&gt;We can continue introducing more and more granularity in quantising the posterior predictions &lt;span class=&#34;math inline&#34;&gt;\(\pi_{F}(Y|x)\)&lt;/span&gt; to arrive at mappings to states &lt;span class=&#34;math inline&#34;&gt;\(\Theta\)&lt;/span&gt; and then specifying individual losses in the corresponding rows of the loss matrix. Instead, we’ll specify a &lt;strong&gt;loss function&lt;/strong&gt; (although for coding convenience, we’ll continue with a matrix representation).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Sigmoid &amp;lt;- function( x, A, B, m, s ) {
+  # x = vector of values
+  # A = height of sigmoid
+  # B = translation on y axis
+  # m = value of x for which Sigmoid() = half max value
+  # s = steepness of linear component
+  exp.x &amp;lt;- exp( -(x-m)/s )
+  return(
+    ( A + B * (1+exp.x) ) / (1+exp.x)
+  )
+}
+
+
+# plots to compare the quantised states to a more fine-grained version
+pdf.Y1 &amp;lt;- pdfFromSamples(0, 1, delta= 1/50, samples)
+pdf.plot.Y1 &amp;lt;- ggplot( pdf.Y1, aes( x = mids, y = P ) ) + 
+  geom_col( fill = &amp;quot;#fa9fb5&amp;quot; ) + 
+  xlab(TeX(&amp;quot;$\\theta&amp;quot;)) +
+  ylab(TeX(&amp;#39;$\\pi(\\theta)&amp;#39;)) +
+  basictheme
+
+pdf.Y2 &amp;lt;- pdfFromSamples(0, 1, delta= 1/3, samples)
+pdf.Y2$Theta &amp;lt;- factor(c(&amp;quot;theta1&amp;quot;,&amp;quot;theta2&amp;quot;,&amp;quot;theta3&amp;quot;))
+pdf.plot.Y2 &amp;lt;- ggplot( pdf.Y2, aes( x = Theta, y = P ) ) + 
+  geom_col( fill = &amp;quot;#fa9fb5&amp;quot; ) + 
+  scale_x_discrete(labels = pdf.Y2$theta ) +
+  xlab(TeX(&amp;quot;$\\theta&amp;quot;)) +
+  ylab(TeX(&amp;#39;$\\pi(\\theta)&amp;#39;)) +
+  basictheme
+
+# loss functions for a1 and a2
+loss.fun.a1 &amp;lt;- Sigmoid(pdf.Y1$mids, A = -1.0, B = 0, m = 0.5, s = 0.15 )
+loss.fun.a2 &amp;lt;- Sigmoid(pdf.Y1$mids, A = 0.5, B = -0.5, m = 0.3, s = 0.08 )
+
+# build a tabular version of loss function
+loss.fun &amp;lt;- data.frame( Theta = pdf.Y1$mids,
+                        L.a1 = loss.fun.a1,
+                        L.a2 = loss.fun.a2
+                        )
+
+# show the loss function and 3 state quantised loss matrix
+loss.fun.plot &amp;lt;- ggplot( loss.fun, aes( x = Theta ) ) +
+  geom_line( aes( y = L.a1 ), colour = &amp;quot;#fc8d59&amp;quot;, size = 1) +
+  annotate( &amp;quot;label&amp;quot;, x = 0.9, y = -0.75, label = &amp;quot;a1&amp;quot; ) + 
+  geom_line( aes( y = L.a2 ), colour = &amp;quot;#91bfdb&amp;quot;, size = 1 ) + 
+  annotate( &amp;quot;label&amp;quot;, x = 0.9, y = -0.15, label = &amp;quot;a2&amp;quot; ) +
+  ylab(&amp;quot;Loss&amp;quot;) +
+  xlab(&amp;quot;\nTheta&amp;quot;) +
+  basictheme
+
+df.loss.matrix &amp;lt;- data.frame( Theta = factor( c(&amp;quot;theta1&amp;quot;,&amp;quot;theta2&amp;quot;,&amp;quot;theta3&amp;quot;) ),
+                              L.a1 = loss.matrix[,1],
+                              L.a2 = loss.matrix[,2]
+                            )
+
+loss.matrix.plot &amp;lt;- ggplot( df.loss.matrix ) +
+  geom_line( aes( x = Theta, y = L.a1, group = 1), 
+             colour = &amp;quot;#fc8d59&amp;quot;, size = 1) +
+  geom_point( aes( x = Theta, y = L.a1, group = 1), 
+             colour = &amp;quot;#fc8d59&amp;quot;, size = 4) +
+  annotate( &amp;quot;label&amp;quot;, 
+            x = 2.8, y = -0.7, label = &amp;quot;a1&amp;quot; ) + 
+  geom_line( aes( x = Theta, y = L.a2, group= 1), 
+             colour = &amp;quot;#91bfdb&amp;quot;, size = 1.5 ) + 
+  geom_point( aes( x = Theta, y = L.a2, group= 1), 
+             colour = &amp;quot;#91bfdb&amp;quot;, size = 4 ) + 
+  annotate( &amp;quot;label&amp;quot;, 
+            x = 2.8, y = -0.2, label = &amp;quot;a2&amp;quot; ) +
+  ylab(&amp;quot;Loss&amp;quot;) +
+  xlab(&amp;quot;\nTheta&amp;quot;) +
+  basictheme
+
+grid.arrange( pdf.plot.Y2, pdf.plot.Y1, 
+              loss.matrix.plot, loss.fun.plot, 
+              nrow = 2, ncol = 2 )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/decisions-and-loss-functions/index_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;90%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In the figure above, we show the three-state loss matrix underneath the distribution &lt;span class=&#34;math inline&#34;&gt;\(\pi_{\Theta}\)&lt;/span&gt; (the lines are to emphasise the trend in losses as we proceed from likely negative through positive). On the right, a finer-grained representation of the distribution &lt;span class=&#34;math inline&#34;&gt;\(\pi_{\Theta} \approx \pi_{F}(Y|x)\)&lt;/span&gt; with a sigmoid loss function over &lt;span class=&#34;math inline&#34;&gt;\(\Theta\)&lt;/span&gt; interpolating between the points in the loss matrix at the extremes (negative, positive) and midpoint (equivocal). Now, we can effectively use the whole of the posterior &lt;span class=&#34;math inline&#34;&gt;\(\pi_{F}(Y|x)\)&lt;/span&gt; more directly:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# the loss function x probability
+pdf.Y1$L.a1 &amp;lt;- pdf.Y1$P * loss.fun$L.a1
+pdf.Y1$L.a2 &amp;lt;- pdf.Y1$P * loss.fun$L.a2
+
+# product of the posterior and loss function
+loss.fun.plot2 &amp;lt;- ggplot( pdf.Y1, aes( x = mids ) ) +
+  geom_line( aes( y = L.a1 ), colour = &amp;quot;#fc8d59&amp;quot;, size = 1.5) +
+  #annotate( &amp;quot;label&amp;quot;, x = 0.9, y = -0.75, label = &amp;quot;a1&amp;quot; ) + 
+  geom_line( aes( y = L.a2 ), colour = &amp;quot;#91bfdb&amp;quot;, size = 1.5 ) + 
+  #annotate( &amp;quot;label&amp;quot;, x = 0.9, y = -0.15, label = &amp;quot;a2&amp;quot; ) +
+  ylab(&amp;quot;Loss&amp;quot;) +
+  xlab(&amp;quot;\nTheta&amp;quot;) + 
+  basictheme
+
+## The actual BEL
+# we need a matrix representation of the loss function
+loss.fun.matrix &amp;lt;- as.matrix( loss.fun[,2:3] )
+colnames( loss.fun.matrix ) &amp;lt;- c(&amp;quot;a1&amp;quot;,&amp;quot;a2&amp;quot;)
+
+# compute BEL for each action a:
+rho.A &amp;lt;- data.frame( 
+  A = factor(c(&amp;quot;a1&amp;quot;,&amp;quot;a2&amp;quot;)),
+  rho = rep(NA,2)
+)
+
+# for each action
+for( j in 1:2 ) {
+  rho.A$rho[j] &amp;lt;- BEL( j, pdf.Y1$P, loss.fun.matrix )
+}
+
+bel.plot &amp;lt;- ggplot( rho.A, aes(x = A, y = rho) ) +
+  geom_col( fill = &amp;quot;#d6604d&amp;quot; ) + 
+  basictheme
+
+grid.arrange( pdf.plot.Y1, loss.fun.plot2, bel.plot, ncol = 2, nrow = 2)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/decisions-and-loss-functions/index_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Above, the top-left panel shows a finer-grained distribution function &lt;span class=&#34;math inline&#34;&gt;\(\pi_{\Theta}\)&lt;/span&gt; and the top-right panel shows the loss function for &lt;span class=&#34;math inline&#34;&gt;\(a_1\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(a_2\)&lt;/span&gt; weighted by &lt;span class=&#34;math inline&#34;&gt;\(\pi_{\Theta} \approx \pi_{F}(Y|x)\)&lt;/span&gt; – rather than the &lt;strong&gt;sum&lt;/strong&gt; for each action as in &lt;span class=&#34;math inline&#34;&gt;\(\rho(\theta, a)\)&lt;/span&gt;. This exposes that the Bayesian expected loss of an action is the integral over states (equivalently, the sum for discrete distributions) of the product of the loss function for an action in a certain state and the probability of that state. The bottom-left panel shows the resulting BEL where, as expected, &lt;span class=&#34;math inline&#34;&gt;\(a2\)&lt;/span&gt; minimises &lt;span class=&#34;math inline&#34;&gt;\(\rho(\theta,a)\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;sec-further-reading&#34; class=&#34;section level1&#34; number=&#34;6&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;6&lt;/span&gt; Further Reading&lt;/h1&gt;
+&lt;p&gt;If I were to try this again (rather than trying to piece together an understanding from wikipedia), I would proceed in this order:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Start with &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-savage1951theory&#34; role=&#34;doc-biblioref&#34;&gt;Savage 1951&lt;/a&gt;)&lt;/span&gt; for foundations/first principles and tutorial approach.&lt;/li&gt;
+&lt;li&gt;First four chapters of &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-berger1985statistical&#34; role=&#34;doc-biblioref&#34;&gt;Berger 1985&lt;/a&gt;)&lt;/span&gt; for a really clear exposition of the core ideas.&lt;/li&gt;
+&lt;li&gt;For decision theory in point estimation from the perspective of sciences concerned with &lt;strong&gt;prediction&lt;/strong&gt; and &lt;strong&gt;forecasting&lt;/strong&gt;: &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-gneiting2011making&#34; role=&#34;doc-biblioref&#34;&gt;Gneiting 2011&lt;/a&gt;)&lt;/span&gt; provides a comprehensive review&lt;/li&gt;
+&lt;li&gt;Risk/decision theory for &lt;strong&gt;classification&lt;/strong&gt; Chapter 2 of &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-duda2012pattern&#34; role=&#34;doc-biblioref&#34;&gt;Duda, Hart, and Stork 2012&lt;/a&gt;)&lt;/span&gt; and Chapter 1.5 of &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-bishop2006pattern&#34; role=&#34;doc-biblioref&#34;&gt;Bishop 2006&lt;/a&gt;)&lt;/span&gt;.&lt;br /&gt;
+&lt;/li&gt;
+&lt;li&gt;Foundations in Bayesian principles more generally: Chapter 2 and Appendix B of &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-bernardo2009bayesian&#34; role=&#34;doc-biblioref&#34;&gt;Bernardo and Smith 2009&lt;/a&gt;)&lt;/span&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div id=&#34;references&#34; class=&#34;section level1 unnumbered&#34;&gt;
+&lt;h1&gt;References&lt;/h1&gt;
+&lt;div id=&#34;refs&#34; class=&#34;references csl-bib-body hanging-indent&#34;&gt;
+&lt;div id=&#34;ref-berger1985statistical&#34; class=&#34;csl-entry&#34;&gt;
+Berger, James O. 1985. &lt;em&gt;Statistical Decision Theory and Bayesian Analysis&lt;/em&gt;. 2nd ed. Springer.
+&lt;/div&gt;
+&lt;div id=&#34;ref-bernardo2009bayesian&#34; class=&#34;csl-entry&#34;&gt;
+Bernardo, José M, and Adrian FM Smith. 2009. &lt;em&gt;Bayesian Theory&lt;/em&gt;. Vol. 405. John Wiley &amp;amp; Sons.
+&lt;/div&gt;
+&lt;div id=&#34;ref-bishop2006pattern&#34; class=&#34;csl-entry&#34;&gt;
+Bishop, Christopher M. 2006. &lt;em&gt;Pattern Recognition and Machine Learning&lt;/em&gt;. Springer.
+&lt;/div&gt;
+&lt;div id=&#34;ref-duda2012pattern&#34; class=&#34;csl-entry&#34;&gt;
+Duda, Richard O, Peter E Hart, and David G Stork. 2012. &lt;em&gt;Pattern Classification&lt;/em&gt;. John Wiley &amp;amp; Sons.
+&lt;/div&gt;
+&lt;div id=&#34;ref-gneiting2011making&#34; class=&#34;csl-entry&#34;&gt;
+Gneiting, Tilmann. 2011. &lt;span&gt;“Making and Evaluating Point Forecasts.”&lt;/span&gt; &lt;em&gt;Journal of the American Statistical Association&lt;/em&gt; 106 (494): 746–62.
+&lt;/div&gt;
+&lt;div id=&#34;ref-savage1951theory&#34; class=&#34;csl-entry&#34;&gt;
+Savage, Leonard J. 1951. &lt;span&gt;“The Theory of Statistical Decision.”&lt;/span&gt; &lt;em&gt;Journal of the American Statistical Association&lt;/em&gt; 46 (253): 55–67.
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Loss, Risk and Point Summaries of Posterior Distributions</title>
+      <link>/post/loss-functions-and-posteriors/</link>
+      <pubDate>Sat, 21 Mar 2020 00:00:00 +0000</pubDate>
+      <guid>/post/loss-functions-and-posteriors/</guid>
+      <description>
+&lt;script src=&#34;/post/loss-functions-and-posteriors/index_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/post/loss-functions-and-posteriors/index_files/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;/post/loss-functions-and-posteriors/index_files/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+
+
+&lt;p&gt;For a while, I’ve been thinking about the deployment of predictive algorithms in clinical decision support. Specifically, about the difference between what we understand about a model’s performance from the publication describing it and how this might be less informative when deployed. In short: what is the value of knowing that a model has good balanced accuracy or a high area under the ROC curve when sat with a patient and using the tool to make a clinical decision.&lt;/p&gt;
+&lt;p&gt;Frequently in medical applications of machine learning we see summary measures of performance used to demonstrate the competence of the model typically reported as sensitivities, specificities, balanced accuracy, area under the ROC curve and so on. These measures assume that for an input &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; (a patient) we get an output &lt;span class=&#34;math inline&#34;&gt;\(Y = F(x)\)&lt;/span&gt; representing for example, “negative” or “positive” caseness.&lt;/p&gt;
+&lt;p&gt;If the system &lt;span class=&#34;math inline&#34;&gt;\(F\)&lt;/span&gt; is designed to &lt;strong&gt;classify&lt;/strong&gt; patients, then it will deliver discrete ‘yes / no’ answers e.g. &lt;span class=&#34;math inline&#34;&gt;\(Y \in \{0,1\}\)&lt;/span&gt;; canonical examples include the &lt;a href=&#34;https://en.wikipedia.org/wiki/Support-vector_machine&#34;&gt;support-vector machine (SVM)&lt;/a&gt;. Baked-into these algorithms is a &lt;strong&gt;decision rule&lt;/strong&gt; operating over a continuous value; in SVMs, for example, the decision rule classifies each patient by dichotomising the signed distance of &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; from the class-seperating hyperplane. If using a &lt;strong&gt;classifier&lt;/strong&gt; makes sense in the context of it’s clinical deployment you might want the algorithm to report a definitive dichotomised answer and summary measures like sensitivity and specificity (perhaps) make sense.&lt;/p&gt;
+&lt;p&gt;Compare this with &lt;a href=&#34;https://en.wikipedia.org/wiki/Logistic_regression&#34;&gt;logistic regression&lt;/a&gt; (often used as if it were a classifier) where the purpose is to estimate the &lt;strong&gt;probability of an event&lt;/strong&gt;, i.e. that a patient is positive or negative. Often in these cases, the decision rule is ‘bolted on’ and that’s when people invoke ROC curves and compute accuracies at an operating threshold that maximises the trade-off between sensitivity and specificity e.g. by &lt;a href=&#34;https://en.wikipedia.org/wiki/Youden%27s_J_statistic&#34;&gt;maximising Youden’s J-statistic&lt;/a&gt;. It’s here that the decision rule and it’s deployment context matter.&lt;/p&gt;
+&lt;p&gt;It seems to me that patients and clinicians would probably want more information than a pure classifier provides and most likely would prefer to know the &lt;strong&gt;actual&lt;/strong&gt; continuous score – the “output”&#34; of &lt;span class=&#34;math inline&#34;&gt;\(F(x)\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Further, a patient and clinician might want to understand the decision rule and it’s assumptions. For example, assume for a deployed predictive model &lt;span class=&#34;math inline&#34;&gt;\(F\)&lt;/span&gt; and a new patient, &lt;span class=&#34;math inline&#34;&gt;\(F(x) = 0.79\)&lt;/span&gt; and this represents (or is proportional to) the likelihood of being a positive case. The predictive model being deployed has an operating threshold of &lt;span class=&#34;math inline&#34;&gt;\(0.80\)&lt;/span&gt; for declaring a positive case and this threshold was determined by maximising the trade-off between sensitivity and specificity. Recall that sensitivity is the ratio &lt;span class=&#34;math inline&#34;&gt;\(TP/(TP+FN)\)&lt;/span&gt; and specificity is the ratio &lt;span class=&#34;math inline&#34;&gt;\(TN/(TN+FP)\)&lt;/span&gt;. Amongst other things, I’d want to know:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;in determining the operating threshold, were true positives and false negatives given equal weight ? For example, in the context of predicting a rare but serious event, a false negative can be orders-of-magnitude more ‘costly’ than the model correctly determining cases that are true positives or true negatives.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;in the example above, &lt;span class=&#34;math inline&#34;&gt;\(F(x) = 0.79\)&lt;/span&gt; is 0.01 below the operating threshold for declaring a &lt;em&gt;positive&lt;/em&gt; case – boundary cases near the operating threshold, demand closer inspection and at least, consideration of the &lt;strong&gt;uncertainty&lt;/strong&gt; in the output of &lt;span class=&#34;math inline&#34;&gt;\(F\)&lt;/span&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;A more elaborate version of this discussion is &lt;a href=&#34;https://github.com/danwjoyce/summ-performance/blob/master/revised_predictive_decisions.pdf&#34;&gt;here&lt;/a&gt; and summarised in a &lt;a href=&#34;https://jamanetwork.com/journals/jamapsychiatry/article-abstract/2758828&#34;&gt;short paper&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;So, the problem of ‘declaring’ a prediction can be cast as a problem in statistical &lt;a href=&#34;https://en.wikipedia.org/wiki/Decision_theory&#34;&gt;decision theory&lt;/a&gt;. Being only vaguely familiar with similar ideas from signal detection models in psychophysics &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-green1966signal&#34; role=&#34;doc-biblioref&#34;&gt;Green and Swets 1966&lt;/a&gt;)&lt;/span&gt;, I decided to deep-dive into the details of using posterior distributions to arrive at decisions via loss and risk functions. I found the ideas are fairly intuitive and are well described e.g. in &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-duda2012pattern&#34; role=&#34;doc-biblioref&#34;&gt;Duda, Hart, and Stork 2012&lt;/a&gt;)&lt;/span&gt; and &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-bishop2006pattern&#34; role=&#34;doc-biblioref&#34;&gt;Bishop 2006&lt;/a&gt;)&lt;/span&gt;. It was harder for me to operationalise these; for example, I frequently found explainations that the &lt;span class=&#34;math inline&#34;&gt;\(L_0\)&lt;/span&gt; “zero-one” loss function delivers the mode of a (posterior) distribution, but examples of this in action were harder to come by.&lt;/p&gt;
+&lt;div id=&#34;sec-predictions&#34; class=&#34;section level1&#34; number=&#34;1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;1&lt;/span&gt; Predictions&lt;/h1&gt;
+&lt;p&gt;&lt;img src=&#34;prediction-classification.png&#34; width=&#34;474&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;As above, assume we have a model &lt;span class=&#34;math inline&#34;&gt;\(F(x)\)&lt;/span&gt; that delivers a continuous score &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; for an outcome/case/event given some “input” measurement or feature(s), &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; for a patient. Importantly, the model delivers outputs in the form of posterior probabilities &lt;span class=&#34;math inline&#34;&gt;\(\pi(Y|x) = \Pr(Y=y|x)\)&lt;/span&gt;; for example, the probability of being a positive case is &lt;span class=&#34;math inline&#34;&gt;\(\pi(Y=1|x)\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\pi(Y=0|x) = 1 - \pi(Y=1|x)\)&lt;/span&gt; being the probability of a negative case.&lt;/p&gt;
+&lt;p&gt;So for any patient &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt;, we will have a posterior distribution – rather than a single &lt;em&gt;point&lt;/em&gt; summary.&lt;/p&gt;
+&lt;p&gt;This is an important distinction: after inferring (learning) a model that delivers posterior probabilities, we can then &lt;em&gt;deliberately&lt;/em&gt; design and implement a decision process – in contrast to solving the related problem of &lt;strong&gt;discrimination&lt;/strong&gt; or &lt;strong&gt;classification&lt;/strong&gt;, where we find a direct mapping from each input &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; to a discrete, often binary, output and sacrifice an estimate of uncertainty (see Ch. 1.5 of &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-bishop2006pattern&#34; role=&#34;doc-biblioref&#34;&gt;Bishop 2006&lt;/a&gt;)&lt;/span&gt; for more detail).&lt;/p&gt;
+&lt;p&gt;We are used to seeing &lt;em&gt;point estimates&lt;/em&gt; as outputs from predictive models given some input e.g. &lt;span class=&#34;math inline&#34;&gt;\(\pi( Y = 1 | x) = 0.78\)&lt;/span&gt; and sometimes, with a measure of uncertainty on that output (for example, the standard error on predicted values from &lt;a href=&#34;https://stat.ethz.ch/R-manual/R-devel/library/stats/html/predict.glm.html&#34;&gt;&lt;code&gt;predict.glm()&lt;/code&gt;&lt;/a&gt; in &lt;code&gt;R&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;This point value is a summary of the &lt;a href=&#34;https://en.wikipedia.org/wiki/Probability_distribution&#34;&gt;posterior distribution&lt;/a&gt; of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; (for example, the mean) and represents the output of a decision making process.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;setup&#34; class=&#34;section level1&#34; number=&#34;2&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;2&lt;/span&gt; Setup&lt;/h1&gt;
+&lt;p&gt;Assume that for some predictive model, we present a single patient &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; and we are able to access the posterior distribution of &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; given &lt;span class=&#34;math inline&#34;&gt;\(x\)&lt;/span&gt; i.e. we can obtain samples from the posterior distribution for that patient denoted &lt;span class=&#34;math inline&#34;&gt;\(\pi(Y|x)\)&lt;/span&gt;; for example:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# to ensure reproducible result
+set.seed(3141)
+# simulate a bimodal posterior distribution $\pi(Y|x)$
+samples &amp;lt;- range01( c(rnorm( 1000, mean = 0, sd = 1 ), rnorm( 1000, mean = 5, sd = 2) ) )
+df &amp;lt;- data.frame( y = samples )
+ggplot( df, aes( y ) ) +
+  geom_density( fill = &amp;quot;#fa9fb5&amp;quot;) + 
+  ylab(&amp;quot;Density\n&amp;quot;) + 
+  xlab(&amp;quot;\nScore (Y)&amp;quot;) + basictheme&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/loss-functions-and-posteriors/index_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We have 2000 samples from &lt;span class=&#34;math inline&#34;&gt;\(\pi(Y|x)\)&lt;/span&gt; stored as &lt;code&gt;samples&lt;/code&gt; (usually, these samples will be from the &lt;a href=&#34;https://en.wikipedia.org/wiki/Posterior_predictive_distribution&#34;&gt;posterior predictive distribution&lt;/a&gt; obtained by e.g. MCMC sampling):&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;round( samples[1:10], 3 )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  [1] 0.291 0.130 0.271 0.295 0.294 0.373 0.261 0.232 0.177 0.313&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and the following code will give us a &lt;code&gt;data.frame&lt;/code&gt; that represents an approximation to the probability distribution function as a lookup table (basically, a histogram):&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pdfFromSamples &amp;lt;- function(a, b, delta, samples) {
+  H &amp;lt;- hist( samples, plot = FALSE, breaks = seq(a, b, by = delta) )
+  ret &amp;lt;- data.frame(
+    mids  = H$mids,
+    freq  = H$counts
+  )
+  ret$P &amp;lt;- ret$freq / sum(ret$freq)
+  return(ret)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For example, we can examine &lt;span class=&#34;math inline&#34;&gt;\(\pi(Y|x)\)&lt;/span&gt; in the region &lt;span class=&#34;math inline&#34;&gt;\(Y \in [0.5,0.6]\)&lt;/span&gt; with a bin-width of &lt;code&gt;delta = 1/50&lt;/code&gt; as follows:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pdf.Y &amp;lt;- pdfFromSamples(0, 1, delta = 1/50, samples )
+knitr::kable( pdf.Y[ pdf.Y$mids &amp;gt;= 0.5 &amp;amp; pdf.Y$mids &amp;lt;= 0.6, ], 
+              format = &amp;quot;html&amp;quot;, 
+              align = &amp;#39;c&amp;#39;, 
+              full_width = FALSE,
+              row.names = FALSE ) %&amp;gt;%
+        kable_styling(position = &amp;quot;center&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;table class=&#34;table&#34; style=&#34;margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+mids
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+freq
+&lt;/th&gt;
+&lt;th style=&#34;text-align:center;&#34;&gt;
+P
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.51
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+57
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.0285
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.53
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+46
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.0230
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.55
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+57
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.0285
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.57
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+62
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.0310
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.59
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+48
+&lt;/td&gt;
+&lt;td style=&#34;text-align:center;&#34;&gt;
+0.0240
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;With some abuse of notation, we can state that (approximately) &lt;span class=&#34;math inline&#34;&gt;\(\pi(Y=0.55|x) = 0.0285\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\pi(Y=0.59|x) = 0.0240\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;sec-loss&#34; class=&#34;section level1&#34; number=&#34;3&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;3&lt;/span&gt; Loss Functions&lt;/h1&gt;
+&lt;p&gt;Consider the task of choosing a summary of the information contained in the posterior distribution &lt;span class=&#34;math inline&#34;&gt;\(\pi(Y|x)\)&lt;/span&gt; as a single (point) value. We can see that the score &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; ranges from 0 to 1 and we could potentially pick any one of an infinite number of values as our chosen point summary (of course, some will be meaningful and others less so).&lt;/p&gt;
+&lt;p&gt;To make this concrete, we’ll cheat and look-ahead to the answer. One meaningful decision to summarise &lt;span class=&#34;math inline&#34;&gt;\(\pi(Y|x)\)&lt;/span&gt; is to choose the &lt;strong&gt;mode&lt;/strong&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pdf.Y &amp;lt;- pdfFromSamples(0, 1, delta = 1/100, samples )
+
+mode.pdf.Y &amp;lt;- pdf.Y$mids[ order( pdf.Y$freq, decreasing = TRUE) ][1]
+
+pdf.plot &amp;lt;- ggplot( pdf.Y, aes( x = mids, y = P ) ) + 
+  geom_col( fill = &amp;quot;#fa9fb5&amp;quot; ) + 
+  xlab(&amp;quot;Score (Y)&amp;quot;) +
+  ylab(TeX(&amp;#39;$\\pi(Y|x)&amp;#39;)) +
+  basictheme
+
+mode.plot &amp;lt;- pdf.plot + 
+      geom_vline( xintercept = mode.pdf.Y, colour = &amp;quot;black&amp;quot;, size = 2 ) +
+      annotate( geom = &amp;quot;label&amp;quot;, 
+            label = paste0( &amp;quot;Mode = &amp;quot;, mode.pdf.Y ), 
+            x = mode.pdf.Y, y = 0.01)
+
+print( mode.plot )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/loss-functions-and-posteriors/index_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Now assume we don’t have this information but instead, let &lt;span class=&#34;math inline&#34;&gt;\(a_{i}\)&lt;/span&gt; be one such candidate decision for the point summary. The actual point summary is &lt;span class=&#34;math inline&#34;&gt;\(y_{j} \in [0,1]\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;We define the cost of choosing &lt;span class=&#34;math inline&#34;&gt;\(a_{i}\)&lt;/span&gt; – where the true value is &lt;span class=&#34;math inline&#34;&gt;\(y_{j}\)&lt;/span&gt; – as the &lt;strong&gt;loss function&lt;/strong&gt; &lt;span class=&#34;math inline&#34;&gt;\(L(a_{i},y_{j})\)&lt;/span&gt;. Now, construct a loss function that penalizes any candidate &lt;span class=&#34;math inline&#34;&gt;\(a_{i}\)&lt;/span&gt; by a single unit if &lt;span class=&#34;math inline&#34;&gt;\(a_{i}\)&lt;/span&gt; is not equal to &lt;span class=&#34;math inline&#34;&gt;\(y_{j}\)&lt;/span&gt; (incorrect) and zero if &lt;span class=&#34;math inline&#34;&gt;\(a_i\)&lt;/span&gt; is equal to &lt;span class=&#34;math inline&#34;&gt;\(y_{j}\)&lt;/span&gt;; this is the so-called “zero-one” loss function:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+L_{0}(a_{i},y_{j}) = \begin{cases}
+          0 &amp;amp; \text{if}\ a_{i} = y_{j} \\
+          1 &amp;amp; \text{otherwise}
+    \end{cases}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Now, we propose an arbitrary candidate &lt;span class=&#34;math inline&#34;&gt;\(a_{1} = 0.555\)&lt;/span&gt; and we want to know the associated loss over the range of possible values of &lt;span class=&#34;math inline&#34;&gt;\(y_{j}\)&lt;/span&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# the range of possible values $y_{j}$
+y &amp;lt;- pdf.Y$mids
+# our estimate $a_{i}$
+a1 &amp;lt;- 0.555
+
+# the L_{0} loss function:
+loss0 &amp;lt;- function( y, a ) { ifelse( a == y, 0, 1 ) }
+
+# the loss function evaluated over the range $y_{j}$
+l0.ex &amp;lt;- data.frame( mids = pdf.Y$mids, loss.ex1 = loss0( y, a1 ) )
+
+loss.plot &amp;lt;- ggplot( l0.ex, aes( x = l0.ex$mids, y = loss.ex1) ) +
+  geom_line( colour = &amp;quot;#636363&amp;quot; ) +
+  xlab(TeX(&amp;#39;$y_{j}$&amp;#39;)) +
+  ylab(TeX(&amp;#39;$L_{0}$&amp;#39;)) +
+  basictheme
+
+print( loss.plot )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/loss-functions-and-posteriors/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Let’s repeat the same process for two other (arbitrarily chosen) candidates &lt;span class=&#34;math inline&#34;&gt;\(a_{2} = 0.095\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(a_{3} = 0.755\)&lt;/span&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;a2 &amp;lt;- 0.095
+a3 &amp;lt;- 0.755
+
+# the loss function evaluated over the range $y_{j}$
+l0.ex$loss.ex2 &amp;lt;- loss0( y, a2 )
+l0.ex$loss.ex3 &amp;lt;- loss0( y, a3 )
+
+loss.plot &amp;lt;- ggplot( l0.ex ) +
+  geom_line( aes( x = mids, y = loss.ex1 ), colour = &amp;quot;#bdbdbd&amp;quot; ) +
+    annotate( geom = &amp;quot;label&amp;quot;, 
+                label = TeX(&amp;#39;$a_{1}$&amp;#39;, output=&amp;quot;character&amp;quot;),
+                parse = TRUE,
+                x = a1, y = 0.25) +
+  geom_line( aes( x = mids, y = loss.ex2 ), colour = &amp;quot;#969696&amp;quot; ) +
+    annotate( geom = &amp;quot;label&amp;quot;, 
+                label = TeX(&amp;#39;$a_{2}$&amp;#39;, output=&amp;quot;character&amp;quot;),
+                parse = TRUE,
+                x = a2, y = 0.25) +
+  geom_line( aes( x = mids, y = loss.ex3 ), colour = &amp;quot;#636363&amp;quot; ) +
+    annotate( geom = &amp;quot;label&amp;quot;, 
+                label = TeX(&amp;#39;$a_{3}$&amp;#39;, output=&amp;quot;character&amp;quot;),
+                parse = TRUE,
+                x = a3, y = 0.25) +
+  xlab(TeX(&amp;#39;$y_{j}$&amp;#39;)) +
+  ylab(TeX(&amp;#39;$L_{0}$&amp;#39;)) +
+  basictheme
+
+print( loss.plot )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/loss-functions-and-posteriors/index_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Clearly using the loss function we get ‘spikes’ when our candidates coincide with a value in the range of &lt;span class=&#34;math inline&#34;&gt;\(y_{j}\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;But, what we care about is loss associated with a candidate with respect to the probability of each possible value &lt;span class=&#34;math inline&#34;&gt;\(Y=y_j\)&lt;/span&gt;; so we weight the loss associated with each “decision” (each candidate &lt;span class=&#34;math inline&#34;&gt;\(a_{i}\)&lt;/span&gt;) by the posterior probability of &lt;span class=&#34;math inline&#34;&gt;\(Y = y_{j}\)&lt;/span&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+L_0(a_{i},y_{j})\pi(y_{j}|x)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This leads us to consider the &lt;strong&gt;risk&lt;/strong&gt; associated with each candidate. In essence, we want to know the loss associated with &lt;span class=&#34;math inline&#34;&gt;\(a_{i}\)&lt;/span&gt; when the true value is &lt;span class=&#34;math inline&#34;&gt;\(y_{j}\)&lt;/span&gt; weighted by how likely or how frequently we see &lt;span class=&#34;math inline&#34;&gt;\(y_{j}\)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;sec-risk-functions&#34; class=&#34;section level1&#34; number=&#34;4&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;4&lt;/span&gt; Risk Functions&lt;/h1&gt;
+&lt;p&gt;We could continue randomly choosing candidates but instead, we’ll be systematic and check all values of &lt;span class=&#34;math inline&#34;&gt;\(a_{i}\)&lt;/span&gt;. At the same time, we’ll shift representation and instead of plotting the loss function for each candidate against the range of &lt;span class=&#34;math inline&#34;&gt;\(y_{j}\)&lt;/span&gt;, we’ll compute a &lt;strong&gt;risk function&lt;/strong&gt; for each candidate as the &lt;a href=&#34;https://en.wikipedia.org/wiki/Expected_value&#34;&gt;expected value&lt;/a&gt; of the loss function evaluated for each &lt;span class=&#34;math inline&#34;&gt;\(a_{i}\)&lt;/span&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\mathbb{E}[L_0(a_{i},y_{j})] = \sum_{j} \underbrace{L_{0}(a_{i},y_{j})}_\text{loss} \underbrace{\pi(y_{j}|x)}_\text{posterior}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Then, instead of &lt;span class=&#34;math inline&#34;&gt;\(y_{j}\)&lt;/span&gt; on the horizontal axis and &lt;span class=&#34;math inline&#34;&gt;\(L_{0}\)&lt;/span&gt; on the vertical, we instead show candidates &lt;span class=&#34;math inline&#34;&gt;\(a_{i}\)&lt;/span&gt; on the horizontal with the risk &lt;span class=&#34;math inline&#34;&gt;\(\mathbb{E}[L]\)&lt;/span&gt; on the vertical:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# all candidate values for $a_{i}$ 
+a &amp;lt;- pdf.Y$mids
+# the range of values for $y_{j}$
+y &amp;lt;- pdf.Y$mids
+
+pdf.Y$risk.L0 &amp;lt;- rep(NA, nrow(pdf.Y))
+
+for( i in 1:length( a ) ) {
+  # compute risk function at each candidate $a_{i}$
+  # with reference to the above equation
+  pdf.Y$risk.L0[i] &amp;lt;- sum(                     # sum over j
+                        loss0(y, a[i]) *       # loss
+                        pdf.Y$P                # posterior
+                      ) 
+}
+
+risk.plot &amp;lt;- ggplot( pdf.Y ) +
+  geom_line( aes( x = mids, y = risk.L0  ), colour = &amp;quot;#636363&amp;quot; ) +
+  xlab(TeX(&amp;#39;$a_{i}$&amp;#39;)) +
+  ylab(TeX(&amp;#39;$E(L_{0})$&amp;#39;)) +
+  basictheme
+
+print(risk.plot)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/loss-functions-and-posteriors/index_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;sec-optimal-decision&#34; class=&#34;section level1&#34; number=&#34;5&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;5&lt;/span&gt; Optimal Decision&lt;/h1&gt;
+&lt;p&gt;Our question is now: what is the best &lt;strong&gt;action&lt;/strong&gt; – or decision – over our candidates &lt;span class=&#34;math inline&#34;&gt;\(a_{i}\)&lt;/span&gt; to choose as the point summary given the loss function &lt;span class=&#34;math inline&#34;&gt;\(L_{0}\)&lt;/span&gt; and the posterior &lt;span class=&#34;math inline&#34;&gt;\(\pi(Y|x)\)&lt;/span&gt;?&lt;/p&gt;
+&lt;p&gt;The answer is, the &lt;span class=&#34;math inline&#34;&gt;\(a_{i}\)&lt;/span&gt; that &lt;strong&gt;minimises&lt;/strong&gt; the risk (expected loss). Implementing this, we arrive at:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# find the $a_{i}$ that minimises the risk function
+min.risk.L0 &amp;lt;- pdf.Y$mids[ which.min( pdf.Y$risk.L0 ) ]
+
+risk.plot &amp;lt;- risk.plot + 
+    geom_vline( xintercept = min.risk.L0, size = 2 ) +
+      annotate( geom = &amp;quot;label&amp;quot;, 
+            label = paste0( &amp;quot;Minimum = &amp;quot;, min.risk.L0 ), 
+            x = mode.pdf.Y, y = 0.99)
+print( risk.plot )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/loss-functions-and-posteriors/index_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;
+Compare with the distribution of &lt;span class=&#34;math inline&#34;&gt;\(\pi(Y|x)\)&lt;/span&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;grid.arrange(risk.plot, mode.plot, nrow = 2, ncol = 1)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/loss-functions-and-posteriors/index_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The result then, can be summarised as:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Under the &lt;strong&gt;zero-one loss function&lt;/strong&gt;, &lt;span class=&#34;math inline&#34;&gt;\(L_0\)&lt;/span&gt;, the action/decision &lt;span class=&#34;math inline&#34;&gt;\(a_{i}\)&lt;/span&gt; (point summary) which minimises the risk function (expected loss) is the &lt;strong&gt;mode&lt;/strong&gt; of the posterior distribution &lt;span class=&#34;math inline&#34;&gt;\(\pi(Y|x)\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;other-loss-functions&#34; class=&#34;section level1&#34; number=&#34;6&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;6&lt;/span&gt; Other Loss Functions&lt;/h1&gt;
+&lt;p&gt;We can repeat the same process as for section &lt;a href=&#34;#sec-loss&#34;&gt;3&lt;/a&gt; through &lt;a href=&#34;#sec-optimal-decision&#34;&gt;5&lt;/a&gt; with different loss functions.&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;linear loss&lt;/strong&gt; &lt;span class=&#34;math inline&#34;&gt;\(L_{1}\)&lt;/span&gt; loss is defined as:
+&lt;span class=&#34;math display&#34;&gt;\[
+L_{1}(a_{i},y_{j}) = \begin{cases}
+          c_{1} |a_{i} - y_{j}| &amp;amp; \text{ if } a_{i} \leq y_{j} \\
+          c_{2} |a_{i} - y_{j}| &amp;amp; \text{ if } a_{i} &amp;gt; y_{j} \\
+    \end{cases}
+\]&lt;/span&gt;
+Where &lt;span class=&#34;math inline&#34;&gt;\(c_{1}\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(c_{2}\)&lt;/span&gt; are constants. If &lt;span class=&#34;math inline&#34;&gt;\(c_{1} = c_{2}\)&lt;/span&gt; we arrive at the &lt;strong&gt;median&lt;/strong&gt; of the posterior, as follows:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# the linear loss function
+loss1 &amp;lt;- function( y, a, c1, c2 ) {
+  ifelse(
+    a &amp;lt;= y, c1 * abs( a - y ),
+            c2 * abs( a - y )
+  )
+}
+
+pdf.Y$risk.L1 &amp;lt;- rep(NA, nrow(pdf.Y))
+
+# set constants equal
+c1 &amp;lt;- c2 &amp;lt;- 1
+
+for( i in 1:length( a ) ) {
+  # compute risk function at each candidate $a_{i}$
+  pdf.Y$risk.L1[i] &amp;lt;- sum( 
+                        loss1(y, a[i], c1, c2) * 
+                        pdf.Y$P
+                      ) 
+}
+
+# find the minimum
+min.lossL &amp;lt;- pdf.Y$mids[ which.min( pdf.Y$risk.L1 ) ]&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The minimum of the risk function is 0.355:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;risk.plot &amp;lt;- ggplot( pdf.Y ) +
+  geom_line( aes( x = mids, y = risk.L1  ), colour = &amp;quot;#636363&amp;quot; ) +
+  xlab(TeX(&amp;#39;$a_{i}$&amp;#39;)) +
+  ylab(TeX(&amp;#39;$E(L_{1})$&amp;#39;)) +
+  geom_vline( xintercept = min.lossL, colour = &amp;quot;black&amp;quot;, size = 2 ) +
+    annotate( geom = &amp;quot;label&amp;quot;, 
+              label = paste0( &amp;quot;Minimum = &amp;quot;, round( min.lossL, 2) ), 
+              x = min.lossL, y = 0.4) +
+  basictheme
+
+median.plot &amp;lt;- pdf.plot + 
+      geom_vline( xintercept = median( samples ), colour = &amp;quot;black&amp;quot;, size = 2 ) +
+      annotate( geom = &amp;quot;label&amp;quot;, 
+            label = paste0( &amp;quot;Median = &amp;quot;, round( median(samples), 2 ) ), 
+            x = median(samples), y = 0.01)
+
+grid.arrange(risk.plot, median.plot, nrow = 2, ncol = 1)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/loss-functions-and-posteriors/index_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;More generally, for positive constants, the &lt;span class=&#34;math inline&#34;&gt;\(c_{1}/(c_{1}+c_{2})\)&lt;/span&gt; quantile of the posterior distribution can be found. For example, we can obtain the 25th and 75th percentiles:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pdf.Y$risk.L1_75 &amp;lt;- rep(NA, nrow(pdf.Y))
+pdf.Y$risk.L1_25 &amp;lt;- rep(NA, nrow(pdf.Y))
+
+# set constants
+q95 &amp;lt;- 0.75
+q05 &amp;lt;- 0.25
+c1 &amp;lt;- 1
+c2.q95 &amp;lt;- (c1/q95) - c1
+c2.q05 &amp;lt;- (c1/q05) - c1
+
+for( i in 1:length( a ) ) {
+  # compute risk function at each candidate $a_{i}$
+  pdf.Y$risk.L1_75[i] &amp;lt;- sum( 
+                            loss1(y, a[i], c1, c2.q95) * 
+                            pdf.Y$P
+                         ) 
+  pdf.Y$risk.L1_25[i] &amp;lt;- sum( 
+                            loss1(y, a[i], c1, c2.q05) * 
+                            pdf.Y$P
+                         ) 
+}
+
+# find the minima
+min.lossL_75 &amp;lt;- pdf.Y$mids[ which.min( pdf.Y$risk.L1_75 ) ]
+min.lossL_25 &amp;lt;- pdf.Y$mids[ which.min( pdf.Y$risk.L1_25 ) ]
+
+risk.plot &amp;lt;- ggplot( pdf.Y ) +
+  geom_line( aes( x = mids, y = risk.L1_75  ), colour = &amp;quot;#1f78b4&amp;quot; ) +
+  geom_line( aes( x = mids, y = risk.L1_25  ), colour = &amp;quot;#33a02c&amp;quot; ) +
+  xlab(TeX(&amp;#39;$a_{i}$&amp;#39;)) +
+  ylab(TeX(&amp;#39;$E(L_{1})$&amp;#39;)) +
+  geom_vline( xintercept = min.lossL_75, colour = &amp;quot;#1f78b4&amp;quot;, size = 2 ) +
+    annotate( geom = &amp;quot;label&amp;quot;, 
+              label = paste0( &amp;quot;Minimum = &amp;quot;, round( min.lossL_75, 3) ), 
+              x = min.lossL_75, y = 1.25) +
+  
+  geom_vline( xintercept = min.lossL_25, colour = &amp;quot;#33a02c&amp;quot;, size = 2 ) +
+    annotate( geom = &amp;quot;label&amp;quot;, 
+              label = paste0( &amp;quot;Minimum = &amp;quot;, round( min.lossL_25, 3) ), 
+              x = min.lossL_25, y = 1.25) +
+  basictheme
+
+fun.q75 &amp;lt;- as.numeric( round( quantile(samples, probs = c(0.75)), 3 ) )
+fun.q25 &amp;lt;- as.numeric( round( quantile(samples, probs = c(0.25)), 3 ) )
+
+quantile.plot &amp;lt;- pdf.plot + 
+      geom_vline( xintercept = fun.q75, colour = &amp;quot;#1f78b4&amp;quot;, size = 2 ) +
+        annotate( geom = &amp;quot;label&amp;quot;, 
+              label = paste0( &amp;quot;75th = &amp;quot;, fun.q75 ), 
+              x = fun.q75, y = 0.01) +
+      geom_vline( xintercept = fun.q25, colour = &amp;quot;#33a02c&amp;quot;, size = 2 ) +
+        annotate( geom = &amp;quot;label&amp;quot;, 
+              label = paste0( &amp;quot;25th = &amp;quot;, fun.q25 ), 
+              x = fun.q25, y = 0.01)
+
+grid.arrange(risk.plot, quantile.plot, nrow = 2, ncol = 1)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/loss-functions-and-posteriors/index_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In the top panel of the figure above, the green and blue lines represents the risk using the linear loss function with constants configured to locate the 25th and 75th percentile respectively. The bottom panel shows the same result obtained directly from the &lt;code&gt;quantile()&lt;/code&gt; function operating directly on the raw &lt;code&gt;samples&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;To complete the loss functions for common measures of central tendency, we have the &lt;span class=&#34;math inline&#34;&gt;\(L_{2}\)&lt;/span&gt; &lt;strong&gt;quadratic&lt;/strong&gt; loss function:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+L_{2}(a_{i},y_{j}) = (a_{i} - y_{j})^2
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Here’s the result for quadratic loss:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# the quadratic loss function
+loss2 &amp;lt;- function( y, a ) {
+  return( 
+    (a - y)^2 
+  )
+}
+
+pdf.Y$risk.L2 &amp;lt;- rep(NA, nrow(pdf.Y))
+
+for( i in 1:length( a ) ) {
+  # compute risk function at each candidate $a_{i}$
+  pdf.Y$risk.L2[i] &amp;lt;- sum( 
+                        loss2(y, a[i]) * 
+                        pdf.Y$P
+                      ) 
+}
+
+# find the minimum
+min.lossL2 &amp;lt;- pdf.Y$mids[ which.min( pdf.Y$risk.L2 ) ]
+
+risk.plot &amp;lt;- ggplot( pdf.Y ) +
+  geom_line( aes( x = mids, y = risk.L2  ), colour = &amp;quot;#636363&amp;quot; ) +
+  xlab(TeX(&amp;#39;$a_{i}$&amp;#39;)) +
+  ylab(TeX(&amp;#39;$E(L_{2})$&amp;#39;)) +
+  geom_vline( xintercept = min.lossL2, colour = &amp;quot;black&amp;quot;, size = 2 ) +
+    annotate( geom = &amp;quot;label&amp;quot;, 
+              label = paste0( &amp;quot;Minimum = &amp;quot;, round( min.lossL2,3) ), 
+              x = min.lossL2, y = 0.25) +
+  basictheme
+
+mean.plot &amp;lt;- pdf.plot + 
+      geom_vline( xintercept = mean( samples ), colour = &amp;quot;black&amp;quot;, size = 2 ) +
+        annotate( geom = &amp;quot;label&amp;quot;, 
+              label = paste0( &amp;quot;Mean = &amp;quot;, round( mean( samples ), 3 ) ), 
+              x = mean(samples), y = 0.005)
+
+grid.arrange(risk.plot, mean.plot, nrow = 2, ncol = 1)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/loss-functions-and-posteriors/index_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The estimate from &lt;code&gt;quantile()&lt;/code&gt; plotted on the bottom panel differs from the top panel (the mean estimated by minimising the risk function) due to the granularity (&lt;code&gt;delta = 1/100&lt;/code&gt;) of the approximation of the distribution function used in the code.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;references&#34; class=&#34;section level1 unnumbered&#34;&gt;
+&lt;h1&gt;References&lt;/h1&gt;
+&lt;div id=&#34;refs&#34; class=&#34;references csl-bib-body hanging-indent&#34;&gt;
+&lt;div id=&#34;ref-bishop2006pattern&#34; class=&#34;csl-entry&#34;&gt;
+Bishop, Christopher M. 2006. &lt;em&gt;Pattern Recognition and Machine Learning&lt;/em&gt;. Springer.
+&lt;/div&gt;
+&lt;div id=&#34;ref-duda2012pattern&#34; class=&#34;csl-entry&#34;&gt;
+Duda, Richard O, Peter E Hart, and David G Stork. 2012. &lt;em&gt;Pattern Classification&lt;/em&gt;. John Wiley &amp;amp; Sons.
+&lt;/div&gt;
+&lt;div id=&#34;ref-green1966signal&#34; class=&#34;csl-entry&#34;&gt;
+Green, David Marvin, and John A Swets. 1966. &lt;em&gt;Signal Detection Theory and Psychophysics&lt;/em&gt;. Wiley New York.
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

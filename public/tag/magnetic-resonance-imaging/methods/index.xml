@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>*Magnetic Resonance Imaging/methods | Dan W Joyce</title>
+    <link>/tag/magnetic-resonance-imaging/methods/</link>
+      <atom:link href="/tag/magnetic-resonance-imaging/methods/index.xml" rel="self" type="application/rss+xml" />
+    <description>*Magnetic Resonance Imaging/methods</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>*Magnetic Resonance Imaging/methods</title>
+      <link>/tag/magnetic-resonance-imaging/methods/</link>
+    </image>
+    
+    <item>
+      <title>Amphetamine sensitization alters reward processing in the human striatum and amygdala.</title>
+      <link>/publication/odaly-amphetamine-2014/</link>
+      <pubDate>Wed, 01 Jan 2014 00:00:00 +0000</pubDate>
+      <guid>/publication/odaly-amphetamine-2014/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Trust versus paranoia: abnormal response to social reward in psychotic illness.</title>
+      <link>/publication/gromann-trust-2013/</link>
+      <pubDate>Sat, 01 Jun 2013 00:00:00 +0000</pubDate>
+      <guid>/publication/gromann-trust-2013/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Aging effects on functional auditory and visual processing using fMRI with variable sensory loading.</title>
+      <link>/publication/cliff-aging-2013/</link>
+      <pubDate>Wed, 01 May 2013 00:00:00 +0000</pubDate>
+      <guid>/publication/cliff-aging-2013/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>An evoked auditory response fMRI study of the effects of rTMS on putative AVH pathways in healthy volunteers.</title>
+      <link>/publication/tracy-evoked-2010/</link>
+      <pubDate>Fri, 01 Jan 2010 00:00:00 +0000</pubDate>
+      <guid>/publication/tracy-evoked-2010/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

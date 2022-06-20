@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>clinical decision support | Dan W Joyce</title>
+    <link>/category/clinical-decision-support/</link>
+      <atom:link href="/category/clinical-decision-support/index.xml" rel="self" type="application/rss+xml" />
+    <description>clinical decision support</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Wed, 22 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>clinical decision support</title>
+      <link>/category/clinical-decision-support/</link>
+    </image>
+    
+    <item>
+      <title>Sequential Clinical Decision Making</title>
+      <link>/post/2021-05-23-sequential-triage/</link>
+      <pubDate>Wed, 22 Jul 2020 00:00:00 +0000</pubDate>
+      <guid>/post/2021-05-23-sequential-triage/</guid>
+      <description>
+&lt;script src=&#34;/post/2021-05-23-sequential-triage/index_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/post/2021-05-23-sequential-triage/index_files/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;/post/2021-05-23-sequential-triage/index_files/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+
+
+&lt;p&gt;In clinical decision making for serious but rare events, there has been discussion about how to use predictive models as tools in decision making.&lt;/p&gt;
+&lt;p&gt;One example is in decision making for assessment and treatment in people at risk of suicide. A systematic review &lt;span class=&#34;citation&#34;&gt;&lt;a href=&#34;#ref-kessler2019suicide&#34; role=&#34;doc-biblioref&#34;&gt;Kessler et al.&lt;/a&gt; (&lt;a href=&#34;#ref-kessler2019suicide&#34; role=&#34;doc-biblioref&#34;&gt;2019&lt;/a&gt;)&lt;/span&gt; of “suicide prediction models” cites the very real concern that the low positive predictive value (PPV) of current state-of-the-art models renders them at least clinically useless and at worst obviously dangerous. Most published models, however, attempt to predict the absolute risk of suicide based on some feature data (i.e. covariates, independent variables or predictors) for individuals – that is, these models attempt to identify people at risk of suicide. A central tennet of Kessler &lt;em&gt;et al&lt;/em&gt;’s argument is that &lt;strong&gt;net benefit&lt;/strong&gt; – rather than positive predictive value – is the appropriate decision-theoretic framework and in effect, predictive models might be better used as tools for screening out cases (of course, their argument and analysis is far more detailed but this is what I’m focusing on here). Kessler &lt;em&gt;et al&lt;/em&gt; describe how to improve the clinical utility of suicide prediction models by embedding them in a clinical triaging system and using thresholds for intervening (or not) derived from &lt;a href=&#34;https://www.mskcc.org/departments/epidemiology-biostatistics/biostatistics/decision-curve-analysis&#34;&gt;decision curve analysis&lt;/a&gt; &lt;span class=&#34;citation&#34;&gt;&lt;a href=&#34;#ref-Vickers2016&#34; role=&#34;doc-biblioref&#34;&gt;Vickers, Van Calster, and Steyerberg&lt;/a&gt; (&lt;a href=&#34;#ref-Vickers2016&#34; role=&#34;doc-biblioref&#34;&gt;2016&lt;/a&gt;)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Kessler &lt;em&gt;et al&lt;/em&gt;’s proposal is that if there is a high prevalence of &lt;em&gt;negative&lt;/em&gt; cases in routine clinical practice, then such a staged triaging system would enable scarce (and often, intrusive) clinical resources to be directed towards cases which are uncertain. In this post, we consider positive and negative predictive value, net benefit as well as examining a sequential triage model of clinical decision support.&lt;/p&gt;
+&lt;div id=&#34;predictive-values&#34; class=&#34;section level1&#34; number=&#34;1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;1&lt;/span&gt; Predictive Values&lt;/h1&gt;
+&lt;p&gt;With an assumed representative sample of a population, let &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt; be the output of the decision rule/system, and &lt;span class=&#34;math inline&#34;&gt;\(E\)&lt;/span&gt; be whether or not the event occurred:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class=&#34;math inline&#34;&gt;\(Y = 1\)&lt;/span&gt; represents the decision that a case is &lt;strong&gt;positive&lt;/strong&gt;, and &lt;span class=&#34;math inline&#34;&gt;\(Y = 0\)&lt;/span&gt; represents a &lt;strong&gt;negative&lt;/strong&gt; decision&lt;/li&gt;
+&lt;li&gt;&lt;span class=&#34;math inline&#34;&gt;\(E = 1\)&lt;/span&gt; represents the serious event &lt;strong&gt;occuring&lt;/strong&gt;, &lt;span class=&#34;math inline&#34;&gt;\(E = 0\)&lt;/span&gt; that it did not&lt;/li&gt;
+&lt;/ul&gt;
+Consider the following hypothetical confusion matrix for a decision system on a representative validation sample of 1000 people:
+&lt;table class=&#34;table&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;empty-cells: hide;border-bottom:hidden;&#34; colspan=&#34;1&#34;&gt;
+&lt;/th&gt;
+&lt;th style=&#34;border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; &#34; colspan=&#34;2&#34;&gt;
+&lt;div style=&#34;border-bottom: 1px solid #ddd; padding-bottom: 5px; &#34;&gt;
+Event (E)
+&lt;/div&gt;
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr grouplength=&#34;2&#34;&gt;
+&lt;td colspan=&#34;3&#34; style=&#34;border-bottom: 1px solid;&#34;&gt;
+&lt;strong&gt;Decision (Y)&lt;/strong&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;padding-left: 4em;width: 6em; &#34; indentlevel=&#34;2&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;width: 6em; &#34;&gt;
+900
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+10
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;padding-left: 4em;width: 6em; &#34; indentlevel=&#34;2&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;width: 6em; &#34;&gt;
+80
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+10
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;There are 20 serious events in 1000 cases. The model gives a correct decision for 900/980 negative events (true negatives, TN) and decides that 80 negative cases are in fact positve (false positives; FP). The model performs poorly on decisions with positive cases; it decides 10/20 positive events are positive (true positives, TP) and makes the potentially catastrophic decision that 10/20 positives are in fact negatives (false negatives, FN).&lt;/p&gt;
+&lt;p&gt;So, we find that :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Sensitivity = &lt;span class=&#34;math inline&#34;&gt;\(\Pr(Y = 1 \mid E = 1)\)&lt;/span&gt; = &lt;span class=&#34;math inline&#34;&gt;\(TP/(TP+FN)\)&lt;/span&gt; = 0.5; the probability that the decision was positive, given the event was positive&lt;/li&gt;
+&lt;li&gt;Specificity = &lt;span class=&#34;math inline&#34;&gt;\(\Pr(Y = 0 \mid E = 0)\)&lt;/span&gt; = &lt;span class=&#34;math inline&#34;&gt;\(TN/(TN+FP)\)&lt;/span&gt; = 0.918; the probability that the decision was negative, given the event was negative&lt;/li&gt;
+&lt;li&gt;The prevalence of the serious event is 0.02&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;As noted in the Altman and Bland classic &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-altman-pred-values1994&#34; role=&#34;doc-biblioref&#34;&gt;Altman and Bland 1994&lt;/a&gt;)&lt;/span&gt;, “the whole point of a diagnostic test is to use it to make a diagnosis, so we need to know the probability that the test will give the correct diagnosis” and sensitivity and specificity of the test (here, the decision rule) aren’t sufficient.&lt;/p&gt;
+&lt;p&gt;The important point is, in a clinical situation, we are interested in the conditional probabilities &lt;span class=&#34;math inline&#34;&gt;\(\Pr(E \mid Y)\)&lt;/span&gt; (the probability of the event given the decision rule output).&lt;/p&gt;
+&lt;p&gt;However, we only have the conditionals &lt;span class=&#34;math inline&#34;&gt;\(\Pr(Y \mid E )\)&lt;/span&gt; and conditional probabilities do not commute so &lt;span class=&#34;math inline&#34;&gt;\(\Pr( Y \mid E) \neq \Pr( E \mid Y)\)&lt;/span&gt;. Failure to recognise this difference is the &lt;a href=&#34;https://en.wikipedia.org/wiki/Prosecutor%27s_fallacy&#34;&gt;prosecutor’s fallacy&lt;/a&gt; or the fallacy of the &lt;a href=&#34;https://rationalwiki.org/wiki/Confusion_of_the_inverse&#34;&gt;transposed conditional&lt;/a&gt; &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-blitzstein2019introduction&#34; role=&#34;doc-biblioref&#34;&gt;Blitzstein and Hwang 2019&lt;/a&gt;)&lt;/span&gt; Chapter 2.8.&lt;/p&gt;
+&lt;p&gt;We will need to enumerate the probabilities of other conditions (i.e. states of &lt;span class=&#34;math inline&#34;&gt;\(E\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(Y\)&lt;/span&gt;), so:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class=&#34;math inline&#34;&gt;\(\Pr(Y = 1 \mid E = 0)\)&lt;/span&gt; is the false positive rate, or 1-specificity = &lt;span class=&#34;math inline&#34;&gt;\(1-\Pr(Y=0 \mid E=0)\)&lt;/span&gt; = &lt;span class=&#34;math inline&#34;&gt;\(FP/(FP+TN)\)&lt;/span&gt; = 0.082&lt;/li&gt;
+&lt;li&gt;&lt;span class=&#34;math inline&#34;&gt;\(\Pr(Y = 0 \mid E = 1)\)&lt;/span&gt; is the false negative rate, or 1-sensitivity = &lt;span class=&#34;math inline&#34;&gt;\(1-\Pr(Y=1 \mid E=1)\)&lt;/span&gt; = &lt;span class=&#34;math inline&#34;&gt;\(FN/(FN+TP)\)&lt;/span&gt; = 0.5&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div id=&#34;deriving-ppv-and-npv&#34; class=&#34;section level2&#34; number=&#34;1.1&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;1.1&lt;/span&gt; Deriving PPV and NPV&lt;/h2&gt;
+&lt;p&gt;The definition of &lt;a href=&#34;https://en.wikipedia.org/wiki/Conditional_probability&#34;&gt;conditional probability&lt;/a&gt; means that, for the conditions &lt;strong&gt;we want&lt;/strong&gt;, we can state:
+&lt;span class=&#34;math display&#34;&gt;\[
+  \Pr(E \mid Y) = \frac{\Pr(E,Y)}{\Pr(Y)}
+\]&lt;/span&gt;
+Or, by rearranging:
+&lt;span class=&#34;math display&#34;&gt;\[
+  \Pr(E,Y) = \Pr(E \mid Y) \Pr(Y)
+\]&lt;/span&gt;
+Applying the same argument for the conditionals &lt;strong&gt;we have&lt;/strong&gt; &lt;span class=&#34;math inline&#34;&gt;\(\Pr(Y \mid E)\)&lt;/span&gt; (sensitivity and specificity):&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+  \Pr(Y,E) = \Pr(Y \mid E) \Pr(E)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;joint probability&lt;/strong&gt; of two events are commutative (unlike conditionals) therefore &lt;span class=&#34;math inline&#34;&gt;\(\Pr(E,Y) = \Pr(Y,E)\)&lt;/span&gt; and we can equate:
+&lt;span class=&#34;math display&#34;&gt;\[
+  \Pr(E \mid Y) \Pr(Y) = \Pr(Y \mid E) \Pr(E)
+\]&lt;/span&gt;
+Noting again that we are interested in &lt;span class=&#34;math inline&#34;&gt;\(\Pr(E \mid Y)\)&lt;/span&gt; we can solve:
+&lt;span class=&#34;math display&#34;&gt;\[
+  \Pr(E \mid Y) = \frac{\Pr(Y \mid E) \Pr(E)}{\Pr(Y)}
+\]&lt;/span&gt;
+This is Bayes formula.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;sec-calc-PPV-NPV&#34; class=&#34;section level2&#34; number=&#34;1.2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;1.2&lt;/span&gt; Example Calculation&lt;/h2&gt;
+&lt;p&gt;Using our example above, here’s want we want, and what we have available:
+&lt;span class=&#34;math display&#34;&gt;\[
+\Pr(E=1 \mid Y=1) = \frac{ \overbrace{\Pr( Y=1 \mid E=1)}^\text{sensitivity} \overbrace{\Pr(E=1)}^\text{prevalence} } 
+                    { \underbrace{\Pr(Y=1)}_\text{prob. of +ve decision} }
+\]&lt;/span&gt;
+We can calculate the denominator &lt;span class=&#34;math inline&#34;&gt;\(\Pr(Y=1)\)&lt;/span&gt;, the unconditional probability of a positive decision, using the &lt;a href=&#34;https://en.wikipedia.org/wiki/Law_of_total_probability&#34;&gt;law of total probability&lt;/a&gt;:
+&lt;span class=&#34;math display&#34;&gt;\[
+\begin{aligned}
+\Pr(Y=1) =&amp;amp; \overbrace{\Pr( Y=1 \mid E=1)}^\text{sensitivity} \overbrace{\Pr(E=1)}^\text{prevalence} + \\
+         &amp;amp;\underbrace{\Pr( Y=1 \mid E=0)}_\text{1-specificity} \underbrace{\Pr(E=0)}_\text{1-prevalence}
+\end{aligned}
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;The calculation step-by-step is:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Compute the denominator &lt;span class=&#34;math inline&#34;&gt;\(\Pr(Y=1) = 0.5 \times 0.02 + (1-0.918) \times (1-0.02) = 0.09\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Substitute sensitivity and prevalence in the numerator:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+  \Pr(E=1 \mid Y=1) = \frac{ \overbrace{0.5}^\text{sensitivity} \times \overbrace{0.02}^\text{prevalence} } 
+                    { \underbrace{0.09}_\text{prob. of +ve decision} } = 0.11
+  \]&lt;/span&gt;
+Which delivers the &lt;strong&gt;positive predictive value&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;We can similarly derive the &lt;strong&gt;negative predictive value&lt;/strong&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\Pr(E=0 \mid Y=0) = \frac{ \overbrace{\Pr( Y=0 \mid E=0)}^\text{specificity} \overbrace{\Pr(E=0)}^\text{1-prevalence} } 
+                    { \underbrace{\Pr(Y=0)}_\text{prob. of -ve decision} }
+\]&lt;/span&gt;
+And our denominator in this case:
+&lt;span class=&#34;math display&#34;&gt;\[
+\begin{aligned}
+  \Pr(Y=0) =&amp;amp; \overbrace{\Pr( Y=0 \mid E=1)}^\text{1-sensitivity} \overbrace{\Pr(E=1)}^\text{prevalence} + \\
+            &amp;amp; \underbrace{\Pr( Y=0 \mid E=0)}_\text{specificity} \underbrace{\Pr(E=0)}_\text{1-prevalence}
+\end{aligned}
+\]&lt;/span&gt;
+Plugging in the numbers:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Compute the denominator &lt;span class=&#34;math inline&#34;&gt;\(\Pr(Y=0) = (1-0.5) \times 0.02 + 0.918 \times (1-0.02) = 0.91\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Substitute specificity and prevalence in the numerator:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+  \Pr(E=0 \mid Y=0) = \frac{ \overbrace{0.918}^\text{specificity} \times \overbrace{0.98}^\text{1-prevalence} } 
+                    { \underbrace{0.91}_\text{prob. of -ve decision} } = 0.987
+  \]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This hypothetical decision system is useful for correctly deciding on negative cases, but performs poorly on identifying positive cases.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;simulation&#34; class=&#34;section level1&#34; number=&#34;2&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;2&lt;/span&gt; Simulation&lt;/h1&gt;
+&lt;p&gt;Now suppose that we have two (or more) clinical tests to help identify patients at risk for a relatively rare but serious event; for example, &lt;span class=&#34;math inline&#34;&gt;\(X_1\)&lt;/span&gt; is a relatively cheap and easy-to-administer instrument or questionnaire. &lt;span class=&#34;math inline&#34;&gt;\(X_2\)&lt;/span&gt; is a semi-structured interview or clinical examination which is time consuming, requires expertise to administer and is therefore significantly more costly than &lt;span class=&#34;math inline&#34;&gt;\(X_1\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Further, we have a development sample of 5000 people for which we have the results for &lt;span class=&#34;math inline&#34;&gt;\(X_1\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(X_2\)&lt;/span&gt; and we know who in this sample experienced the serious event.&lt;/p&gt;
+&lt;p&gt;We next build a model that attempts to predict the rare, serious event (&lt;span class=&#34;math inline&#34;&gt;\(Y = 1\)&lt;/span&gt;) on the basis of a patient’s &lt;span class=&#34;math inline&#34;&gt;\(X_1\)&lt;/span&gt; results and denote this &lt;span class=&#34;math inline&#34;&gt;\(y = F_{X_1}(x)\)&lt;/span&gt;. Note, no claim is made that this model is well designed.&lt;/p&gt;
+&lt;p&gt;Assume the somewhat luxurious position that we have a further 5000 validation cases from the same population – so we can examine the model’s performance on data it was not ‘trained’ on.&lt;/p&gt;
+&lt;p&gt;Let’s look at the calibration of the model on the validation sample:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-05-23-sequential-triage/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;It’s important to note that:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;the &lt;strong&gt;model&lt;/strong&gt; &lt;span class=&#34;math inline&#34;&gt;\(F_{X_1}\)&lt;/span&gt; delivers a prediction in the form of a continuous estimate of the absolute probability of the serious event &lt;em&gt;given&lt;/em&gt; the screening instrument &lt;span class=&#34;math inline&#34;&gt;\(X_1\)&lt;/span&gt;.&lt;/li&gt;
+&lt;li&gt;there is &lt;strong&gt;no decision rule&lt;/strong&gt; here; so we can’t discuss PPV or NPV&lt;/li&gt;
+&lt;li&gt;the model is poorly calibrated: which is unsurprising given the serious event is rare – in the 5000 validation samples there were 240 serious events (&lt;span class=&#34;math inline&#34;&gt;\(E = 1\)&lt;/span&gt;) representing a small prevalence of 0.048&lt;/li&gt;
+&lt;li&gt;the model appears to &lt;strong&gt;under estimate&lt;/strong&gt; the probability of a serious event; for example, if the model predicts a probability of a serious event of 0.25, the actual probability is closer to 0.5.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We can repeat the same analysis for the other, more costly instrument &lt;span class=&#34;math inline&#34;&gt;\(X_2\)&lt;/span&gt;; as for the cheaper instrument, we train a model &lt;span class=&#34;math inline&#34;&gt;\(F_{X_2}\)&lt;/span&gt; and then we have access to a validation sample on which we can examine the calibration:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-05-23-sequential-triage/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;
+Again, not great calibration.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;sec-decision-rules&#34; class=&#34;section level1&#34; number=&#34;3&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;3&lt;/span&gt; Decision Rules&lt;/h1&gt;
+&lt;p&gt;Returning to the idea that Kessler &lt;em&gt;et al&lt;/em&gt; discussed, how can we design a decision rule that makes use of these two tests ?&lt;/p&gt;
+&lt;div id=&#34;sec-ROC-curve&#34; class=&#34;section level2&#34; number=&#34;3.1&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.1&lt;/span&gt; ROC Curves&lt;/h2&gt;
+&lt;p&gt;A common approach to designing a decision rule is to vary a threshold over the output of &lt;span class=&#34;math inline&#34;&gt;\(F_{X_1}\)&lt;/span&gt; and plot the ROC curve; then, find an “optimal” threshold that maximises the sensitivity/specificity tradeoff.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;## Setting levels: control = 0, case = 1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Setting direction: controls &amp;lt; cases&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-05-23-sequential-triage/index_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The confusion matrix for the decision rule with the threshold = 0.074 shown in the ROC curve above is:&lt;/p&gt;
+&lt;table class=&#34;table&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;empty-cells: hide;border-bottom:hidden;&#34; colspan=&#34;1&#34;&gt;
+&lt;/th&gt;
+&lt;th style=&#34;border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; &#34; colspan=&#34;2&#34;&gt;
+&lt;div style=&#34;border-bottom: 1px solid #ddd; padding-bottom: 5px; &#34;&gt;
+Event (E)
+&lt;/div&gt;
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+0
+&lt;/th&gt;
+&lt;th style=&#34;text-align:right;&#34;&gt;
+1
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr grouplength=&#34;2&#34;&gt;
+&lt;td colspan=&#34;3&#34; style=&#34;border-bottom: 1px solid;&#34;&gt;
+&lt;strong&gt;Decision (Y)&lt;/strong&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;padding-left: 4em;width: 6em; &#34; indentlevel=&#34;2&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;width: 6em; &#34;&gt;
+3953
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+44
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;padding-left: 4em;width: 6em; &#34; indentlevel=&#34;2&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;width: 6em; &#34;&gt;
+807
+&lt;/td&gt;
+&lt;td style=&#34;text-align:right;&#34;&gt;
+196
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;The usual measures:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Sensitivity = 0.8167&lt;/li&gt;
+&lt;li&gt;Specificity = 0.8305&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We can compute the &lt;em&gt;more&lt;/em&gt; clinically relevant probabilties as follows (as for Section &lt;a href=&#34;#sec-calc-PPV-NPV&#34;&gt;1.2&lt;/a&gt;):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Positive predictive value: &lt;span class=&#34;math inline&#34;&gt;\(\Pr( E = 1 \mid Y = 1 )\)&lt;/span&gt; = 0.195&lt;/li&gt;
+&lt;li&gt;Negative predictive value: &lt;span class=&#34;math inline&#34;&gt;\(\Pr( E = 0 \mid Y = 0 )\)&lt;/span&gt; = 0.989&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Critically, however, false negatives (44) are catastrophic here because the event, although rare, is serious (i.e. the death of a patient); but &lt;span class=&#34;math inline&#34;&gt;\(X_1\)&lt;/span&gt; is correctly identifying a high number (3953) of negative cases correctly.&lt;/p&gt;
+&lt;p&gt;As discussed &lt;a href=&#34;https://danwjoyce.netlify.app/post/loss-functions-and-posteriors/&#34;&gt;here&lt;/a&gt; and more persuasively &lt;a href=&#34;https://www.fharrell.com/post/backwards-probs/&#34;&gt;here&lt;/a&gt; sensitivity and specificity do not take account of the loss or utility of the decision and neither do PPV and NPV.&lt;/p&gt;
+&lt;p&gt;To understand why this neglect of utility (or loss) is important, take the above confusion matrix and then assume the decision rule declares one additional &lt;strong&gt;false negative&lt;/strong&gt;, so that:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;the number of &lt;strong&gt;false negatives&lt;/strong&gt; (FN) = 45&lt;/li&gt;
+&lt;li&gt;the &lt;em&gt;actual&lt;/em&gt; number of positive events is of course, unchanged at 240&lt;/li&gt;
+&lt;li&gt;so conversely, the &lt;strong&gt;true positive&lt;/strong&gt; rate drops by one so TP = 195&lt;/li&gt;
+&lt;li&gt;the revised &lt;strong&gt;sensitivity&lt;/strong&gt; is then 0.8125 – a decrease in decision rule performance of 0.0042&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Reverse the experiment, so that the decision rule improves marginally and declares one additional &lt;strong&gt;true positive&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;the number of &lt;strong&gt;true positives&lt;/strong&gt; increases by one, TP = 197&lt;/li&gt;
+&lt;li&gt;the number of &lt;strong&gt;false negatives&lt;/strong&gt; decreases by one, FN = 43&lt;/li&gt;
+&lt;li&gt;the revised &lt;strong&gt;sensitivity&lt;/strong&gt; is then 0.8208 – an increase in decision rule performance of 0.0041&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The change in performance (the “score”) for one additional correct or incorrectly classified positive case is symmetric and of the order &lt;span class=&#34;math inline&#34;&gt;\(1/N\)&lt;/span&gt;, where &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; is the sample size.&lt;/p&gt;
+&lt;p&gt;Clearly, an &lt;strong&gt;additional false negative&lt;/strong&gt; should penalise the overall performance score &lt;em&gt;differently&lt;/em&gt; than the reward for an additional true positive.&lt;/p&gt;
+&lt;p&gt;Optimising the threshold (decision rule) by maximising the sensitivity-specificity tradeoff (e.g. using the &lt;a href=&#34;https://en.wikipedia.org/wiki/Youden%27s_J_statistic&#34;&gt;Yourdon J statistic&lt;/a&gt;) is not the only method of choosing the threshold and we might for example, choose a decision rule that favours performance of different cells of the confusion matrix. A decision theoretic framework like &lt;strong&gt;net benefit&lt;/strong&gt; allows one systematic treatment.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;decision-curve-analysis&#34; class=&#34;section level1&#34; number=&#34;4&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;4&lt;/span&gt; Decision Curve Analysis&lt;/h1&gt;
+&lt;p&gt;Here, we are trying to implement a decision rule whereby a patient is triaged to a more costly “test” (&lt;span class=&#34;math inline&#34;&gt;\(X_2\)&lt;/span&gt;) on the basis of a more available or less costly test &lt;span class=&#34;math inline&#34;&gt;\(X_1\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;We can adopt a decision-theoretic approach (see previous posts &lt;a href=&#34;https://danwjoyce.netlify.app/post/decisions-and-loss-functions/&#34;&gt;here&lt;/a&gt;) and design a loss (conversely, a utility) function for a decision rule (threshold).&lt;/p&gt;
+&lt;p&gt;Assume that we continue to insist on a “hard” decision rule that decides, on the basis of &lt;span class=&#34;math inline&#34;&gt;\(F_{X_1}\)&lt;/span&gt;, whether to further investigate (triage to &lt;span class=&#34;math inline&#34;&gt;\(X_2\)&lt;/span&gt;) or, decide that the serious event is unlikely so no further follow-up is necessary and the patient can be discharged.&lt;/p&gt;
+&lt;p&gt;In this situation, we can construct the confusion matrix below:&lt;/p&gt;
+&lt;table class=&#34;table&#34; style=&#34;width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;empty-cells: hide;border-bottom:hidden;&#34; colspan=&#34;1&#34;&gt;
+&lt;/th&gt;
+&lt;th style=&#34;border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; &#34; colspan=&#34;2&#34;&gt;
+&lt;div style=&#34;border-bottom: 1px solid #ddd; padding-bottom: 5px; &#34;&gt;
+Event (E)
+&lt;/div&gt;
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+&lt;/th&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+0
+&lt;/th&gt;
+&lt;th style=&#34;text-align:left;&#34;&gt;
+1
+&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr grouplength=&#34;2&#34;&gt;
+&lt;td colspan=&#34;3&#34; style=&#34;border-bottom: 1px solid;&#34;&gt;
+&lt;strong&gt;Decision (Y)&lt;/strong&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;padding-left: 4em;width: 6em; &#34; indentlevel=&#34;2&#34;&gt;
+0
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;width: 6em; &#34;&gt;
+TN
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+FN
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:left;padding-left: 4em;width: 6em; &#34; indentlevel=&#34;2&#34;&gt;
+1
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;width: 6em; &#34;&gt;
+FP
+&lt;/td&gt;
+&lt;td style=&#34;text-align:left;&#34;&gt;
+TP
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;And then assign a loss to each cell e.g. the loss for a true negative is &lt;span class=&#34;math inline&#34;&gt;\(L_{TN}\)&lt;/span&gt;, for a false negative &lt;span class=&#34;math inline&#34;&gt;\(L_{FN}\)&lt;/span&gt; and so on.&lt;/p&gt;
+&lt;p&gt;For a given decision rule (here, the decision rule can be equated with the threshold value &lt;span class=&#34;math inline&#34;&gt;\(\tau\)&lt;/span&gt; over &lt;span class=&#34;math inline&#34;&gt;\(F_{X_1}\)&lt;/span&gt;) we can compute the &lt;strong&gt;expected loss&lt;/strong&gt;:
+&lt;span class=&#34;math display&#34;&gt;\[
+  L( \tau ) = \frac{1}{N} \left( \#TN \cdot L_{TN} + \#FN \cdot L_{FN} + \#FP \cdot L_{FP} + \#TP \cdot L_{TP} \right)
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;where &lt;span class=&#34;math inline&#34;&gt;\(\#TN\)&lt;/span&gt; is the number of true negatives under the decision rule &lt;span class=&#34;math inline&#34;&gt;\(\tau\)&lt;/span&gt; etc. and &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; is the sample size. We then systematically vary &lt;span class=&#34;math inline&#34;&gt;\(\tau\)&lt;/span&gt; and choose our final decision rule on the basis of minimum loss.&lt;/p&gt;
+&lt;p&gt;The difficulty is that it is often hard to quantify losses (or value, utility) either absolutely or relatively for each cell of the confusion matrix – the example of Kessler &lt;em&gt;et al&lt;/em&gt; examines predictive models for suicide, where a false negative would be catastrophic; is the loss incurred for a false negative 10, 100 or 1000 times ‘worse’ than a true negative ?&lt;/p&gt;
+&lt;p&gt;An alternative, proposed by &lt;span class=&#34;citation&#34;&gt;&lt;a href=&#34;#ref-Vickers2016&#34; role=&#34;doc-biblioref&#34;&gt;Vickers, Van Calster, and Steyerberg&lt;/a&gt; (&lt;a href=&#34;#ref-Vickers2016&#34; role=&#34;doc-biblioref&#34;&gt;2016&lt;/a&gt;)&lt;/span&gt;, is to first set up a decision tree representing decisions to intervene / not intervene for the combinations shown in the standard confusion matrix. We then assume that the loss of &lt;strong&gt;not intervening&lt;/strong&gt; when we should (a &lt;strong&gt;false negative&lt;/strong&gt;) is fixed at unity and the loss of a &lt;strong&gt;false positive&lt;/strong&gt; is defined relative to this for a given threshold &lt;span class=&#34;math inline&#34;&gt;\(\tau\)&lt;/span&gt;. After some algebra, the loss attributable to a &lt;strong&gt;false positive&lt;/strong&gt; is:
+&lt;span class=&#34;math display&#34;&gt;\[
+\frac{\tau}{1-\tau}
+\]&lt;/span&gt;
+Then, the &lt;strong&gt;net benefit&lt;/strong&gt; of a decision rule (value of &lt;span class=&#34;math inline&#34;&gt;\(\tau\)&lt;/span&gt;) is then:
+&lt;span class=&#34;math display&#34;&gt;\[
+NB(\tau) = \frac{\#TP}{N} - \frac{\#FP}{N} \left( \frac{\tau}{1-\tau} \right)
+\]&lt;/span&gt;
+In this equation, true positives are weighted one, and false positives weighted &lt;span class=&#34;math inline&#34;&gt;\(\tau /( 1-\tau)\)&lt;/span&gt;. As the cost of a false positive is a function of the threshold we can deduce the relative costs. For example, if &lt;span class=&#34;math inline&#34;&gt;\(\tau = 1/3\)&lt;/span&gt;, the cost of a false positive is half the cost of a true positive.&lt;/p&gt;
+&lt;p&gt;A &lt;strong&gt;decision curve&lt;/strong&gt; is then the plot of &lt;span class=&#34;math inline&#34;&gt;\(NB(\tau)\)&lt;/span&gt; against &lt;span class=&#34;math inline&#34;&gt;\(\tau\)&lt;/span&gt; as follows:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-05-23-sequential-triage/index_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;70%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The solid black line is the net benefit of the model &lt;span class=&#34;math inline&#34;&gt;\(F_{X_1}\)&lt;/span&gt; at each threshold level. The grey horizontal line (at &lt;span class=&#34;math inline&#34;&gt;\(NB(\tau) = 0\)&lt;/span&gt;) is the net benefit of assuming all patients are negative. The black dotted line is the net benefit of the decision rule: “assume all patients are positive and intervene” which is of course wasteful, but offers comparison to the net benefit of each decision rule &lt;span class=&#34;math inline&#34;&gt;\(\tau\)&lt;/span&gt;. The red solid vertical line shows the threshold located by maximising the sensitivity/specificity tradeoff in Section &lt;a href=&#34;#sec-ROC-curve&#34;&gt;3.1&lt;/a&gt;. Finally, the red dashed line identifies the threshold at which net benefit departs (exceeds) the “assume all positive” line.&lt;/p&gt;
+&lt;p&gt;The region for which &lt;span class=&#34;math inline&#34;&gt;\(NB(\tau)\)&lt;/span&gt; is greater than zero are the thresholds for which the model outperforms “assume all patients are negative.” An advantage of decision curve analysis is that one can vary &lt;span class=&#34;math inline&#34;&gt;\(\tau\)&lt;/span&gt; and see the relationship between the model performance and a default strategy of assuming everyone requires intervention – the point at which the black solid line departs from the black dotted line.&lt;/p&gt;
+&lt;p&gt;Of note, decision curve analysis is not intended to be a method of locating a threshold; in fact, &lt;span class=&#34;citation&#34;&gt;&lt;a href=&#34;#ref-vickers2006decision&#34; role=&#34;doc-biblioref&#34;&gt;Vickers and Elkin&lt;/a&gt; (&lt;a href=&#34;#ref-vickers2006decision&#34; role=&#34;doc-biblioref&#34;&gt;2006&lt;/a&gt;)&lt;/span&gt; discuss the method in the context of shared decision making where the clinician &lt;em&gt;and&lt;/em&gt; patient’s prefence for the relative cost of a false positive are factored into deciding the utility of a decision to intervene.&lt;/p&gt;
+&lt;p&gt;However, as an experiment, let’s choose a threshold at the point where the net benefit departs from the default “assume all patients are positive and intervene” – shown as the red dotted line in the right panel at 0.01. This results in zero false negatives (serious errors), 240 true positives, 506 true negatives and 4252 false positives.&lt;/p&gt;
+&lt;p&gt;To put this in the context of a sequential triage model, 4252 patients who are actually negative would be triaged for the &lt;span class=&#34;math inline&#34;&gt;\(X_2\)&lt;/span&gt; assessment.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;sequential-triage&#34; class=&#34;section level1&#34; number=&#34;5&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;5&lt;/span&gt; Sequential Triage&lt;/h1&gt;
+&lt;p&gt;&lt;img src=&#34;triage-model.png&#34; width=&#34;100%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The proposal Kessler &lt;em&gt;et al&lt;/em&gt; put forward is a sequential triage model; above, we have sketched (schematically) the two-stage approach described here.&lt;/p&gt;
+&lt;p&gt;Here, &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{P}_1\)&lt;/span&gt; is the total sample (of size &lt;span class=&#34;math inline&#34;&gt;\(N_1\)&lt;/span&gt;, containing &lt;span class=&#34;math inline&#34;&gt;\(N^{+ve}_{1}\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(N^{-ve}_{1}\)&lt;/span&gt; positive and negative cases respectively) who have been assessed using &lt;span class=&#34;math inline&#34;&gt;\(X_1\)&lt;/span&gt; and a decision made on the basis of the prediction &lt;span class=&#34;math inline&#34;&gt;\(F_{X_1}\)&lt;/span&gt; and decision rule &lt;span class=&#34;math inline&#34;&gt;\(\tau_1\)&lt;/span&gt;. Cases are then discharged on the basis of the decision; of those discharged, &lt;strong&gt;serious errors&lt;/strong&gt; and &lt;strong&gt;appropriate discharges&lt;/strong&gt; are analogous to the number of false negative &lt;span class=&#34;math inline&#34;&gt;\(\#FN_{X_1}\)&lt;/span&gt; and true negative &lt;span class=&#34;math inline&#34;&gt;\(\#TN_{X_1}\)&lt;/span&gt; decisions respectively.&lt;/p&gt;
+&lt;p&gt;Those identified as likely positive by the decision &lt;span class=&#34;math inline&#34;&gt;\(\tau_1\)&lt;/span&gt; form the triaged subset &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{P}_2\)&lt;/span&gt; of size &lt;span class=&#34;math inline&#34;&gt;\(N_2\)&lt;/span&gt;, who proceed to the more resource intensive assessment &lt;span class=&#34;math inline&#34;&gt;\(X_2\)&lt;/span&gt;. A similar decision system &lt;span class=&#34;math inline&#34;&gt;\(F_{X_2}\)&lt;/span&gt; with rule &lt;span class=&#34;math inline&#34;&gt;\(\tau_2\)&lt;/span&gt; then either discharges or (in this example) recommends admission to hospital.&lt;/p&gt;
+&lt;p&gt;Note that:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class=&#34;math inline&#34;&gt;\(N_2 = N^{+ve}_2 + N^{-ve}_2\)&lt;/span&gt; – the size of triaged set &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{P}_2\)&lt;/span&gt; depends on the number of &lt;em&gt;actually&lt;/em&gt; positive and negative cases triaged.&lt;/li&gt;
+&lt;li&gt;In the sequential arrangement, &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{P}_2\)&lt;/span&gt; &lt;em&gt;depends&lt;/em&gt; on the performance of &lt;span class=&#34;math inline&#34;&gt;\(X_1\)&lt;/span&gt;. For example, if a case is incorrectly discharged at &lt;span class=&#34;math inline&#34;&gt;\(X_1\)&lt;/span&gt;, then &lt;span class=&#34;math inline&#34;&gt;\(X_2\)&lt;/span&gt; does not have an opportunity to ‘correct’ that error, so: &lt;span class=&#34;math inline&#34;&gt;\(N^{+ve}_{2} = N^{+ve}_{1} - \#FN_{X_1}\)&lt;/span&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;With this in mind, we now attempt to define measures of performance in terms &lt;strong&gt;safety&lt;/strong&gt; and &lt;strong&gt;efficiency&lt;/strong&gt;&lt;/p&gt;
+&lt;div id=&#34;safety&#34; class=&#34;section level2&#34; number=&#34;5.1&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;5.1&lt;/span&gt; Safety&lt;/h2&gt;
+&lt;p&gt;From the discussion in Section &lt;a href=&#34;#sec-calc-PPV-NPV&#34;&gt;1.2&lt;/a&gt;, decision systems with favourable NPV (but poor PPV) might be helpful in screening out candidates at &lt;span class=&#34;math inline&#34;&gt;\(X_1\)&lt;/span&gt; and triaging suspected positive cases to &lt;span class=&#34;math inline&#34;&gt;\(X_2\)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;We define a &lt;strong&gt;safe&lt;/strong&gt; decision system as having these properties:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;at each stage (i.e. at &lt;span class=&#34;math inline&#34;&gt;\(X_1\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(X_2\)&lt;/span&gt;), anyone with a &lt;strong&gt;high&lt;/strong&gt; or &lt;strong&gt;uncertain&lt;/strong&gt; probability of being positive is appropriately triaged&lt;/li&gt;
+&lt;li&gt;serious errors are &lt;strong&gt;minimised&lt;/strong&gt; by &lt;em&gt;not&lt;/em&gt; discharging people inappropriately, which means it should minimise &lt;strong&gt;false negatives&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We’ll define the &lt;strong&gt;total safety&lt;/strong&gt; of the system as a function of the number of serious errors made by both &lt;span class=&#34;math inline&#34;&gt;\(F_{X_1}\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(F_{X_2}\)&lt;/span&gt;:
+&lt;span class=&#34;math display&#34;&gt;\[
+\begin{aligned}
+  S_{Total}(\tau_1, \tau_2) &amp;amp;= 1 - \frac{\#FN_{X_1}+\#FN_{X_2}}{N^{+ve}_{1}+N^{+ve}_{2}} \\
+                            &amp;amp;= 1 - \frac{\#FN_{X_1}+\#FN_{X_2}}{N^{+ve}_{1}+(N^{+ve}_{1} - \#FN_{X_1})} \\
+                            &amp;amp;= 1 - \frac{\#FN_{X_1}+\#FN_{X_2}}{2N^{+ve}_{1} - \#FN_{X_1}}
+\end{aligned}
+\]&lt;/span&gt;
+As a concrete example (with respect to the diagram above and using the same validation set used in the decision curve and ROC analysis above):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span class=&#34;math inline&#34;&gt;\(\mathcal{P}_1\)&lt;/span&gt; is of size &lt;span class=&#34;math inline&#34;&gt;\(N_1\)&lt;/span&gt; = 5000 with &lt;span class=&#34;math inline&#34;&gt;\(N^{+ve}_1\)&lt;/span&gt; = 240 actual positive and &lt;span class=&#34;math inline&#34;&gt;\(N^{-ve}_1\)&lt;/span&gt; = 4760 actual negative cases&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;After administering &lt;span class=&#34;math inline&#34;&gt;\(X_1\)&lt;/span&gt;, using the threshold &lt;span class=&#34;math inline&#34;&gt;\(\tau_1 = 0.10\)&lt;/span&gt; for &lt;span class=&#34;math inline&#34;&gt;\(F_{X_1}\)&lt;/span&gt; results in:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;80 serious errors or inappropriate discharges equal to false negatives, &lt;span class=&#34;math inline&#34;&gt;\(\#FN_{X_1}\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;4321 appropriate discharges – equal to the true negatives, &lt;span class=&#34;math inline&#34;&gt;\(\#TN_{X_1}\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Resulting in &lt;span class=&#34;math inline&#34;&gt;\(N_2\)&lt;/span&gt; = 599 cases triaged into &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{P_2}\)&lt;/span&gt; equating to the sum of false and true positive cases (i.e. those declared positive by &lt;span class=&#34;math inline&#34;&gt;\(F_{X_1}\)&lt;/span&gt; with &lt;span class=&#34;math inline&#34;&gt;\(\tau\)&lt;/span&gt; = 0.10)&lt;/li&gt;
+&lt;li&gt;Of these 599 cases, &lt;span class=&#34;math inline&#34;&gt;\(N^{+ve}_2\)&lt;/span&gt; = 160 and &lt;span class=&#34;math inline&#34;&gt;\(N^{-ve}_2\)&lt;/span&gt; = 439&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Now, let’s assume &lt;span class=&#34;math inline&#34;&gt;\(\tau_2 = 0.36\)&lt;/span&gt;, for &lt;span class=&#34;math inline&#34;&gt;\(F_{X_2}\)&lt;/span&gt; applied to &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{P}_2\)&lt;/span&gt;. We arrive at:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;57 serious errors, equating to &lt;span class=&#34;math inline&#34;&gt;\(\#FN_{X_2}\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;430 appropriate discharges, the true negatives &lt;span class=&#34;math inline&#34;&gt;\(\#TN_{X_2}\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;Resulting in &lt;span class=&#34;math inline&#34;&gt;\(N_3\)&lt;/span&gt; = 112 cases which will be admitted, consisting of &lt;span class=&#34;math inline&#34;&gt;\(N^{+ve}_3\)&lt;/span&gt; = 103 actually positive cases (appropriate admissions) and &lt;span class=&#34;math inline&#34;&gt;\(N^{-ve}_3\)&lt;/span&gt; = 9 actually negative cases (inappropriate admissions)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Substituting these numbers in the equation above for safety:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+\begin{aligned}
+  S_{Total}(\tau_1, \tau_2) &amp;amp;= 1 - \frac{\#FN_{X_1}+\#FN_{X_2}}{2N^{+ve}_{1} - \#FN_{X_1}} \\
+                            &amp;amp;= 1 - \frac{80 + 57}{480 - 80} \\
+                            &amp;amp;= 0.6575
+\end{aligned}
+\]&lt;/span&gt;
+If the decisions made by &lt;span class=&#34;math inline&#34;&gt;\(F_{X_1}\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(F_{X_2}\)&lt;/span&gt; resulted in no serious errors, we would have zero false negatives and &lt;span class=&#34;math inline&#34;&gt;\(S_{Total}\)&lt;/span&gt; would attain a maximum of one.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;efficiency&#34; class=&#34;section level2&#34; number=&#34;5.2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;5.2&lt;/span&gt; Efficiency&lt;/h2&gt;
+&lt;p&gt;Now consider efficiency defined as the &lt;strong&gt;ratio&lt;/strong&gt; of useful &lt;strong&gt;product&lt;/strong&gt; to &lt;strong&gt;resource&lt;/strong&gt; consumed.&lt;/p&gt;
+&lt;p&gt;Here, the denominator – resource consumption – is as follows:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;all patients &lt;span class=&#34;math inline&#34;&gt;\(N_1\)&lt;/span&gt; will have &lt;span class=&#34;math inline&#34;&gt;\(X_1\)&lt;/span&gt; administered and be passed through the prediction model &lt;span class=&#34;math inline&#34;&gt;\(F_{X_1}\)&lt;/span&gt;, so resource consumed is &lt;span class=&#34;math inline&#34;&gt;\(N_1\)&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;a subset of patients declared positive by the decision rule &lt;span class=&#34;math inline&#34;&gt;\(\tau_1\)&lt;/span&gt; are triaged to &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{P}_2\)&lt;/span&gt; which is composed of &lt;span class=&#34;math inline&#34;&gt;\(N^{+ve}_2\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(N^{-ve}_2\)&lt;/span&gt; actual positive and negative cases respectively&lt;/li&gt;
+&lt;li&gt;all patients in &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{P}_2\)&lt;/span&gt; are administed &lt;span class=&#34;math inline&#34;&gt;\(X_2\)&lt;/span&gt; – so resource consumed is &lt;span class=&#34;math inline&#34;&gt;\(N_2\)&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The numerator – useful product – needs elaboration. First consider the efficiency of &lt;span class=&#34;math inline&#34;&gt;\(\tau_1\)&lt;/span&gt;, which will be perfectly efficient if all actual negative cases are discharged (and &lt;em&gt;do not&lt;/em&gt; end up in &lt;span class=&#34;math inline&#34;&gt;\(\mathcal{P_2}\)&lt;/span&gt;) and all positive cases are triaged.&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+  E_{X_1}( \tau_1 ) = \frac{\#TP_{X_1} + \#TN_{X_1}}{N_1}
+\]&lt;/span&gt;
+Which attains a maximum efficiency of one when &lt;span class=&#34;math inline&#34;&gt;\(\#TN_{X_1} = N^{-ve}_{1}\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\#TP_{X_1} = N^{+ve}_{1}\)&lt;/span&gt; (recall that &lt;span class=&#34;math inline&#34;&gt;\(N_1 = N^{+ve}_1 + N^{-ve}_2\)&lt;/span&gt;)&lt;/p&gt;
+&lt;p&gt;A similar definition holds for &lt;span class=&#34;math inline&#34;&gt;\(X_2\)&lt;/span&gt; :&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[
+  E_{X_2}( \tau_2 ) = \frac{\#TP_{X_2} + \#TN_{X_2}}{N_2}
+\]&lt;/span&gt;
+And we allow &lt;span class=&#34;math inline&#34;&gt;\(X_1\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(X_2\)&lt;/span&gt; to contribute equally to a total efficiency in the range &lt;span class=&#34;math inline&#34;&gt;\([0,1]\)&lt;/span&gt; defined as:
+&lt;span class=&#34;math display&#34;&gt;\[
+  E_{Total}( \tau_1, \tau_2 ) = \frac{1}{2} \left[ E_{X_1}( \tau_1 ) + E_{X_2}( \tau_2 )  \right]
+\]&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;performance-of-sequential-triage&#34; class=&#34;section level2&#34; number=&#34;5.3&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;5.3&lt;/span&gt; Performance of Sequential Triage&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2021-05-23-sequential-triage/index_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;90%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The plots show safety (left) and efficiency (right) in contours of size 0.1. So, if &lt;span class=&#34;math inline&#34;&gt;\(\tau_1\)&lt;/span&gt; is less than around 0.05 and &lt;span class=&#34;math inline&#34;&gt;\(\tau_2\)&lt;/span&gt; is less than approximately 1.5, the sequential triage system has overall safety &amp;gt; 0.9.&lt;/p&gt;
+&lt;p&gt;However, the tension is that: for the same range of decision thresholds, the efficiency can reach a maximum of 0.747 but this results in upto 31 serious errors.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;concluding-remarks&#34; class=&#34;section level1&#34; number=&#34;6&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;6&lt;/span&gt; Concluding Remarks&lt;/h1&gt;
+&lt;p&gt;A few observations:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;There is no clear way of robustly setting the decision rules &lt;span class=&#34;math inline&#34;&gt;\(\tau_1\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(\tau_2\)&lt;/span&gt; based on performance measures for sequential triage unless one is prepared to accept that efficiency and safety trade-off&lt;/li&gt;
+&lt;li&gt;Using decision curve analysis &lt;strong&gt;properly&lt;/strong&gt; invites setting the decision threshold according to a tradeoff that rightly involves how much risk the patient and clinician want to take: i.e. net benefit provides a weight to false positives (harm attributable to intervening when it is unnecessary) as a function of the decision threshold.&lt;/li&gt;
+&lt;li&gt;The analyses above were all conducted on the improbably ideal situation where a) we had 5000 exemplars to train a system on, both with measurements/assessments &lt;span class=&#34;math inline&#34;&gt;\(X_1\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(X_2\)&lt;/span&gt; b) we had access to another ‘batch’ of 5000 exemplars to validate the model on which we attempt to define performance and optimise the system’s performance&lt;/li&gt;
+&lt;li&gt;When deploying this system, at best, patients arrive in small batches or singularly (certainly not in clusters of 100s or 1000s) – the above analyses are then at best, informative for an actuarial or economic analysis if we were &lt;em&gt;forced&lt;/em&gt; to choose a decision rule to evaluate the triage system’s performance&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;By their very nature, predictions &lt;span class=&#34;math inline&#34;&gt;\(F_{X_1}\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(F_{X_2}\)&lt;/span&gt; are probabilistic and discrete thresholds coerce these uncertain forecasts into definitive decisions. It seems unlikely that in the case of rare, serious events anyone would rely on a decision support system that gave discrete answers (and indeed, decision curve analysis emphasises the role of clinician expertise and patient preference in deciding on the intervention threshold)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;references&#34; class=&#34;section level1 unnumbered&#34;&gt;
+&lt;h1&gt;References&lt;/h1&gt;
+&lt;div id=&#34;refs&#34; class=&#34;references csl-bib-body hanging-indent&#34;&gt;
+&lt;div id=&#34;ref-altman-pred-values1994&#34; class=&#34;csl-entry&#34;&gt;
+Altman, Douglas G, and J Martin Bland. 1994. &lt;span&gt;“Statistics Notes: Diagnostic Tests 2: Predictive Values.”&lt;/span&gt; &lt;em&gt;Bmj&lt;/em&gt; 309 (6947): 102.
+&lt;/div&gt;
+&lt;div id=&#34;ref-blitzstein2019introduction&#34; class=&#34;csl-entry&#34;&gt;
+Blitzstein, Joseph K, and Jessica Hwang. 2019. &lt;em&gt;Introduction to Probability&lt;/em&gt;. &lt;span&gt;CRC&lt;/span&gt; Press.
+&lt;/div&gt;
+&lt;div id=&#34;ref-kessler2019suicide&#34; class=&#34;csl-entry&#34;&gt;
+Kessler, Ronald C, Robert M Bossarte, Alex Luedtke, Alan M Zaslavsky, and Jose R Zubizarreta. 2019. &lt;span&gt;“Suicide Prediction Models: A Critical Review of Recent Research with Recommendations for the Way Forward.”&lt;/span&gt; &lt;em&gt;Molecular Psychiatry&lt;/em&gt;, 1–12.
+&lt;/div&gt;
+&lt;div id=&#34;ref-vickers2006decision&#34; class=&#34;csl-entry&#34;&gt;
+Vickers, Andrew J, and Elena B Elkin. 2006. &lt;span&gt;“Decision Curve Analysis: A Novel Method for Evaluating Prediction Models.”&lt;/span&gt; &lt;em&gt;Medical Decision Making&lt;/em&gt; 26 (6): 565–74.
+&lt;/div&gt;
+&lt;div id=&#34;ref-Vickers2016&#34; class=&#34;csl-entry&#34;&gt;
+Vickers, Andrew J, Ben Van Calster, and Ewout W Steyerberg. 2016. &lt;span&gt;“Net Benefit Approaches to the Evaluation of Prediction Models, Molecular Markers, and Diagnostic Tests.”&lt;/span&gt; &lt;em&gt;BMJ&lt;/em&gt; 352. &lt;a href=&#34;https://doi.org/10.1136/bmj.i6&#34;&gt;https://doi.org/10.1136/bmj.i6&lt;/a&gt;.
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

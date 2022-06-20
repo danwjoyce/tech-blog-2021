@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Neural Pathways/physiopathology | Dan W Joyce</title>
+    <link>/tag/neural-pathways/physiopathology/</link>
+      <atom:link href="/tag/neural-pathways/physiopathology/index.xml" rel="self" type="application/rss+xml" />
+    <description>Neural Pathways/physiopathology</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Neural Pathways/physiopathology</title>
+      <link>/tag/neural-pathways/physiopathology/</link>
+    </image>
+    
+    <item>
+      <title>Dysfunctional Striatal Systems in Treatment-Resistant Schizophrenia.</title>
+      <link>/publication/white-dysfunctional-2016/</link>
+      <pubDate>Fri, 01 Apr 2016 00:00:00 +0000</pubDate>
+      <guid>/publication/white-dysfunctional-2016/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,1357 @@
+<!DOCTYPE html><html lang="en-us" >
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  
+  
+    <meta name="generator" content="Wowchemy 5.1.0 for Hugo" />
+  
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Dan W Joyce" />
+
+  
+  
+  
+    
+  
+  <meta name="description" content="The motivation for looking at this topic was primarily my naivety and getting counter-intuitive results when I was looking at serial measures of response to treatment. In particular, I wanted to use outcome measures based on published conventions in the literature for threshold response (the problems with this approach are a topic for another day)." />
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/2021-05-23-symm-percent/add_symm_change_score/" />
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+
+  
+  
+  
+    <meta name="theme-color" content="#1565c0" />
+  
+
+  
+  
+    
+    <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha256-FMvZuGapsJLjouA6k7Eo2lusoAX9i0ShlWFG6qt7SLc=" crossorigin="anonymous">
+
+    
+    
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/styles/github.min.css" crossorigin="anonymous" title="hl-light" media="print" onload="this.media='all'">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" media="print" onload="this.media='all'" disabled>
+        
+      
+    
+
+    
+    
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.css" integrity="sha512-1xoFisiGdy9nvho8EgXuXvnpR5GAMSjFwp40gSRE3NwdUdIMIKuPa7bqoUhLD0O/5tPNhteAsE5XyyMi5reQVA==" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
+
+    
+
+    
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+  
+
+  
+  
+  
+    
+      
+      <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap" media="print" onload="this.media='all'">
+    
+  
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/wowchemy.ddb2a9c79d7760a321f1b5392a04566a.css" />
+
+  
+
+
+
+  
+
+  
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+    <link rel="manifest" href="/index.webmanifest" />
+  
+
+  <link rel="icon" type="image/png" href="/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_32x32_fill_lanczos_center_2.png" />
+  <link rel="apple-touch-icon" type="image/png" href="/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_180x180_fill_lanczos_center_2.png" />
+
+  <link rel="canonical" href="/post/2021-05-23-symm-percent/add_symm_change_score/" />
+
+  
+  
+  
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary" />
+  
+    <meta property="twitter:site" content="@@dan_w_joyce" />
+    <meta property="twitter:creator" content="@@dan_w_joyce" />
+  
+  <meta property="og:site_name" content="Dan W Joyce" />
+  <meta property="og:url" content="/post/2021-05-23-symm-percent/add_symm_change_score/" />
+  <meta property="og:title" content="Alternatives to Percentage Change | Dan W Joyce" />
+  <meta property="og:description" content="The motivation for looking at this topic was primarily my naivety and getting counter-intuitive results when I was looking at serial measures of response to treatment. In particular, I wanted to use outcome measures based on published conventions in the literature for threshold response (the problems with this approach are a topic for another day)." /><meta property="og:image" content="/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png" />
+    <meta property="twitter:image" content="/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png" /><meta property="og:locale" content="en-us" />
+  
+    
+      <meta
+        property="article:published_time"
+        content="2019-04-18T19:47:56&#43;01:00"
+      />
+    
+    <meta property="article:modified_time" content="2019-04-18T19:47:56&#43;01:00">
+  
+
+  
+
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "/post/2021-05-23-symm-percent/add_symm_change_score/"
+  },
+  "headline": "Alternatives to Percentage Change",
+  
+  "datePublished": "2019-04-18T19:47:56+01:00",
+  "dateModified": "2019-04-18T19:47:56+01:00",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Dan W Joyce"
+  },
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "Dan W Joyce",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_192x192_fill_lanczos_center_2.png"
+    }
+  },
+  "description": "The motivation for looking at this topic was primarily my naivety and getting counter-intuitive results when I was looking at serial measures of response to treatment. In particular, I wanted to use outcome measures based on published conventions in the literature for threshold response (the problems with this approach are a topic for another day)."
+}
+</script>
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+  <title>Alternatives to Percentage Change | Dan W Joyce</title>
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class="page-wrapper   " data-wc-page-id="72e4dd53685c2d695070262d6f668bde" >
+
+  
+  
+  
+  
+  
+  
+  
+  
+  <script src="/js/wowchemy-init.min.f16be01fc8fb2b5885dd67ce942d1185.js"></script>
+
+  
+
+
+<aside class="search-modal" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#" aria-label="Close"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search" class="form-control"
+        aria-label="Search...">
+        
+      </div>
+
+      
+      
+
+      
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+
+  <div class="page-header">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container-xl">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Dan W Joyce</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Dan W Joyce</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#about"><span>About</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#featured"><span>Publications</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#contact"><span>Contact</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+
+      
+      
+        
+          
+          <li class="nav-item d-none d-lg-inline-flex">
+            <a class="nav-link" href="https://twitter.com/dan_w_joyce" data-toggle="tooltip" data-placement="bottom" title="Follow me on Twitter" target="_blank" rel="noopener" aria-label="Follow me on Twitter">
+              <i class="fab fa-twitter" aria-hidden="true"></i>
+            </a>
+          </li>
+        
+      
+
+      
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#" aria-label="Search"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      
+      <li class="nav-item dropdown theme-dropdown">
+        <a href="#" class="nav-link" data-toggle="dropdown" aria-haspopup="true" aria-label="Display preferences">
+          <i class="fas fa-moon" aria-hidden="true"></i>
+        </a>
+        <div class="dropdown-menu">
+          <a href="#" class="dropdown-item js-set-theme-light">
+            <span>Light</span>
+          </a>
+          <a href="#" class="dropdown-item js-set-theme-dark">
+            <span>Dark</span>
+          </a>
+          <a href="#" class="dropdown-item js-set-theme-auto">
+            <span>Automatic</span>
+          </a>
+        </div>
+      </li>
+      
+
+      
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  </div>
+
+  <div class="page-body">
+    <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1>Alternatives to Percentage Change</h1>
+
+  
+
+  
+    
+
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    Apr 18, 2019
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    7 min read
+  </span>
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder mr-1"></i><a href="/category/change/">change</a>, <a href="/category/trajectories/">trajectories</a></span>
+  
+
+</div>
+
+    
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      <p>The motivation for looking at this topic was primarily my naivety and
+getting counter-intuitive results when I was looking at serial measures
+of response to treatment. In particular, I wanted to use outcome
+measures based on published conventions in the literature for threshold
+response (the problems with this approach are a topic for another day).
+I found some pointers on Frank Harrell&rsquo;s blog on the topic of
+<a href="http://www.fharrell.com/post/percent/" target="_blank" rel="noopener">percentages</a>, which mirrored
+some of the discussion in Chapter 8 of (Senn 2008) which looks at
+assumptions of additvity in treatment effects.</p>
+<p>Here&rsquo;s the context in clinical trials in psychiatry: To define a
+clinically-meaningful outcome (e.g. to a treatment/intervention) the
+literature frequently uses <em>percentage change from baseline</em> &ndash; for
+example (Leucht et al. 2009; Munk-Jørgensen 2011) in the context of
+PANSS scores in psychosis. I&rsquo;ll avoid the debate about why this may not
+be appropriate for statistical modelling (e.g. using change from
+baseline severity rather than using the baseline as a covariate in a
+statistical model).</p>
+<p>To make this concrete, let A be the first measurement, and B the second
+(i.e. pre-treatment and post-treatment respectively, or baseline and
+endpoint). Leaving aside the correction to ensure minimum symptoms
+severity is 0, Leucht&rsquo;s formula for <strong>percentage reduction from baseline
+PANSS</strong> is essentially:</p>
+<p>$$
+100 \times \frac{A - B}{A}
+$$</p>
+<p>To make the example concrete, one of the criteria for defining
+treatment resistance in schizophrenia (Howes et al. 2016) is: &ldquo;<strong>less
+than 20% symptom reduction during a prospective trial</strong>&rdquo; (of treatment)
+using Leucht <em>et al</em>&rsquo;s formula (above). Re-wording this (to make it
+compatible with Leucht): failure of a treatment trial is that the
+<strong>percentage reduction from baseline is less than 20%</strong>.</p>
+<h1 id="percentages">Percentages</h1>
+<p>The obvious reason for favouring percentage change from baseline is that
+improvement (or worsening) is relative the patient&rsquo;s initial level of
+symptom severity. Assuming higher scores represents higher symptom
+burden, a patient moving from a baseline A = 97 to an endpoint B = 77
+represents a 20% change for that patient. A patient starting from a more
+modest symptom burden, say A = 65, improving to B = 52 similarly
+represents a 20% improvement.</p>
+<p>However, percentages are not <strong>symmetric</strong> &ndash; for example, if the first
+measurement is A = 97, and the second (post-treatment) improved score is
+B = 67 we have a <strong>percentage reduction</strong> of
+$$
+100 \times \frac{97-67}{97} \approx 31 \%
+$$</p>
+<p>Switching this around, for another patient who gets <strong>worse</strong> by exactly
+the same absolute amount after treatment: A = 67 and B = 97, yields
+$$
+100 \times \frac{67-97}{67} \approx -45 \%
+$$</p>
+<p>Notice that both the sign and magnitude of the change are different,
+but the absolute change in units is 30 in both cases.</p>
+<p>The next problem &ndash; percentages are not <strong>additive</strong>; assume a 30%
+<strong>improvement</strong> from an initial score of A = 100 &ndash; the endpoint
+(post-treatment) would be B = 70:</p>
+<p>$$
+100 \times \frac{100 - 70}{100} = 30\%
+$$</p>
+<p>Now assume we follow the same patient from B to another time point, C,
+and they&rsquo;ve gotten worse, returning to their baseline of 100:
+$$
+100 \times \frac{70 - 100}{70} \approx -42.9\%
+$$</p>
+<p>On absolute scale units we have a series of measurements A = 100, B =
+70 and C = 100, but we have seen a percentage change of 30% (A to B)
+followed by a percentage change of -42.9% (B to C) despite A = C. In
+other words, if we take the baseline A, add the change from A to B and
+the change from B to C, we should have <strong>zero net change</strong> from the
+baseline, A to the last measurement C:</p>
+<p>$$
+\begin{aligned}
+A + (A-B) + (B-C) &amp;= 100 + (100 - 70) + (70 - 100) \\\<br>
+&amp;= 100 + 30 - 30 \\\<br>
+&amp;= 100
+\end{aligned}
+$$
+But if we use percentages, this is not the case; assuming that A
+represents 100% &ndash; the baseline level of symptom severity &ndash; and abusing
+notation, we let (A-B) stand for the percentage change from A to B, and
+similarly for (B-C):
+$$
+\begin{aligned}
+A + (A-B) + (B-C) &amp;= 100 + 30 - 42.9 \\\<br>
+&amp;= 87.1\%
+\end{aligned}
+$$
+Percentage change from baseline is intuitive because it allows for a
+familiar and uniform representation of change <em>relative</em> to the
+patient&rsquo;s baseline, but it&rsquo;s counter-intuitive because it is asymmetric
+and non-additive.</p>
+<p>Here&rsquo;s a graphical representation: let the baseline (A) and endpoint (B)
+values range from 0 to 100 respectively &ndash; the interactive graph below
+shows the behaviour of percentage change as both A and B vary:</p>
+<iframe width="900" height="800" frameborder="0" scrolling="no" src="//plot.ly/~danwjoyce/11.embed"></iframe>
+<h1 id="sympercent">Sympercent</h1>
+<p>The idea proposed in (Cole 2000), neatly illustrated in (T. J. Cole and
+Altman 2017b; T. J. Cole and Altman 2017a) is to exploit a property of
+natural logarithms where because
+$$
+\ln(A)−\ln(B)=\ln(A/B)
+$$
+the ratio A divided by B can be expressed as a sum, retaining
+additivity and symmetry, and it turns out, approximating a &lsquo;percentage&rsquo;
+change. The proposed name for this measure is &ldquo;sympercent&rdquo; and (Cole
+2000) gave it the symbol <strong>s%</strong> and the formula
+$$
+100 × [\ln(A)−\ln(B)]
+$$
+Repeating the examples above; first of all A = 97, B = 67 which gave
+us a 31% (percent) improvement instead gives us the sympercent change:</p>
+<p>$$
+100 × [\ln(97)−\ln(67)] ≈ 37 s\%
+$$</p>
+<p>A different numerical value (37, versus 31). Note, however, that we
+gain symmetry &ndash; so with A = 67 and B = 97 (worsening symptoms from A to
+B):</p>
+<p>$$
+100 × [\ln(67)−\ln(97)] ≈ −37 s\%
+$$</p>
+<p>The magnitude is the same (37) but the sign changes to represent
+worsening, rather than improvement.</p>
+<p>Repeating the additivity example; improvement from A = 100 to B = 70 but
+with subsequent worsening back to C = 100. We&rsquo;ll drop the factor of 100
+to simplify presentation:
+$$
+\begin{aligned}
+\ln(A) + \big[ \ln(A)-\ln(B) \big] + \big[\ln(B)-\ln(C) \big] &amp;= 4.61 + 0.36 - 0.36  \\\<br>
+&amp;= 4.61
+\end{aligned}
+$$</p>
+<p>That is, a net change of zero from the baseline.</p>
+<p>Switching to an alternative representation affords a more interpretable
+and intuitive measure of change that preserves the idea of change
+<strong>relative</strong> to the patient&rsquo;s baseline.</p>
+<p>Below, the behaviour of sympercent is shown over the range [0,100],
+analogous to the percent change shown above:</p>
+<iframe width="900" height="800" frameborder="0" scrolling="no" src="//plot.ly/~danwjoyce/13.embed"></iframe>
+<h1 id="the-original-problem">The Original Problem</h1>
+<p>Let&rsquo;s apply the &lsquo;sympercent&rsquo; idea for the problem originally introduced
+&ndash; a threshold of 20% improvement for symptoms.</p>
+<p>To simplify presentation, we drop the factor 100 and instead, work in
+fractions of 1 (i.e. rather 20% we say 0.2 or 1/5). If we require at
+least a 20% reduction in symptom scores to qualify as a response, then
+we are saying:</p>
+<p>$$
+\begin{aligned}
+\frac{A-B}{A} &amp;= 0.2 \\\<br>
+A-B &amp;= 0.2 \times A
+\end{aligned}
+$$
+i.e. the difference between symptom scores at time points A and B
+should be a fraction (0.2, or one-fifth) of the baseline A:</p>
+<p>Reusing our first example, where A = 97:
+$$
+\begin{aligned}
+97-B = 0.2 \times 97
+\end{aligned}
+$$
+So, for symptoms to have improved by at least 20% from a baseline of A
+= 97, the symptom score at B should be 77.6 or lower.</p>
+<p>What would this reduction look like in s% (sympercents)?</p>
+<p>If A = 97, and we know a 20% reduction (or 0.2) would represent B = 77.6 then:</p>
+<p>$$
+100 × [\ln(97)−\ln(77.6)] ≈ 22.3 s\%
+$$</p>
+<h1 id="references">References</h1>
+<p>Cole, Tim J, and Douglas G Altman. 2017a. “Statistics Notes: Percentage
+Differences, Symmetry, and Natural Logarithms.” <em>BMJ</em> 358. British
+Medical Journal Publishing Group: j3683.</p>
+<p>———. 2017b. “Statistics Notes: What Is a Percentage Difference?” <em>BMJ</em>
+358. British Medical Journal Publishing Group: j3663.</p>
+<p>Cole, TJ. 2000. “Sympercents: Symmetric Percentage Differences on the
+100 log<sub><em>e</em></sub> Scale Simplify the Presentation of Log Transformed
+Data.” <em>Statistics in Medicine</em> 19 (22). Wiley Online Library: 3109–25.</p>
+<p>Howes, Oliver D, Rob McCutcheon, Ofer Agid, Andrea De Bartolomeis, Nico
+JM Van Beveren, Michael L Birnbaum, Michael AP Bloomfield, et al. 2016.
+“Treatment-Resistant Schizophrenia: Treatment Response and Resistance in
+Psychosis (Trrip) Working Group Consensus Guidelines on Diagnosis and
+Terminology.” <em>American Journal of Psychiatry</em> 174 (3). Am Psychiatric
+Assoc: 216–29.</p>
+<p>Leucht, S, JM Davis, RR Engel, W Kissling, and JM Kane. 2009.
+“Definitions of Response and Remission in Schizophrenia: Recommendations
+for Their Use and Their Presentation.” <em>Acta Psychiatrica Scandinavica</em>
+119. Wiley Online Library: 7–14.</p>
+<p>Munk-Jørgensen, Povl. 2011. “Corrigendum.” <em>Acta Psychiatrica
+Scandinavica</em> 124 (1): 82–82.
+doi:<a href="https://doi.org/10.1111/j.1600-0447.2011.01720.x" target="_blank" rel="noopener">10.1111/j.1600-0447.2011.01720.x</a>.</p>
+<p>Senn, Stephen S. 2008. <em>Statistical Issues in Drug Development</em>. Vol.
+69. John Wiley &amp; Sons.</p>
+
+    </div>
+
+    
+
+
+
+
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tag/measures/">measures</a>
+  
+</div>
+
+
+
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=/post/2021-05-23-symm-percent/add_symm_change_score/&amp;text=Alternatives%20to%20Percentage%20Change" target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=/post/2021-05-23-symm-percent/add_symm_change_score/&amp;t=Alternatives%20to%20Percentage%20Change" target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Alternatives%20to%20Percentage%20Change&amp;body=/post/2021-05-23-symm-percent/add_symm_change_score/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=/post/2021-05-23-symm-percent/add_symm_change_score/&amp;title=Alternatives%20to%20Percentage%20Change" target="_blank" rel="noopener" class="share-btn-linkedin">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="whatsapp://send?text=Alternatives%20to%20Percentage%20Change%20/post/2021-05-23-symm-percent/add_symm_change_score/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=/post/2021-05-23-symm-percent/add_symm_change_score/&amp;title=Alternatives%20to%20Percentage%20Change" target="_blank" rel="noopener" class="share-btn-weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  <div class="media author-card content-widget-hr">
+    
+      
+      <img class="avatar mr-3 avatar-circle" src="/author/dan-w-joyce/avatar_hu9239ca797fad516d0c82eef67fca2cab_38244_270x270_fill_q75_lanczos_center.jpg" alt="Dan W Joyce">
+    
+
+    <div class="media-body">
+      <h5 class="card-title">Dan W Joyce</h5>
+      
+      <p class="card-text">I’m interested in how principles from computation can be used to understand things like clinical state, trajectories and how to augment clinical decision making using data, multivariate statistics and (cautiously) AI and ML.</p>
+      <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="/#contact" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://twitter.com/dan_w_joyce" target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/danwjoyce" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.linkedin.com/in/dan-joyce-6870166b/" target="_blank" rel="noopener">
+        <i class="fab fa-linkedin"></i>
+      </a>
+    </li>
+  
+</ul>
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+  </div>
+</article>
+  </div>
+
+  <div class="page-footer">
+    
+    
+    <div class="container">
+      <footer class="site-footer">
+
+  
+
+  
+
+  
+
+  
+  
+
+
+
+
+
+
+  <p class="powered-by">
+    
+    
+    
+      
+      
+      
+      
+      
+      
+      Published with <a href="https://wowchemy.com/?utm_campaign=poweredby" target="_blank" rel="noopener">Wowchemy</a> — the free, <a href="https://github.com/wowchemy/wowchemy-hugo-modules" target="_blank" rel="noopener">open source</a> website builder that empowers creators.
+    
+  </p>
+</footer>
+
+    </div>
+    
+  </div>
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/instant.page/5.1.0/instantpage.min.js" integrity="sha512-1+qUtKoh9XZW7j+6LhRMAyOrgSQKenQ4mluTR+cvxXjP1Z54RxZuzstR/H9kgPXQsVB8IW7DMDFUJpzLjvhGSQ==" crossorigin="anonymous"></script>
+
+      
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      
+
+      
+      
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/highlight.min.js" integrity="sha512-TDKKr+IvoqZnPzc3l35hdjpHD0m+b2EC2SrLEgKDRWpxf2rFCxemkgvJ5kfU48ip+Y+m2XVKyOCD85ybtlZDmw==" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/languages/r.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/languages/python.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/languages/latex.min.js"></script>
+        
+      
+
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.js" integrity="sha512-SeiQaaDh73yrb56sTW/RgVdi/mMqNeM2oBwubFHagc5BkixSpP1fvqF47mKzPGWYSSy4RwbBunrJBQ4Co8fRWA==" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+    
+      
+      <script id="search-hit-fuse-template" type="text/x-template">
+        <div class="search-hit" id="summary-{{key}}">
+          <div class="search-hit-content">
+            <div class="search-hit-name">
+              <a href="{{relpermalink}}">{{title}}</a>
+              <div class="article-metadata search-hit-type">{{type}}</div>
+              <p class="search-hit-description">{{snippet}}</p>
+            </div>
+          </div>
+        </div>
+      </script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+      
+    
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    <script src="/js/bootstrap.bundle.min.6aed84840afc03ab4d5750157f69c120.js"></script>
+
+    
+    
+      
+      
+      
+      
+      
+      
+      
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+      
+      
+    
+    
+    <script src="/en/js/wowchemy.min.71e713848164e269bc250f377042949d.js"></script>
+
+    
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+
+
+
+</body>
+</html>

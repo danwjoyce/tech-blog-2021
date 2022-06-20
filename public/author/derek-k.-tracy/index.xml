@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Derek K. Tracy | Dan W Joyce</title>
+    <link>/author/derek-k.-tracy/</link>
+      <atom:link href="/author/derek-k.-tracy/index.xml" rel="self" type="application/rss+xml" />
+    <description>Derek K. Tracy</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Sun, 01 Jan 2017 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Derek K. Tracy</title>
+      <link>/author/derek-k.-tracy/</link>
+    </image>
+    
+    <item>
+      <title>Realising stratified psychiatry using multidimensional signatures and trajectories.</title>
+      <link>/publication/joyce-realising-2017/</link>
+      <pubDate>Sun, 01 Jan 2017 00:00:00 +0000</pubDate>
+      <guid>/publication/joyce-realising-2017/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Skating on thin ice: pragmatic prescribing for medication refractory schizophrenia.</title>
+      <link>/publication/tracy-skating-2015/</link>
+      <pubDate>Wed, 01 Jul 2015 00:00:00 +0000</pubDate>
+      <guid>/publication/tracy-skating-2015/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Amphetamine sensitisation and memory in healthy human volunteers: a functional magnetic resonance imaging study.</title>
+      <link>/publication/odaly-amphetamine-2014-1/</link>
+      <pubDate>Mon, 01 Sep 2014 00:00:00 +0000</pubDate>
+      <guid>/publication/odaly-amphetamine-2014-1/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Amphetamine sensitization alters reward processing in the human striatum and amygdala.</title>
+      <link>/publication/odaly-amphetamine-2014/</link>
+      <pubDate>Wed, 01 Jan 2014 00:00:00 +0000</pubDate>
+      <guid>/publication/odaly-amphetamine-2014/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Aging effects on functional auditory and visual processing using fMRI with variable sensory loading.</title>
+      <link>/publication/cliff-aging-2013/</link>
+      <pubDate>Wed, 01 May 2013 00:00:00 +0000</pubDate>
+      <guid>/publication/cliff-aging-2013/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

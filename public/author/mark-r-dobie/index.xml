@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Mark R Dobie | Dan W Joyce</title>
+    <link>/author/mark-r-dobie/</link>
+      <atom:link href="/author/mark-r-dobie/index.xml" rel="self" type="application/rss+xml" />
+    <description>Mark R Dobie</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Fri, 01 Jan 1999 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Mark R Dobie</title>
+      <link>/author/mark-r-dobie/</link>
+    </image>
+    
+    <item>
+      <title>Semiotics and agents for integrating and navigating through multimedia representations of concepts</title>
+      <link>/publication/joyce-semiotics-1999/</link>
+      <pubDate>Fri, 01 Jan 1999 00:00:00 +0000</pubDate>
+      <guid>/publication/joyce-semiotics-1999/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

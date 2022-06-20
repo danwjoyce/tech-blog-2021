@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Lynn V Richards | Dan W Joyce</title>
+    <link>/author/lynn-v-richards/</link>
+      <atom:link href="/author/lynn-v-richards/index.xml" rel="self" type="application/rss+xml" />
+    <description>Lynn V Richards</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Thu, 01 Jan 2004 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Lynn V Richards</title>
+      <link>/author/lynn-v-richards/</link>
+    </image>
+    
+    <item>
+      <title>Spatial prepositions and vague quantifiers: Implementing the functional geometric framework</title>
+      <link>/publication/coventry-spatial-2004/</link>
+      <pubDate>Thu, 01 Jan 2004 00:00:00 +0000</pubDate>
+      <guid>/publication/coventry-spatial-2004/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Object representation-by-fragments in the visual system: A neurocomputational model</title>
+      <link>/publication/joyce-object-2002/</link>
+      <pubDate>Tue, 01 Jan 2002 00:00:00 +0000</pubDate>
+      <guid>/publication/joyce-object-2002/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Putting geometry and function together-towards a psychologically-plausible computational model for spatial language comprehension</title>
+      <link>/publication/coventry-putting-2002/</link>
+      <pubDate>Tue, 01 Jan 2002 00:00:00 +0000</pubDate>
+      <guid>/publication/coventry-putting-2002/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>John Geddes | Dan W Joyce</title>
+    <link>/author/john-geddes/</link>
+      <atom:link href="/author/john-geddes/index.xml" rel="self" type="application/rss+xml" />
+    <description>John Geddes</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Wed, 01 Jan 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>John Geddes</title>
+      <link>/author/john-geddes/</link>
+    </image>
+    
+    <item>
+      <title>When Deploying Predictive Algorithms, Are Summary Performance Measures Sufficient?</title>
+      <link>/publication/joyce-when-2020/</link>
+      <pubDate>Wed, 01 Jan 2020 00:00:00 +0000</pubDate>
+      <guid>/publication/joyce-when-2020/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

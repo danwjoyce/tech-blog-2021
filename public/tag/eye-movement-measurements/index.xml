@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Eye Movement Measurements | Dan W Joyce</title>
+    <link>/tag/eye-movement-measurements/</link>
+      <atom:link href="/tag/eye-movement-measurements/index.xml" rel="self" type="application/rss+xml" />
+    <description>Eye Movement Measurements</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Sun, 01 May 2016 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Eye Movement Measurements</title>
+      <link>/tag/eye-movement-measurements/</link>
+    </image>
+    
+    <item>
+      <title>Cognitive and oculomotor performance in subjects with low and high schizotypy: implications for translational drug development studies.</title>
+      <link>/publication/koychev-cognitive-2016/</link>
+      <pubDate>Sun, 01 May 2016 00:00:00 +0000</pubDate>
+      <guid>/publication/koychev-cognitive-2016/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Spatial language, visual attention, and perceptual simulation.</title>
+      <link>/publication/coventry-spatial-2010/</link>
+      <pubDate>Mon, 01 Mar 2010 00:00:00 +0000</pubDate>
+      <guid>/publication/coventry-spatial-2010/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

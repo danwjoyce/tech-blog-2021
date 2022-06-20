@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Functional Neuroimaging/*methods | Dan W Joyce</title>
+    <link>/tag/functional-neuroimaging/methods/</link>
+      <atom:link href="/tag/functional-neuroimaging/methods/index.xml" rel="self" type="application/rss+xml" />
+    <description>Functional Neuroimaging/*methods</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Functional Neuroimaging/*methods</title>
+      <link>/tag/functional-neuroimaging/methods/</link>
+    </image>
+    
+    <item>
+      <title>Examination of the Neural Basis of Psychoticlike Experiences in Adolescence During Reward Processing.</title>
+      <link>/publication/papanastasiou-examination-2018/</link>
+      <pubDate>Mon, 01 Oct 2018 00:00:00 +0000</pubDate>
+      <guid>/publication/papanastasiou-examination-2018/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

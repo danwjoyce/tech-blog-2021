@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Joyce, Dan W. | Dan W Joyce</title>
+    <link>/author/joyce-dan-w./</link>
+      <atom:link href="/author/joyce-dan-w./index.xml" rel="self" type="application/rss+xml" />
+    <description>Joyce, Dan W.</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language>
+    <image>
+      <url>/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png</url>
+      <title>Joyce, Dan W.</title>
+      <link>/author/joyce-dan-w./</link>
+    </image>
+    
+    <item>
+      <title>The temporal dynamics of sleep disturbance and psychopathology in psychosis: a digital sampling study</title>
+      <link>/publication/meyer-2021/</link>
+      <pubDate>Fri, 01 Jan 2021 00:00:00 +0000</pubDate>
+      <guid>/publication/meyer-2021/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
