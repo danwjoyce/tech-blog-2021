@@ -71,7 +71,7 @@ and the re-arrangement:
 p(a,b,c) =  p(a,b | c) p(c)
 \end{equation}
 
-Applying the [chain rule of probability](https://en.wikipedia.org/wiki/Chain_rule_(probability)), $p(a,b,c)$ can also be factorised as *any* of the following:
+Note that $p(a,b,c)$ can also be factorised as *any* of the following (depending on what we want to achieve):
 \begin{align}
   p(a,b,c) &= p(b,c|a) p(a) (\#eq:factors1) \\
           &= p(a,c|b) p(b) (\#eq:factors2) \\
@@ -110,6 +110,96 @@ For two variables $a$ and $b$:
 \begin{equation}
 p(a|b) = \frac{p(b|a)p(a)}{p(b)} (\#eq:bayes)
 \end{equation}
+
+## Bayes with Extra Conditioning
+I frequently have to remind myself how to rewrite this form: $p(a | b, c)$ -- this is covered in [@blitzstein2014introduction] Theorem 2.4.2 on pp. 54-56.
+
+There are a few useful ways to re-write.
+
+**Using Conditional Probability**
+
+Assume it makes sense (in the problem we're trying to solve) to view $b$ and $c$ as "one thing together" then using the formula for conditional probability we get:
+\begin{equation}
+  p( a | b, c ) = \frac{p(a,b,c)}{p(b,c)}  (\#eq:bayesrewritecond)
+\end{equation}
+
+Applying conditional probability again -- equation \@ref(eq:condprob3) and the different factorisations in \@ref(eq:factors1) through \@ref(eq:factors3) -- to rewrite $p(a,b,c)$:
+\begin{align}
+  p(a,b,c) &= p(b,c|a) p(a)  \\
+          &= p(a,c|b) p(b)  \\
+          &= p(a,b|c) p(c) 
+\end{align}
+
+Choosing the RHS as suited to the problem - here, we take $p(b,c|a) p(a)$ as we are treating $b$ and $c$ as "one event" (we want to keep them together) and substitute in \@ref(eq:bayesrewritecond):
+\begin{equation}
+  p( a | b, c ) = \frac{ p(b,c|a) p(a) }{ p( b,c ) } (\#eq:bayesrewritecond2)
+\end{equation}
+
+Now, we have to find an expression for the denominator $p( b,c )$ and we have options including another application of conditional probability so $p( b, c ) = p(b|c) p(c)$ resulting in:
+\begin{equation}
+  p( a | b, c ) = \frac{ p(b,c|a) p(a) }{ p(b|c) p(c) } (\#eq:bayesrewritecond2)
+\end{equation}
+
+**Using the Chain Rule of Probability**
+
+Start, as before, with:
+\begin{equation}
+  p( a | b, c ) = \frac{p(a,b,c)}{p(b,c)} (\#eq:bayesrewritecond3)
+\end{equation}
+
+This time, decompose $p(a,b,c)$ differently, using the chain rule:
+\begin{align}
+  p(a,b,c) &= p(a|b,c)p(b,c)  \\
+           &= p(b|a,c)p(a,c)  \\
+           &= p(c|a,b)p(a,b)
+\end{align}
+Obviously, the first re-write gets us nowhere -- it merely restates $p(a|b,c)$.  Lets say the second factorisation is helpful for our problem $p(b|a,c)p(a,c)$, then we substitute in \@ref(eq:bayesrewritecond3):
+
+\begin{equation}
+  p( a | b, c ) = \frac{p(b|a,c)p(a,c)}{p(b,c)} (\#eq:bayesrewritecond4)
+\end{equation}
+
+
+We now have to deal with $p(a,c)$ in the numerator and $p(b,c)$ in the denominator.  Starting with the numerator, apply conditional probability again:
+\begin{equation}
+  p( a, c ) = p(a|c)p(c)
+\end{equation}
+
+For the denominator:
+\begin{equation}
+  p( b, c ) = p(b|c)p(c)
+\end{equation}
+
+What we end up with is Bayes theorem with extra conditioning on $c$ ...
+
+**Bayes Theorem with Extra Conditioning on $c$**
+
+Substitute both into \@ref(eq:bayesrewritecond4):
+\begin{align}
+  p( a | b, c ) &= \frac{p(b|a,c) p(a|c)p(c)} {p(b|c)p(c)} \\
+                &= \frac{p(b|a,c) p(a|c)} {p(b|c)} 
+\end{align}
+
+**Bayes Theorem with Extra Conditioning on $b$**
+
+Had we chosen, instead, to use $p(c|a,b)p(a,b)$, we end up with:
+\begin{align}
+  p( a | b, c ) &= \frac{p(a,b,c)}{p(b,c)} \\
+                &= \frac{p(c|a,b)p(a,b)}{p(b,c)} 
+\end{align}
+
+with $p(a,b) = p(a|b)p(b)$:
+\begin{equation}
+  p( a | b, c ) = \frac{p(c|a,b)p(a|b)p(b)}{p(b,c)}
+\end{equation}
+
+Of course, $p(b,c) = p(c,b) = p(c|b)p(b)$ in the denominator:
+\begin{align}
+  p( a | b, c ) &= \frac{p(c|a,b)p(a|b)p(b)}{p(c|b)p(b)} \\
+                &= \frac{p(c|a,b)p(a|b)}{p(c|b)}
+\end{align}
+
+We chose between conditioning on $c$ or $b$ depending on the problem we are trying to solve (i.e. does it make sense to consider everything being conditioned on $c$ or $b$ ?)
 
 ## Deriving the PPD
 Starting with the fundamental Bayesian modelling framework:

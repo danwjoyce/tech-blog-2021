@@ -30,7 +30,7 @@
   
     
   
-  <meta name="description" content="Introduction Multi-disciplinary teams (MDTs) assemble a group of healthcare professionals with the intention of mobilising different expertise to arrive at a collective decision or solution that is superior (or at least, no worse) than relying on a single individual." />
+  <meta name="description" content="1 Introduction  1.1 Background 1.2 Related Literature  2 TL;DR – Yes, Multiple Experts Win 3 Mixed Competencies  3.1 Small Team Example  4 Team Diversity and Tolerance for Poorer Performers 5 For Another Time … 6 Appendix &amp; Details  6." />
 
   
   <link rel="alternate" hreflang="en-us" href="/post/wisdom-of-crowds/" />
@@ -298,7 +298,7 @@
   <meta property="og:site_name" content="Dan W Joyce" />
   <meta property="og:url" content="/post/wisdom-of-crowds/" />
   <meta property="og:title" content="Three Heads are Better Than One | Dan W Joyce" />
-  <meta property="og:description" content="Introduction Multi-disciplinary teams (MDTs) assemble a group of healthcare professionals with the intention of mobilising different expertise to arrive at a collective decision or solution that is superior (or at least, no worse) than relying on a single individual." /><meta property="og:image" content="/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png" />
+  <meta property="og:description" content="1 Introduction  1.1 Background 1.2 Related Literature  2 TL;DR – Yes, Multiple Experts Win 3 Mixed Competencies  3.1 Small Team Example  4 Team Diversity and Tolerance for Poorer Performers 5 For Another Time … 6 Appendix &amp; Details  6." /><meta property="og:image" content="/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png" />
     <meta property="twitter:image" content="/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_512x512_fill_lanczos_center_2.png" /><meta property="og:locale" content="en-us" />
   
     
@@ -351,7 +351,7 @@
       "url": "/media/icon_hub05f02e644906e3d80c1c494250cac2e_12120_192x192_fill_lanczos_center_2.png"
     }
   },
-  "description": "Introduction Multi-disciplinary teams (MDTs) assemble a group of healthcare professionals with the intention of mobilising different expertise to arrive at a collective decision or solution that is superior (or at least, no worse) than relying on a single individual."
+  "description": "1 Introduction  1.1 Background 1.2 Related Literature  2 TL;DR – Yes, Multiple Experts Win 3 Mixed Competencies  3.1 Small Team Example  4 Team Diversity and Tolerance for Poorer Performers 5 For Another Time … 6 Appendix \u0026amp; Details  6."
 }
 </script>
 
@@ -729,7 +729,7 @@
   
   <span class="middot-divider"></span>
   <span class="article-reading-time">
-    9 min read
+    16 min read
   </span>
   
 
@@ -744,7 +744,7 @@
   
   <span class="middot-divider"></span>
   <span class="article-categories">
-    <i class="fas fa-folder mr-1"></i><a href="/category/computation/">computation</a></span>
+    <i class="fas fa-folder mr-1"></i><a href="/category/simulation/">simulation</a></span>
   
 
 </div>
@@ -767,46 +767,615 @@
 <script src="/post/wisdom-of-crowds/index_files/kePrint/kePrint.js"></script>
 <link href="/post/wisdom-of-crowds/index_files/lightable/lightable.css" rel="stylesheet" />
 
+<div id="TOC">
+<ul>
+<li><a href="#introduction" id="toc-introduction"><span class="toc-section-number">1</span> Introduction</a>
+<ul>
+<li><a href="#background" id="toc-background"><span class="toc-section-number">1.1</span> Background</a></li>
+<li><a href="#related-literature" id="toc-related-literature"><span class="toc-section-number">1.2</span> Related Literature</a></li>
+</ul></li>
+<li><a href="#tldr-yes-multiple-experts-win" id="toc-tldr-yes-multiple-experts-win"><span class="toc-section-number">2</span> TL;DR – Yes, Multiple Experts Win</a></li>
+<li><a href="#mixed" id="toc-mixed"><span class="toc-section-number">3</span> Mixed Competencies</a>
+<ul>
+<li><a href="#small-team-example" id="toc-small-team-example"><span class="toc-section-number">3.1</span> Small Team Example</a></li>
+</ul></li>
+<li><a href="#team-diversity-and-tolerance-for-poorer-performers" id="toc-team-diversity-and-tolerance-for-poorer-performers"><span class="toc-section-number">4</span> Team Diversity and Tolerance for Poorer Performers</a></li>
+<li><a href="#for-another-time" id="toc-for-another-time"><span class="toc-section-number">5</span> For Another Time …</a></li>
+<li><a href="#appendix-details" id="toc-appendix-details"><span class="toc-section-number">6</span> Appendix &amp; Details</a>
+<ul>
+<li><a href="#appendix-a" id="toc-appendix-a"><span class="toc-section-number">6.1</span> Counting Voting Profiles</a></li>
+<li><a href="#appendix-b" id="toc-appendix-b"><span class="toc-section-number">6.2</span> Probability of a Voting Profile</a></li>
+<li><a href="#appendix-c" id="toc-appendix-c"><span class="toc-section-number">6.3</span> Probability of a Majority</a></li>
+<li><a href="#appendix-d" id="toc-appendix-d"><span class="toc-section-number">6.4</span> Mixed Competence Teams as Multisets</a></li>
+</ul></li>
+<li><a href="#references" id="toc-references">References</a></li>
+</ul>
+</div>
 
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
-<p>Multi-disciplinary teams (MDTs) assemble a group of healthcare professionals with the intention of mobilising different expertise to arrive at a collective decision or solution that is superior (or at least, no worse) than relying on a single individual. This is related to the <a href="https://en.wikipedia.org/wiki/Wisdom_of_the_crowd">wisdom of crowds</a> and is not without controversy. But the question I’m interested in here is: can we <strong>model</strong> and show that under certain circumstances, having more than one expert is better than a single individual?</p>
+<div id="introduction" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<p>We often make decisions in teams on the assumption that we obtain more reliable decision making when we use the consensus of a group of people – or to quote C.S. Lewis, “Two heads are better than one, not because either is infallible, but because they are unlikely to go wrong in the same direction”. This is related to the <a href="https://en.wikipedia.org/wiki/Wisdom_of_the_crowd">wisdom of crowds</a> and is not without controversy. In healthcare, the multi-disciplinary team (MDT) is central to decision making when there is uncertainty and/or there is a need for multiple expertise; we assemble a group of professionals with the intention of leveraging different opinions and expertise to arrive at a decision that is superior than relying on a single individual.</p>
+<p>The question I’m interested in here is: can we <strong>model</strong> – and explore under what circumstances – having more than one decision-maker can result in decisions that improve on those of a single individual?</p>
+<p><strong>Note:</strong> Before posting this, I read around social media and had a look at the literature on MDTs in clinical services particularly mental healthcare. There are many criticisms of MDTs including the ethics of making decisions about people’s care without their involvement (i.e. at the stage of MDTs triaging – accepting or rejecting – to specialist teams) – to be clear, this post does not address these issues in the provision of healthcare in any specialty. It is more basic and reflects my trying to find a more formal understanding of the commonly-expressed (and widely accepted) view that having a team making decisions results in better decisions.</p>
+<div id="background" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> Background</h2>
 <p>The related theory can be found in <a href="https://en.wikipedia.org/wiki/Condorcet%27s_jury_theorem">jury theorems</a> – albeit within a judicial framing – and the oldest result is Condorcet’s jury theorem dating back to 1785. Who knew.</p>
-<p>In machine learning, mixture of experts (MoE) architectures and ensemble learning appeal to the same idea: by combining a collection of imperfect decisions, you can arrive at an “overall’’ better decision.</p>
+<p>In machine learning, mixture of experts (MoE) architectures and ensemble learning appeal to the same idea: by combining a collection of imperfect decisions, you can arrive at an overall better decision.</p>
 <p>Some basics to get us started:</p>
 <ul>
-<li><p>a “jury” (or MDT) is a collection of individual voters, tasked with arriving at a decision on some issue and each having a <strong>competence</strong> which is the probability they will vote “yes” (or “guilty” if you prefer), which we’ll call <span class="math inline">\(p\)</span> and for now, we’ll assume all voters (MDT members) have equal competence. Naturally, if <span class="math inline">\(p = 0.5\)</span> then each voter is no more useful than tossing a coin to arrive at a decision.</p></li>
-<li><p>the size of our MDT (jury) <span class="math inline">\(N\)</span> will always be odd-numbered (3, 5, 7e …) to avoid tied voting</p></li>
+<li><p>a “jury” (or here, a team) is a collection of individual voters (team members), tasked with arriving at a decision on some issue and each having a <strong>competence</strong> which is the probability they will vote correctly i.e. deliver a “yes” (or “guilty” verdict if you prefer the original framing of juries). Denote this probability of voting correctly for team member <span class="math inline">\(i\)</span> as <span class="math inline">\(p_i\)</span> but for now we’ll assume all voters (MDT members) have equal competence <span class="math inline">\(p_i = p\)</span>. If <span class="math inline">\(p = 0.5\)</span> then each individual voter is no more useful than tossing a coin to arrive at a decision.</p></li>
+<li><p>the size of our team (jury) <span class="math inline">\(N\)</span> will always be odd-numbered (3, 5, 7 …) to avoid tied voting</p></li>
 </ul>
 <p><strong>Condorcet’s jury theorem</strong> is:</p>
 <ul>
-<li>If <span class="math inline">\(p &gt; 0.5\)</span> – each voter is more competent than chance – then increasing the size of the jury (MDT) increases the probability that the majority decision is correct. Further, as the size of the team increases, the probability of a correct majority decision tends to 1</li>
-<li>For <span class="math inline">\(p \leq 0.5\)</span> – voters’ competence is chance-level or worse – then increasing the size of the team results in a reduction in the probability of a majority correct decision and in these circumstance, the best team is just a single voter.</li>
+<li>If <span class="math inline">\(p &gt; 0.5\)</span> – all voters/team members are more competent than chance – then increasing the size of the jury (MDT) increases the probability that the majority decision is correct. Further, as the size of the team increases, the probability of a correct majority decision tends to 1</li>
+<li>For <span class="math inline">\(p \leq 0.5\)</span> – that is, voters’ competence is chance-level or worse – then increasing the size of the team results in no improvement or a reduction in the probability of a majority correct decision and in these circumstance, the best team is just a single voter.</li>
 </ul>
-<div id="related-literature" class="section level2">
-<h2>Related Literature</h2>
+</div>
+<div id="related-literature" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> Related Literature</h2>
 <p>A readable introduction to the analysis and philosophy of jury theorems is given in <span class="citation">(<a href="#ref-dietrich2019jury" role="doc-biblioref">Dietrich and Spiekermann 2019</a>)</span> which discusses the flaws and assumptions of the framework. A proof and connection to statistical hypothesis testing is given by <span class="citation">(<a href="#ref-young1988condorcet" role="doc-biblioref">Young 1988</a>)</span>. For some extensions to the basic Condorcet jury theorem, <span class="citation">(<a href="#ref-ladha1992condorcet" role="doc-biblioref">Ladha 1992</a>)</span> describes how to model voting without independent voter assumptions (i.e. correlated voting) and the relationship with free speech (a little outside the scope of this blog). Asymptotic results on designing juries with correlated voting are given in <span class="citation">(<a href="#ref-kaniovski2011optimal" role="doc-biblioref">Kaniovski and Zaigraev 2011</a>)</span> – see also <a href="https://en.wikipedia.org/wiki/Condorcet%27s_jury_theorem">the wikipaedia page</a> – but we will not rely on these here, rather we’ll use simulations to allow flexibility.</p>
+<hr />
 </div>
 </div>
-<div id="tldr-yes-multiple-experts-win" class="section level1">
-<h1>TL;DR – Yes, Multiple Experts Win</h1>
+<div id="tldr-yes-multiple-experts-win" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> TL;DR – Yes, Multiple Experts Win</h1>
 <p>Let’s be explicit about the assumptions in the basic Condorcet model <span class="citation">(<a href="#ref-dietrich2019jury" role="doc-biblioref">Dietrich and Spiekermann 2019</a>)</span></p>
 <ol style="list-style-type: decimal">
 <li>Voters are independent (that is, they do not influence one another; there is no “leader” directing the team)</li>
-<li>All voters are equally competent and perform better than chance</li>
+<li>All voters have equal competence</li>
 </ol>
 <p><img src="/post/wisdom-of-crowds/index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
 In the figure above, we can see that if the competence of voters is chance (<span class="math inline">\(p = 0.5\)</span>) then increasing the number of voters has no effect. If the competence of voters is <span class="math inline">\(p &lt; 0.5\)</span>, adding voters makes the team’s probability of a correct majority decision <strong>worse</strong>. And as Condorcet’s jury theorem describes, for voters with above-chance competence, the size of the team increase the probability of a correct majority decision.</p>
+<p>So the headline is, for MDTs where each member votes independently and all team members are equally competent above chance-level (all have the same probability of voting correctly), the larger the team, the higher the probability of a majority correct decision.</p>
+<p>The details are given in the <a href="#appendix-a">Appendix</a></p>
+<hr />
 </div>
-<div id="mixed-competencies" class="section level1">
-<h1>Mixed Competencies</h1>
-<p>Not all members of a team will have the same competencies. If we keep the rest of the setup the same, but vary the composition (diversity) of the team allowing <span class="math inline">\(p_i\)</span> to be the probability of voting “yes” for voted <span class="math inline">\(i\)</span> – we have to resort to stochastic simulations. In the machine learning literature, there is some consensus that ``diversity’’ refers to agreement (similarity) between different team members’ output – in <span class="citation">(<a href="#ref-kuncheva2003measures" role="doc-biblioref">Kuncheva and Whitaker 2003</a>)</span></p>
+<div id="mixed" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Mixed Competencies</h1>
+<p>Not all members of a team will have the same competencies; above, we used uniform competence (i.e. all members of the team voted correctly with the same probability). In the machine learning literature – where an MDT or jury is called an ensemble, mixture of experts or a multi-agent system – “diversity” refers to the agreement between different team members’ output <span class="citation">(<a href="#ref-kuncheva2003measures" role="doc-biblioref">Kuncheva and Whitaker 2003</a>)</span> and there is an argument that the more diverse the team is, the better the overall performance of the team (however, as Kuncheva and Whittaker show, diversity is hard to formalise).</p>
+<p>We can ask a similar, related question about how a mixture of team competencies influence the team’s overall probability of arriving at a correct decision. We’ll do this by simulating teams of different sizes (<span class="math inline">\(N\)</span>) as well as each team member having different voting probabilities (competencies) <span class="math inline">\(p_i\)</span> from a set of possible competences <span class="math inline">\(\Pi = \{ 0.5,0.6,0.7,0.8 \}\)</span>. See the <a href="#appendix-b">Appendix</a> for details of how we generate the exhaustive set of teams with all combinations of mixed-competencies.</p>
+<p>Assume for a team size <span class="math inline">\(N\)</span>, the competencies for one possible team are given by a vector or probabilities <span class="math inline">\(\mathbf{p} = (p_1, p_2, \ldots, p_N )\)</span>, where each <span class="math inline">\(p_i \in \Pi\)</span>.</p>
+<p>Define the diversity as:
+<span class="math display">\[\begin{align}
+  D( \mathbf{p}, N ) &amp;= \sum_{i = 1}^{N} ( p_{max} - p_i ), \\
+                     &amp;p_{max} = \max( \mathbf{p})
+\end{align}\]</span></p>
+<p>For example, assume a team of <span class="math inline">\(N=3\)</span> with <span class="math inline">\(\mathbf{p} = (0.5, 0.8, 0.8)\)</span> – so a team with two highly competent members and one poor performer:</p>
+<ul>
+<li><span class="math inline">\(p_{max} = 0.8\)</span></li>
+<li><span class="math inline">\(D(\mathbf{p}, N) = (0.8 - 0.5) + (0.8 - 0.8) + (0.8 - 0.8) = 0.3\)</span></li>
+</ul>
+<p>And for contrast, a different team of size <span class="math inline">\(N=5\)</span> with <span class="math inline">\(\mathbf{p} = (0.5, 0.5, 0.5, 0.8, 0.8)\)</span> resulting in a diversity of</p>
+<ul>
+<li><span class="math inline">\(p_{max} = 0.8\)</span></li>
+<li><span class="math inline">\(D(\mathbf{p}, N) = (0.8 - 0.5) + \cdots + (0.8 - 0.8) = 0.9\)</span></li>
+</ul>
+<p>Although the team composition is similar (two high performers, the others performing at chance-level), the diversity is three fold larger in the <span class="math inline">\(N=5\)</span> team which makes it difficult to compare. So, we scale the diversity in the range <span class="math inline">\([0,1]\)</span>:</p>
+<p><span class="math display">\[\begin{align}
+  D_{norm}( \mathbf{p}, N ) &amp;= \frac{1}{(N-1)(\Pi_{max} - \Pi_{min})} \sum_{i = 1}^{N} ( p_{max} - p_i ) \\
+\end{align}\]</span></p>
+<p>Where <span class="math inline">\(\Pi_{min}\)</span> and <span class="math inline">\(\Pi_{max}\)</span> are the minimum and maximum possible competencies for any team member (in the simulations here, these are 0.5 and 0.8 respectively).</p>
+<div id="small-team-example" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Small Team Example</h2>
+<p>To begin with, we simulate a team of size <span class="math inline">\(N=3\)</span> (recall, we use odd <span class="math inline">\(N\)</span> to prevent tied votes). Each team member has competence (probability of voting correctly) drawn from <span class="math inline">\(p_i \in \{ 0.5, 0.6, 0.7, 0.8 \}\)</span>. Here’s a list of all possible team compositions in terms of probabilities of voting correctly (competencies):</p>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-7">Table 3.1: </span>Combinations of Team Competencies
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+p1
+</th>
+<th style="text-align:right;">
+p2
+</th>
+<th style="text-align:right;">
+p3
+</th>
+<th style="text-align:right;">
+diversity
+</th>
+<th style="text-align:right;">
+mean
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;background-color: #8dd3c7 !important;">
+0.5
+</td>
+<td style="text-align:right;background-color: #8dd3c7 !important;">
+0.6
+</td>
+<td style="text-align:right;background-color: #8dd3c7 !important;">
+0.6
+</td>
+<td style="text-align:right;background-color: #8dd3c7 !important;">
+0.1
+</td>
+<td style="text-align:right;background-color: #8dd3c7 !important;">
+0.5666667
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: #8dd3c7 !important;">
+0.6
+</td>
+<td style="text-align:right;background-color: #8dd3c7 !important;">
+0.7
+</td>
+<td style="text-align:right;background-color: #8dd3c7 !important;">
+0.7
+</td>
+<td style="text-align:right;background-color: #8dd3c7 !important;">
+0.1
+</td>
+<td style="text-align:right;background-color: #8dd3c7 !important;">
+0.6666667
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: #8dd3c7 !important;">
+0.7
+</td>
+<td style="text-align:right;background-color: #8dd3c7 !important;">
+0.8
+</td>
+<td style="text-align:right;background-color: #8dd3c7 !important;">
+0.8
+</td>
+<td style="text-align:right;background-color: #8dd3c7 !important;">
+0.1
+</td>
+<td style="text-align:right;background-color: #8dd3c7 !important;">
+0.7666667
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.5
+</td>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.5
+</td>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.6
+</td>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.2
+</td>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.5333333
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.5
+</td>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.7
+</td>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.7
+</td>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.2
+</td>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.6333333
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.6
+</td>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.6
+</td>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.7
+</td>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.2
+</td>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.6333333
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.6
+</td>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.8
+</td>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.8
+</td>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.2
+</td>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.7333333
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.7
+</td>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.7
+</td>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.8
+</td>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.2
+</td>
+<td style="text-align:right;background-color: #ffffb3 !important;">
+0.7333333
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: #bebada !important;">
+0.5
+</td>
+<td style="text-align:right;background-color: #bebada !important;">
+0.6
+</td>
+<td style="text-align:right;background-color: #bebada !important;">
+0.7
+</td>
+<td style="text-align:right;background-color: #bebada !important;">
+0.3
+</td>
+<td style="text-align:right;background-color: #bebada !important;">
+0.6000000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: #bebada !important;">
+0.5
+</td>
+<td style="text-align:right;background-color: #bebada !important;">
+0.8
+</td>
+<td style="text-align:right;background-color: #bebada !important;">
+0.8
+</td>
+<td style="text-align:right;background-color: #bebada !important;">
+0.3
+</td>
+<td style="text-align:right;background-color: #bebada !important;">
+0.7000000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: #bebada !important;">
+0.6
+</td>
+<td style="text-align:right;background-color: #bebada !important;">
+0.7
+</td>
+<td style="text-align:right;background-color: #bebada !important;">
+0.8
+</td>
+<td style="text-align:right;background-color: #bebada !important;">
+0.3
+</td>
+<td style="text-align:right;background-color: #bebada !important;">
+0.7000000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: #fb8072 !important;">
+0.5
+</td>
+<td style="text-align:right;background-color: #fb8072 !important;">
+0.5
+</td>
+<td style="text-align:right;background-color: #fb8072 !important;">
+0.7
+</td>
+<td style="text-align:right;background-color: #fb8072 !important;">
+0.4
+</td>
+<td style="text-align:right;background-color: #fb8072 !important;">
+0.5666667
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: #fb8072 !important;">
+0.5
+</td>
+<td style="text-align:right;background-color: #fb8072 !important;">
+0.7
+</td>
+<td style="text-align:right;background-color: #fb8072 !important;">
+0.8
+</td>
+<td style="text-align:right;background-color: #fb8072 !important;">
+0.4
+</td>
+<td style="text-align:right;background-color: #fb8072 !important;">
+0.6666667
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: #fb8072 !important;">
+0.6
+</td>
+<td style="text-align:right;background-color: #fb8072 !important;">
+0.6
+</td>
+<td style="text-align:right;background-color: #fb8072 !important;">
+0.8
+</td>
+<td style="text-align:right;background-color: #fb8072 !important;">
+0.4
+</td>
+<td style="text-align:right;background-color: #fb8072 !important;">
+0.6666667
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: #80b1d3 !important;">
+0.5
+</td>
+<td style="text-align:right;background-color: #80b1d3 !important;">
+0.6
+</td>
+<td style="text-align:right;background-color: #80b1d3 !important;">
+0.8
+</td>
+<td style="text-align:right;background-color: #80b1d3 !important;">
+0.5
+</td>
+<td style="text-align:right;background-color: #80b1d3 !important;">
+0.6333333
+</td>
+</tr>
+<tr>
+<td style="text-align:right;background-color: #fdb462 !important;">
+0.5
+</td>
+<td style="text-align:right;background-color: #fdb462 !important;">
+0.5
+</td>
+<td style="text-align:right;background-color: #fdb462 !important;">
+0.8
+</td>
+<td style="text-align:right;background-color: #fdb462 !important;">
+0.6
+</td>
+<td style="text-align:right;background-color: #fdb462 !important;">
+0.6000000
+</td>
+</tr>
+</tbody>
+</table>
+<p>Each row is one possible team (mixture of competencies), the three columns (<code>p1</code>,<code>p2</code> and <code>p3</code>) are the voting probabilities of each team member and we have coloured and ordered the rows (teams) by their unscaled diversity. Finally, we show the arithmetic mean of the team competencies.</p>
+<p>The above table establishes all possible team compositions; now, for each row (team) we have to simulate all possible voting profiles and compute the probability of a correct, majority team decision with that team’s competencies.</p>
+<p>For a concrete example, let’s take the first red-coloured row, where we find the vector of competencies is <span class="math inline">\(\mathbf{p} = (0.5, 0.5, 0.7)\)</span> and the diversity is <span class="math inline">\(0.4\)</span>. We now need to compute the probability of this specific team producing a correct majority decision (details are given in the <a href="#appendix-b">Appendix</a>).</p>
+<p>The possible ways each team member can vote in a team of size <span class="math inline">\(N=3\)</span> is:</p>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-8">Table 3.2: </span>Combinations of Voting Profiles/Patterns
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+v1
+</th>
+<th style="text-align:right;">
+v2
+</th>
+<th style="text-align:right;">
+v3
+</th>
+<th style="text-align:right;">
+Pr.v
+</th>
+<th style="text-align:right;">
+One.Votes
+</th>
+<th style="text-align:left;">
+Majority
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.075
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+No
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.075
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+No
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.075
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+No
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.075
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.175
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+No
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.175
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.175
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.175
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+</tr>
+</tbody>
+</table>
+<p>Here, the columns <code>v1</code>, <code>v2</code> and <code>v3</code> show how each team member votes (0 or 1). Each row is one possible pattern or profile of votes and for each row, the column <code>Majority</code> shows whether this profile represents a majority voting profile and the column <code>Pr.v</code> is the probability of that profile occurring (given that each team member votes independently of the others).</p>
+<p>The probability of a majority correct decision is then the sum of the <code>Pr.v</code> column for each row where the voting profile is a majority (i.e. at least two of the three team members vote 1). We can then state that for a team size of <span class="math inline">\(N=3\)</span>, where the team’s competence is described by <span class="math inline">\(\mathbf{p} = (0.5, 0.5, 0.7)\)</span>, the probability of a majority correct vote from the team is the sum of <code>Pr.v</code> for rows 4,6,7 and 8 (those where the <code>Majority</code> column is labelled <code>Yes</code>) as follows:</p>
+<p><span class="math display">\[
+0.075 + 0.175 + 0.175 + 0.175 = 0.6
+\]</span></p>
+<p>Looking back at Table 3.1, we can see that the probability of a majority vote is larger than the worst performing team members (probability of a correct decision being 0.5), higher than the mean team competence (0.567) but lower that the highest performing team member (0.7). For this team composition, the team’s diversity means we have overall worse performance than it’s highest performing individual (i.e. we should leave decision making to the most competent member).</p>
+<p>We want to explore how team diversity (the different competencies) impacts on the team’s overall majority decision making, so we have to produce another Table 3.2 for every possible team competence row in Table 3.1. Then, we repeat the whole process for different sized teams.</p>
+<p>RESTART HERE</p>
 </div>
-<div id="appendix-details" class="section level1">
-<h1>Appendix &amp; Details</h1>
-<div id="counting-voting-profiles" class="section level2">
-<h2>Counting Voting Profiles</h2>
-<p>Designate a jury or MDT (e.g. a group of experts) of <span class="math inline">\(N\)</span> people (jurors, team mebers), each delivering a vote <span class="math inline">\(v_{i= \{1 \ldots N\}} \in \{0,1\}\)</span> (e.g. innocent/guilty, no/yes to a decision).</p>
+</div>
+<div id="team-diversity-and-tolerance-for-poorer-performers" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Team Diversity and Tolerance for Poorer Performers</h1>
+<p>Let’s now explore how composition of the team can impact performance for a given size of team.</p>
+<p><img src="/post/wisdom-of-crowds/index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<hr />
+</div>
+<div id="for-another-time" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> For Another Time …</h1>
+<p>Here, we’ve looked at team composition (diversity of competence), size and asymptotic results (rather than the behaviours of individual teams). Throughout, we’ve assumed majority voting rules which is only one way of combining, fusing or synthesizing the outputs of individual team members. We could – instead of majority voting decisions – consider using non-discrete, continuous ways of combining the evidence for a decision among multiple team members but this requires a more granular simulation and model of individuals and team behaviour.</p>
+<hr />
+</div>
+<div id="appendix-details" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> Appendix &amp; Details</h1>
+<div id="appendix-a" class="section level2" number="6.1">
+<h2><span class="header-section-number">6.1</span> Counting Voting Profiles</h2>
+<p>Designate a jury or MDT (e.g. a group of experts) of <span class="math inline">\(N\)</span> people (jurors, team members), each delivering a vote <span class="math inline">\(v_{i= \{1 \ldots N\}} \in \{0,1\}\)</span> (e.g. innocent/guilty, no/yes to a decision).</p>
 <p>Let <span class="math inline">\(\mathbf{V}^N\)</span> be the set of all possible voting profiles for <span class="math inline">\(N\)</span> jurors with size <span class="math inline">\(| \mathbf{V} | = 2^{N}\)</span></p>
 <p>For example, with <span class="math inline">\(N = 3\)</span> jurors, we have the following <span class="math inline">\(2^3 = 8\)</span> possible <strong>voting profiles</strong> as follows:</p>
 <table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
@@ -936,8 +1505,8 @@ C(3,2) + C(3,3) \\
 <li>and <span class="math inline">\(C(5,3) + C(5,4) + C(5,5) = 16\)</span> majority voting profiles</li>
 </ul>
 </div>
-<div id="probability-of-a-voting-profile" class="section level2">
-<h2>Probability of a Voting Profile</h2>
+<div id="appendix-b" class="section level2" number="6.2">
+<h2><span class="header-section-number">6.2</span> Probability of a Voting Profile</h2>
 <p>Each voter <span class="math inline">\(v_i\)</span> is assumed independent (i.e. votes without influence from other members) and a realisation of a Bernoulli trial where the probability of voting “one” (“yes”, “guilty” etc) is <span class="math inline">\(\Pr(v_i = 1) = p_i\)</span> and conversely <span class="math inline">\(\Pr(v_i = 0) = (1-p_i)\)</span></p>
 <p>Consequently, the probability of a given voting profile <span class="math inline">\(\mathbf{v}_j\)</span> – a single row in the table of all possible voting profiles – is given by:</p>
 <p><span class="math display">\[
@@ -1139,8 +1708,8 @@ Yes
 </tbody>
 </table>
 </div>
-<div id="probability-of-a-majority" class="section level2">
-<h2>Probability of a Majority</h2>
+<div id="appendix-c" class="section level2" number="6.3">
+<h2><span class="header-section-number">6.3</span> Probability of a Majority</h2>
 <p>In the literature on jury theorems, the probability of an individual voting “yes” (guilty, etc.) is called the <strong>competence</strong> of the juror – so clearly, a voter with <span class="math inline">\(p_i = 0.5\)</span> is no better than chance.</p>
 <p>From the set of voting profiles <span class="math inline">\(\mathbf{V}^N\)</span> define a subset <span class="math inline">\(\mathbf{V}_M\)</span> of those profiles that are majorities, that is, where the number of “ones” in the voting profile is greater than or equal to <span class="math inline">\(M\)</span>:
 <span class="math display">\[
@@ -1150,93 +1719,37 @@ Then the probability of a <strong>majority vote</strong> being correct <span cla
 <span class="math display">\[
   \Pr(\mathbf{V}_M)=\sum_{\mathbf{v}_j \in \mathbf{V}_M}^{} \Pr(\mathbf{v_{j}})
 \]</span>
-In our simple <span class="math inline">\(N=3\)</span> example above, <span class="math inline">\(\mathbf{V}_M = \{\mathbf{v}_4, \mathbf{v}_6, \mathbf{v}_7, \mathbf{v}_8\}\)</span> and the resulting probability of a majority is <span class="math inline">\(\Pr(M) = 0.128 + 0.128 + 0.128 + 0.512 = 0.896\)</span>.</p>
-<p>Notice that <span class="math inline">\(\Pr(\mathbf{V}_M) &gt; p\)</span>, showing that the probability of obtaining a majority vote is higher than the probability of an individual juror/voter.</p>
+In our simple <span class="math inline">\(N=3\)</span> example above, <span class="math inline">\(\mathbf{V}_M = \{\mathbf{v}_4, \mathbf{v}_6, \mathbf{v}_7, \mathbf{v}_8\}\)</span> and the resulting probability of a majority is <span class="math inline">\(\Pr(\mathbf{V}_M) = 0.128 + 0.128 + 0.128 + 0.512 = 0.896\)</span>. Notice that for the example of <span class="math inline">\(N=3\)</span> and <span class="math inline">\(p_i = p = 0.8\)</span>, <span class="math inline">\(\Pr(\mathbf{V}_M) &gt; p\)</span>, showing that the probability of obtaining a majority vote is higher than the probability of any individual juror/voter.</p>
 </div>
-<div id="simulating-diversity-in-competence" class="section level2">
-<h2>Simulating Diversity in Competence</h2>
-<p>In the first simulation, we assumed that each voter has the same probability of being correct (i.e. uniform competencies or put another way, no diversity in the team). Let’s expand on this – we can simulate diversity (varying competencies) by drawing the each voting probability <span class="math inline">\(p_i\)</span> from a Beta distribution.</p>
-<p>We can <a href="https://en.wikipedia.org/wiki/Beta_distribution">parameterise</a> the Beta distribution by a mode <span class="math inline">\(\omega\)</span> and concentration <span class="math inline">\(\kappa &gt; 2\)</span> (roughly, the dispersion of the distribution around the mode) as <span class="citation">(<a href="#ref-kruschke2014doing" role="doc-biblioref">Kruschke 2014</a>)</span>:
+<div id="appendix-d" class="section level2" number="6.4">
+<h2><span class="header-section-number">6.4</span> Mixed Competence Teams as Multisets</h2>
+<p>We want to simulate a team of size <span class="math inline">\(N \in \{3,5,7,9,11 \}\)</span> with all possible combinations of a finite set of voting probabilities (competencies) <span class="math inline">\(\Pi = \{ 0.5,0.6,0.7,0.8 \}\)</span>. For example, for <span class="math inline">\(N = 3\)</span>, here are four (of many) possible team compositions in terms of competencies:</p>
+<p><span class="math display">\[\begin{align}
+  \mathbf{p}_A &amp;= \{ 0.5, 0.5, 0.6\} \\
+  \mathbf{p}_B &amp;= \{ 0.5, 0.6, 0.5\} \\
+  \mathbf{p}_C &amp;= \{ 0.8, 0.6, 0.5\} \\
+  \mathbf{p}_D &amp;= \{ 0.6, 0.6, 0.8\}
+\end{align}\]</span></p>
+<p>To be explicit, for <span class="math inline">\(\mathbf{p}_A\)</span> the first and second team member will vote correctly with probability <span class="math inline">\(0.5\)</span> (chance level), and the third member will be correct with probability <span class="math inline">\(0.6\)</span>.</p>
+<p>For <span class="math inline">\(\mathbf{p}_A\)</span>, we note the following quantities:</p>
+<ul>
+<li>the <strong>minimum competence</strong> is <span class="math inline">\(0.5\)</span> – that is, the lowest probability of voting correctly amongst the team</li>
+<li>the <strong>maximum competence</strong> is <span class="math inline">\(0.6\)</span> – the highest probability of voting correctly in the team</li>
+<li>the <strong>mean competence</strong> is approximately <span class="math inline">\(0.53\)</span> – the arithmetic mean of the team’s probability of voting correctly</li>
+</ul>
+<p>For <span class="math inline">\(\mathbf{p}_C\)</span>, the minimum, maximum and mean competence is <span class="math inline">\(0.5\)</span>, <span class="math inline">\(0.8\)</span> and <span class="math inline">\(0.63\)</span> respectively. And for <span class="math inline">\(\mathbf{p}_D\)</span>, we have minimum, maximum and mean competence of <span class="math inline">\(0.6\)</span>, <span class="math inline">\(0.8\)</span> and <span class="math inline">\(0.67\)</span>.</p>
+<p>Notice that <span class="math inline">\(\mathbf{p}_B\)</span> is a re-ordering of <span class="math inline">\(\mathbf{p}_A\)</span>, so the minimum, maximum and mean competence will be the same for both team compositions. So we don’t want to “test” the performance of both <span class="math inline">\(\mathbf{p}_A\)</span> and <span class="math inline">\(\mathbf{p}_B\)</span> because the result will be the same.</p>
+<p>This means, we want to generate all <strong>unique</strong> combinations (formally, the <a href="https://en.wikipedia.org/wiki/Multiset">multisets</a>) of <span class="math inline">\(\Pi\)</span> for any team size <span class="math inline">\(N\)</span>.</p>
+<p>Denote the number of different competencies as <span class="math inline">\(\pi = | \Pi |\)</span>. Then, we need to “test” the following number of possible team compositions:</p>
+<p><span class="math display">\[
+  \frac{(\pi+N-1)!}{N!(\pi-1)!}
+\]</span>
+As an example, for <span class="math inline">\(N=3\)</span> and <span class="math inline">\(\Pi = \{ 0.5,0.6,0.7,0.8 \}\)</span> where <span class="math inline">\(\pi = 4\)</span> we will need to “test” the performance of <span class="math inline">\(20\)</span> unique team compositions because:
 <span class="math display">\[
-\alpha = \omega( \kappa - 2) + 1 \\
-\beta  = (1-\omega)(\kappa-2) + 1
-\]</span></p>
-<p>We set the modal probability of a correct vote to be <span class="math inline">\(\omega = 0.7\)</span> and then vary the concentration <span class="math inline">\(\kappa\)</span> arriving at:</p>
-<pre class="r"><code>mode.list &lt;- c(0.7)
-conc.list &lt;- c(80, 40, 20, 10, 5)
-
-params &lt;- expand.grid( mode = mode.list, conc = conc.list )
-
-# compute parameters for Beta(a,b)
-for( i in 1:nrow(params) ) {
-  # generate parameters of the beta distribution corresponding to mode and conc
-  this.params &lt;- computeBetaParams( mode = params$mode[i], conc = params$conc[i] ) 
-  params$alpha[i] &lt;- this.params$alpha
-  params$beta[i] &lt;- this.params$beta
-  # compute the 90% HDI for this beta distribution
-  hdi.int &lt;- computeBetaHDI( params$alpha[i], params$beta[i], delta = 0.01, mass = 0.9 ) 
-  params$HDI.lower[i] &lt;- hdi.int$min
-  params$HDI.upper[i] &lt;- hdi.int$max
-  params$HDI.int[i] &lt;- hdi.int$max - hdi.int$min
-}
-
-cols &lt;- rev( c(&quot;#f2f0f7&quot;,&quot;#dadaeb&quot;,&quot;#bcbddc&quot;,&quot;#9e9ac8&quot;,&quot;#807dba&quot;,&quot;#6a51a3&quot;,&quot;#4a1486&quot;) )
-
-x &lt;- seq(0,1,by = 0.01)
-plot( x, dbeta( x, params$alpha[1], params$beta[1] ), type = &quot;l&quot;, col = cols[1], lwd = 2, lty = &quot;solid&quot;, ylab = &quot;Density&quot;, xlab = &quot;x&quot; )
-for( i in 2:nrow(params) ) {
-  lines( x, dbeta( x, params$alpha[i], params$beta[i] ), type = &quot;l&quot;, col = cols[i], lwd = 2, lty = &quot;solid&quot; )
-}
-legend(0.05, 6.5, legend=c(&quot;80&quot;, &quot;40&quot;, &quot;20&quot;, &quot;10&quot;, &quot;5&quot;),
-       col=cols, lty=1, cex=0.8, title = &quot;Kappa&quot;)</code></pre>
-<p><img src="/post/wisdom-of-crowds/index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
-<p>Notice that for higher values of <span class="math inline">\(\kappa\)</span>, the Beta distribution is narrow around the mode, lower values give wider dispersions. If we draw each voter’s <span class="math inline">\(p_i\)</span> from a Beta with <span class="math inline">\((\omega = 0.7, \kappa = 80)\)</span> we will find that 90% of these will be between <span class="math inline">\([0.62,0.78]\)</span> (that is, the 90% highest density interval). In contrast, sampling each <span class="math inline">\(p_i\)</span> from a Beta with parameters <span class="math inline">\((\omega = 0.7, \kappa = 5)\)</span>, 90% of these will be between <span class="math inline">\([0.31,0.94]\)</span>.</p>
-<p>Roughly, the highest density interval is wider for lower concentrations (<span class="math inline">\(\kappa\)</span>) and therefore, on average, the diversity (i.e. the range of competencies) will be greater.</p>
-<p>Let’s simulate one team of <span class="math inline">\(N = 5\)</span> voters, sampling each <span class="math inline">\(p_i\)</span> independently from <span class="math inline">\(\textrm{Beta}(\omega = 0.7, \kappa = 5)\)</span></p>
-<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:right;">
-p1
-</th>
-<th style="text-align:right;">
-p2
-</th>
-<th style="text-align:right;">
-p3
-</th>
-<th style="text-align:right;">
-p4
-</th>
-<th style="text-align:right;">
-p5
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-0.877
-</td>
-<td style="text-align:right;">
-0.425
-</td>
-<td style="text-align:right;">
-0.802
-</td>
-<td style="text-align:right;">
-0.778
-</td>
-<td style="text-align:right;">
-0.588
-</td>
-</tr>
-</tbody>
-</table>
-<p>In this example, the worst performing team member (two) has competence <span class="math inline">\(p_2 = 0.425\)</span> – worse than chance – and the best performing is <span class="math inline">\(p_1 = 0.877\)</span> which is higher than the modal probability of <span class="math inline">\(0.7\)</span></p>
-<pre><code>## Loading required package: iterators</code></pre>
-<pre><code>## Loading required package: parallel</code></pre>
-<p><img src="/post/wisdom-of-crowds/index_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+  \frac{(4+3-1)!}{3!(4-1)!} = \frac{6!}{3! \times 3!} = \frac{720}{36} = 20
+\]</span>
+And for <span class="math inline">\(N=5\)</span> we will need to “test” <span class="math inline">\(56\)</span> multisets, each one representing a unique, unordered composition of a team of size <span class="math inline">\(N\)</span> drawn from <span class="math inline">\(\Pi\)</span>.</p>
+<p>Finally, note that we already know the behaviour of teams of size <span class="math inline">\(N\)</span> with uniform competence – for example, for <span class="math inline">\(N=3\)</span>, teams with compositions <span class="math inline">\(\{ 0.5, 0.5, 0.5\}\)</span>, <span class="math inline">\(\{ 0.6, 0.6, 0.6\}\)</span>, <span class="math inline">\(\{ 0.7, 0.7, 0.7\}\)</span> and <span class="math inline">\(\{ 0.8, 0.8, 0.8\}\)</span> are uninteresting so will we remove them. Generally, there are <span class="math inline">\(\pi\)</span> uniform team compositions to ignore when we run simulations.</p>
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">
@@ -1247,9 +1760,6 @@ Dietrich, Franz, and Kai Spiekermann. 2019. <span>“Jury Theorems.”</span> In
 </div>
 <div id="ref-kaniovski2011optimal" class="csl-entry">
 Kaniovski, Serguei, and Alexander Zaigraev. 2011. <span>“Optimal Jury Design for Homogeneous Juries with Correlated Votes.”</span> <em>Theory and Decision</em> 71 (4): 439–59.
-</div>
-<div id="ref-kruschke2014doing" class="csl-entry">
-Kruschke, John. 2014. <em>Doing Bayesian Data Analysis: A Tutorial with r, JAGS, and Stan</em>. Academic Press.
 </div>
 <div id="ref-kuncheva2003measures" class="csl-entry">
 Kuncheva, Ludmila I, and Christopher J Whitaker. 2003. <span>“Measures of Diversity in Classifier Ensembles and Their Relationship with the Ensemble Accuracy.”</span> <em>Machine Learning</em> 51 (2): 181–207.
@@ -1395,7 +1905,7 @@ Young, H Peyton. 1988. <span>“Condorcet’s Theory of Voting.”</span> <em>Am
     <div class="media-body">
       <h5 class="card-title">Dan W Joyce</h5>
       
-      <p class="card-text">I’m interested in how principles from computation can be used to understand clinical state and trajectories and how to augment clinical decision making using data, multivariate statistics and (cautiously) AI and ML.</p>
+      <p class="card-text">I’m interested in how principles from computation can be used to understand things like clinical state, trajectories and how to augment clinical decision making using data, multivariate statistics and (cautiously) AI and ML.</p>
       <ul class="network-icon" aria-hidden="true">
   
     

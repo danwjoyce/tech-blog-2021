@@ -29,7 +29,8 @@
 &lt;li&gt;&lt;a href=&#34;#law-of-total-probability&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.2&lt;/span&gt; Law of Total Probability&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#conditional-independence&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.3&lt;/span&gt; Conditional Independence&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#bayes-theorem&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.4&lt;/span&gt; Bayes Theorem&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#deriving-the-ppd&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.5&lt;/span&gt; Deriving the PPD&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#bayes-with-extra-conditioning&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.5&lt;/span&gt; Bayes with Extra Conditioning&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#deriving-the-ppd&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.6&lt;/span&gt; Deriving the PPD&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#sampling-and-integration&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3&lt;/span&gt; Sampling and Integration&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#logits-probabilities-and-odds&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4&lt;/span&gt; Logits, Probabilities and Odds&lt;/a&gt;
@@ -77,7 +78,7 @@ p(a,b | c) = \frac{p(a,b,c)}{p(c)} \tag{2.4}
 &lt;span class=&#34;math display&#34;&gt;\[\begin{equation}
 p(a,b,c) =  p(a,b | c) p(c)
 \end{equation}\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Applying the &lt;a href=&#34;https://en.wikipedia.org/wiki/Chain_rule_(probability)&#34;&gt;chain rule of probability&lt;/a&gt;, &lt;span class=&#34;math inline&#34;&gt;\(p(a,b,c)\)&lt;/span&gt; can also be factorised as &lt;em&gt;any&lt;/em&gt; of the following:
+&lt;p&gt;Note that &lt;span class=&#34;math inline&#34;&gt;\(p(a,b,c)\)&lt;/span&gt; can also be factorised as &lt;em&gt;any&lt;/em&gt; of the following (depending on what we want to achieve):
 &lt;span class=&#34;math display&#34; id=&#34;eq:factors3&#34; id=&#34;eq:factors2&#34; id=&#34;eq:factors1&#34;&gt;\[\begin{align}
   p(a,b,c) &amp;amp;= p(b,c|a) p(a) \tag{2.5} \\
           &amp;amp;= p(a,c|b) p(b) \tag{2.6} \\
@@ -117,8 +118,78 @@ p \left( a|c \right) &amp;amp;= \int p \left( a,b | c \right) db \\
 p(a|b) = \frac{p(b|a)p(a)}{p(b)} \tag{2.11}
 \end{equation}\]&lt;/span&gt;&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;deriving-the-ppd&#34; class=&#34;section level2&#34; number=&#34;2.5&#34;&gt;
-&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.5&lt;/span&gt; Deriving the PPD&lt;/h2&gt;
+&lt;div id=&#34;bayes-with-extra-conditioning&#34; class=&#34;section level2&#34; number=&#34;2.5&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.5&lt;/span&gt; Bayes with Extra Conditioning&lt;/h2&gt;
+&lt;p&gt;I frequently have to remind myself how to rewrite this form: &lt;span class=&#34;math inline&#34;&gt;\(p(a | b, c)\)&lt;/span&gt; – this is covered in &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-blitzstein2014introduction&#34; role=&#34;doc-biblioref&#34;&gt;Blitzstein and Hwang 2019&lt;/a&gt;)&lt;/span&gt; Theorem 2.4.2 on pp. 54-56.&lt;/p&gt;
+&lt;p&gt;There are a few useful ways to re-write.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Using Conditional Probability&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Assume it makes sense (in the problem we’re trying to solve) to view &lt;span class=&#34;math inline&#34;&gt;\(b\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(c\)&lt;/span&gt; as “one thing together” then using the formula for conditional probability we get:
+&lt;span class=&#34;math display&#34; id=&#34;eq:bayesrewritecond&#34;&gt;\[\begin{equation}
+  p( a | b, c ) = \frac{p(a,b,c)}{p(b,c)}  \tag{2.12}
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Applying conditional probability again – equation &lt;a href=&#34;#eq:condprob3&#34;&gt;(2.4)&lt;/a&gt; and the different factorisations in &lt;a href=&#34;#eq:factors1&#34;&gt;(2.5)&lt;/a&gt; through &lt;a href=&#34;#eq:factors3&#34;&gt;(2.7)&lt;/a&gt; – to rewrite &lt;span class=&#34;math inline&#34;&gt;\(p(a,b,c)\)&lt;/span&gt;:
+&lt;span class=&#34;math display&#34;&gt;\[\begin{align}
+  p(a,b,c) &amp;amp;= p(b,c|a) p(a)  \\
+          &amp;amp;= p(a,c|b) p(b)  \\
+          &amp;amp;= p(a,b|c) p(c)
+\end{align}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Choosing the RHS as suited to the problem - here, we take &lt;span class=&#34;math inline&#34;&gt;\(p(b,c|a) p(a)\)&lt;/span&gt; as we are treating &lt;span class=&#34;math inline&#34;&gt;\(b\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(c\)&lt;/span&gt; as “one event” (we want to keep them together) and substitute in &lt;a href=&#34;#eq:bayesrewritecond&#34;&gt;(2.12)&lt;/a&gt;:
+&lt;span class=&#34;math display&#34; id=&#34;eq:bayesrewritecond2&#34;&gt;\[\begin{equation}
+  p( a | b, c ) = \frac{ p(b,c|a) p(a) }{ p( b,c ) } \tag{2.13}
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Now, we have to find an expression for the denominator &lt;span class=&#34;math inline&#34;&gt;\(p( b,c )\)&lt;/span&gt; and we have options including another application of conditional probability so &lt;span class=&#34;math inline&#34;&gt;\(p( b, c ) = p(b|c) p(c)\)&lt;/span&gt; resulting in:
+&lt;span class=&#34;math display&#34; id=&#34;eq:bayesrewritecond2&#34;&gt;\[\begin{equation}
+  p( a | b, c ) = \frac{ p(b,c|a) p(a) }{ p(b|c) p(c) } \tag{2.13}
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Using the Chain Rule of Probability&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Start, as before, with:
+&lt;span class=&#34;math display&#34; id=&#34;eq:bayesrewritecond3&#34;&gt;\[\begin{equation}
+  p( a | b, c ) = \frac{p(a,b,c)}{p(b,c)} \tag{2.14}
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;This time, decompose &lt;span class=&#34;math inline&#34;&gt;\(p(a,b,c)\)&lt;/span&gt; differently, using the chain rule:
+&lt;span class=&#34;math display&#34;&gt;\[\begin{align}
+  p(a,b,c) &amp;amp;= p(a|b,c)p(b,c)  \\
+           &amp;amp;= p(b|a,c)p(a,c)  \\
+           &amp;amp;= p(c|a,b)p(a,b)
+\end{align}\]&lt;/span&gt;
+Obviously, the first re-write gets us nowhere – it merely restates &lt;span class=&#34;math inline&#34;&gt;\(p(a|b,c)\)&lt;/span&gt;. Lets say the second factorisation is helpful for our problem &lt;span class=&#34;math inline&#34;&gt;\(p(b|a,c)p(a,c)\)&lt;/span&gt;, then we substitute in &lt;a href=&#34;#eq:bayesrewritecond3&#34;&gt;(2.14)&lt;/a&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;math display&#34; id=&#34;eq:bayesrewritecond4&#34;&gt;\[\begin{equation}
+  p( a | b, c ) = \frac{p(b|a,c)p(a,c)}{p(b,c)} \tag{2.15}
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;We now have to deal with &lt;span class=&#34;math inline&#34;&gt;\(p(a,c)\)&lt;/span&gt; in the numerator and &lt;span class=&#34;math inline&#34;&gt;\(p(b,c)\)&lt;/span&gt; in the denominator. Starting with the numerator, apply conditional probability again:
+&lt;span class=&#34;math display&#34;&gt;\[\begin{equation}
+  p( a, c ) = p(a|c)p(c)
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;For the denominator:
+&lt;span class=&#34;math display&#34;&gt;\[\begin{equation}
+  p( b, c ) = p(b|c)p(c)
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;What we end up with is Bayes theorem with extra conditioning on &lt;span class=&#34;math inline&#34;&gt;\(c\)&lt;/span&gt; …&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Bayes Theorem with Extra Conditioning on &lt;span class=&#34;math inline&#34;&gt;\(c\)&lt;/span&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Substitute both into &lt;a href=&#34;#eq:bayesrewritecond4&#34;&gt;(2.15)&lt;/a&gt;:
+&lt;span class=&#34;math display&#34;&gt;\[\begin{align}
+  p( a | b, c ) &amp;amp;= \frac{p(b|a,c) p(a|c)p(c)} {p(b|c)p(c)} \\
+                &amp;amp;= \frac{p(b|a,c) p(a|c)} {p(b|c)}
+\end{align}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Bayes Theorem with Extra Conditioning on &lt;span class=&#34;math inline&#34;&gt;\(b\)&lt;/span&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Had we chosen, instead, to use &lt;span class=&#34;math inline&#34;&gt;\(p(c|a,b)p(a,b)\)&lt;/span&gt;, we end up with:
+&lt;span class=&#34;math display&#34;&gt;\[\begin{align}
+  p( a | b, c ) &amp;amp;= \frac{p(a,b,c)}{p(b,c)} \\
+                &amp;amp;= \frac{p(c|a,b)p(a,b)}{p(b,c)}
+\end{align}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;with &lt;span class=&#34;math inline&#34;&gt;\(p(a,b) = p(a|b)p(b)\)&lt;/span&gt;:
+&lt;span class=&#34;math display&#34;&gt;\[\begin{equation}
+  p( a | b, c ) = \frac{p(c|a,b)p(a|b)p(b)}{p(b,c)}
+\end{equation}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Of course, &lt;span class=&#34;math inline&#34;&gt;\(p(b,c) = p(c,b) = p(c|b)p(b)\)&lt;/span&gt; in the denominator:
+&lt;span class=&#34;math display&#34;&gt;\[\begin{align}
+  p( a | b, c ) &amp;amp;= \frac{p(c|a,b)p(a|b)p(b)}{p(c|b)p(b)} \\
+                &amp;amp;= \frac{p(c|a,b)p(a|b)}{p(c|b)}
+\end{align}\]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;We chose between conditioning on &lt;span class=&#34;math inline&#34;&gt;\(c\)&lt;/span&gt; or &lt;span class=&#34;math inline&#34;&gt;\(b\)&lt;/span&gt; depending on the problem we are trying to solve (i.e. does it make sense to consider everything being conditioned on &lt;span class=&#34;math inline&#34;&gt;\(c\)&lt;/span&gt; or &lt;span class=&#34;math inline&#34;&gt;\(b\)&lt;/span&gt; ?)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;deriving-the-ppd&#34; class=&#34;section level2&#34; number=&#34;2.6&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.6&lt;/span&gt; Deriving the PPD&lt;/h2&gt;
 &lt;p&gt;Starting with the fundamental Bayesian modelling framework:&lt;/p&gt;
 &lt;ol style=&#34;list-style-type: decimal&#34;&gt;
 &lt;li&gt;before observing the data, &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt;, the &lt;em&gt;prior distribution&lt;/em&gt; of the parameters is &lt;span class=&#34;math inline&#34;&gt;\(p(\theta)\)&lt;/span&gt;&lt;/li&gt;
@@ -134,41 +205,41 @@ p(a|b) = \frac{p(b|a)p(a)}{p(b)} \tag{2.11}
 &lt;p&gt;We want to obtain a distribution for future values &lt;span class=&#34;math inline&#34;&gt;\(\tilde{y}\)&lt;/span&gt; given the observed (and modelled) data &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt; which is &lt;span class=&#34;math inline&#34;&gt;\(p(\tilde{y}|y)\)&lt;/span&gt; using what we know about the posterior distribution arising from parameter estimation &lt;span class=&#34;math inline&#34;&gt;\(p(\theta | y)\)&lt;/span&gt;.&lt;/p&gt;
 &lt;p&gt;The first step is to write &lt;span class=&#34;math inline&#34;&gt;\(p(\tilde{y}|y)\)&lt;/span&gt; using the law of total probability (with conditioning): equation &lt;a href=&#34;#eq:lotp-cond&#34;&gt;(2.9)&lt;/a&gt;:
 &lt;span class=&#34;math display&#34; id=&#34;eq:step1&#34;&gt;\[\begin{equation}
-    p( \tilde{y} | y ) = \int p\left(\tilde{y},\theta | y \right) d\theta \tag{2.12}
+    p( \tilde{y} | y ) = \int p\left(\tilde{y},\theta | y \right) d\theta \tag{2.16}
 \end{equation}\]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Step 2&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Re-write the integrand &lt;span class=&#34;math inline&#34;&gt;\(p\left(\tilde{y},\theta | y \right)\)&lt;/span&gt; using equation &lt;a href=&#34;#eq:condprob3&#34;&gt;(2.4)&lt;/a&gt;:&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34; id=&#34;eq:step2&#34;&gt;\[\begin{equation}
-    p( \tilde{y} | y ) = \int \frac{p(\tilde{y},\theta,y)}{p(y)} d\theta \tag{2.13}
+    p( \tilde{y} | y ) = \int \frac{p(\tilde{y},\theta,y)}{p(y)} d\theta \tag{2.17}
 \end{equation}\]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Step 3&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;We assert that &lt;span class=&#34;math inline&#34;&gt;\(\tilde{y}\)&lt;/span&gt; is conditionally independent of &lt;span class=&#34;math inline&#34;&gt;\(y\)&lt;/span&gt; &lt;em&gt;given&lt;/em&gt; the model parameters &lt;span class=&#34;math inline&#34;&gt;\(\theta\)&lt;/span&gt;:
 &lt;span class=&#34;math display&#34; id=&#34;eq:condind-ppd&#34;&gt;\[\begin{equation}
-  ( \tilde{y} \perp\!\!\!\perp y ) | \theta \iff p( \tilde{y}, y | \theta) = p( \tilde{y} | \theta ) p( y | \theta) \tag{2.14}
+  ( \tilde{y} \perp\!\!\!\perp y ) | \theta \iff p( \tilde{y}, y | \theta) = p( \tilde{y} | \theta ) p( y | \theta) \tag{2.18}
 \end{equation}\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;To make use of the conditional independence &lt;span class=&#34;math inline&#34;&gt;\(p( \tilde{y}, y | \theta)\)&lt;/span&gt;, we have to factorise &lt;span class=&#34;math inline&#34;&gt;\(p(\tilde{y},\theta,y)\)&lt;/span&gt; in equation &lt;a href=&#34;#eq:step2&#34;&gt;(2.13)&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;To make use of the conditional independence &lt;span class=&#34;math inline&#34;&gt;\(p( \tilde{y}, y | \theta)\)&lt;/span&gt;, we have to factorise &lt;span class=&#34;math inline&#34;&gt;\(p(\tilde{y},\theta,y)\)&lt;/span&gt; in equation &lt;a href=&#34;#eq:step2&#34;&gt;(2.17)&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Let &lt;span class=&#34;math inline&#34;&gt;\(a = \tilde{y}\)&lt;/span&gt;, &lt;span class=&#34;math inline&#34;&gt;\(b = \theta\)&lt;/span&gt; and &lt;span class=&#34;math inline&#34;&gt;\(c = y\)&lt;/span&gt;; we are seeking a factorisation of &lt;span class=&#34;math inline&#34;&gt;\(p(a,b,c)\)&lt;/span&gt; as &lt;span class=&#34;math inline&#34;&gt;\(p(a,c|b)\)&lt;/span&gt; and inspecting the factorisations &lt;a href=&#34;#eq:factors1&#34;&gt;(2.5)&lt;/a&gt; through &lt;a href=&#34;#eq:factors3&#34;&gt;(2.7)&lt;/a&gt; we find that &lt;a href=&#34;#eq:factors2&#34;&gt;(2.6)&lt;/a&gt; matches:&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34; id=&#34;eq:factor-cond-ind&#34;&gt;\[\begin{align}
   p(a,b,c) &amp;amp;= p(a,c|b) p(b) \\
-  p( \tilde{y}, \theta, y) &amp;amp;= p( \tilde{y}, y | \theta) p(\theta) \tag{2.15}
+  p( \tilde{y}, \theta, y) &amp;amp;= p( \tilde{y}, y | \theta) p(\theta) \tag{2.19}
 \end{align}\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Substitution &lt;a href=&#34;#eq:factor-cond-ind&#34;&gt;(2.15)&lt;/a&gt; into &lt;a href=&#34;#eq:step2&#34;&gt;(2.13)&lt;/a&gt; we have:&lt;/p&gt;
+&lt;p&gt;Substitution &lt;a href=&#34;#eq:factor-cond-ind&#34;&gt;(2.19)&lt;/a&gt; into &lt;a href=&#34;#eq:step2&#34;&gt;(2.17)&lt;/a&gt; we have:&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34; id=&#34;eq:step3a&#34;&gt;\[\begin{equation}
-p(\tilde{y} | y ) = \int \frac{p(\tilde{y},y | \theta) p(\theta)}{p(y)} d \theta \tag{2.16}
+p(\tilde{y} | y ) = \int \frac{p(\tilde{y},y | \theta) p(\theta)}{p(y)} d \theta \tag{2.20}
 \end{equation}\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;We make use of the equality from equation &lt;a href=&#34;#eq:condind-ppd&#34;&gt;(2.14)&lt;/a&gt; i.e. that &lt;span class=&#34;math inline&#34;&gt;\(p( \tilde{y}, y | \theta) = p( \tilde{y} | \theta ) p( y | \theta)\)&lt;/span&gt; and substitute into &lt;a href=&#34;#eq:step3a&#34;&gt;(2.16)&lt;/a&gt;:&lt;/p&gt;
+&lt;p&gt;We make use of the equality from equation &lt;a href=&#34;#eq:condind-ppd&#34;&gt;(2.18)&lt;/a&gt; i.e. that &lt;span class=&#34;math inline&#34;&gt;\(p( \tilde{y}, y | \theta) = p( \tilde{y} | \theta ) p( y | \theta)\)&lt;/span&gt; and substitute into &lt;a href=&#34;#eq:step3a&#34;&gt;(2.20)&lt;/a&gt;:&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34; id=&#34;eq:step3b&#34;&gt;\[\begin{equation}
-p(\tilde{y} | y ) = \int \frac{ p( \tilde{y} | \theta ) p( y | \theta)  p(\theta)}{p(y)} d \theta \tag{2.17}
+p(\tilde{y} | y ) = \int \frac{ p( \tilde{y} | \theta ) p( y | \theta)  p(\theta)}{p(y)} d \theta \tag{2.21}
 \end{equation}\]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Step 4&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Recall that we want to make use of the ‘output’ of parameter estimation, the posterior distribution of the model parameters given the observed data &lt;span class=&#34;math inline&#34;&gt;\(p(\theta|y)\)&lt;/span&gt;, and in equation &lt;a href=&#34;#eq:step3b&#34;&gt;(2.17)&lt;/a&gt; we see the term &lt;span class=&#34;math inline&#34;&gt;\(p(y|\theta)\)&lt;/span&gt;. All we need to do is re-write &lt;span class=&#34;math inline&#34;&gt;\(p(y|\theta)\)&lt;/span&gt; using Bayes rule, equation &lt;a href=&#34;#eq:bayes&#34;&gt;(2.11)&lt;/a&gt;:&lt;/p&gt;
+&lt;p&gt;Recall that we want to make use of the ‘output’ of parameter estimation, the posterior distribution of the model parameters given the observed data &lt;span class=&#34;math inline&#34;&gt;\(p(\theta|y)\)&lt;/span&gt;, and in equation &lt;a href=&#34;#eq:step3b&#34;&gt;(2.21)&lt;/a&gt; we see the term &lt;span class=&#34;math inline&#34;&gt;\(p(y|\theta)\)&lt;/span&gt;. All we need to do is re-write &lt;span class=&#34;math inline&#34;&gt;\(p(y|\theta)\)&lt;/span&gt; using Bayes rule, equation &lt;a href=&#34;#eq:bayes&#34;&gt;(2.11)&lt;/a&gt;:&lt;/p&gt;
 &lt;p&gt;&lt;span class=&#34;math display&#34;&gt;\[\begin{equation}
 p(y|\theta) = \frac{p(\theta|y) p(y)}{p(\theta)}
 \end{equation}\]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;And substitute into equation &lt;a href=&#34;#eq:step3b&#34;&gt;(2.17)&lt;/a&gt;:
+&lt;p&gt;And substitute into equation &lt;a href=&#34;#eq:step3b&#34;&gt;(2.21)&lt;/a&gt;:
 &lt;span class=&#34;math display&#34; id=&#34;eq:step4&#34;&gt;\[\begin{align}
 p(\tilde{y} | y ) &amp;amp;= \int \frac{ p( \tilde{y} | \theta ) p(\theta|y) p(y)   p(\theta)}{p(y)p(\theta)} d \theta  \\
-                  &amp;amp;= \int p( \tilde{y} | \theta ) p(\theta|y) d \theta \tag{2.18} \\
+                  &amp;amp;= \int p( \tilde{y} | \theta ) p(\theta|y) d \theta \tag{2.22} \\
 
 \end{align}\]&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;… and there we have it, the expression for the PPD, equation &lt;a href=&#34;#eq:PPD&#34;&gt;(2.1)&lt;/a&gt;&lt;/p&gt;

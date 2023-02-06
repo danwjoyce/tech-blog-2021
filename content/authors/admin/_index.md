@@ -26,12 +26,12 @@ interests:
   - Applied Artificial Intelligence/Machine Learning
 
 organizations:
-- name: Oxford Health NHS Foundation Trust
-  url: https://www.oxfordhealth.nhs.uk/
-  role: Consultant Psychiatrist
-- name: University of Oxford, Department of Psychiatry
-  url: https://www.psych.ox.ac.uk/
-  role: Clinical Research Fellow
+# - name: Oxford Health NHS Foundation Trust
+#   url: https://www.oxfordhealth.nhs.uk/
+#   role: Consultant Psychiatrist
+- name: Department of Primary Care and Mental Health, Institute of Population Health, University of Liverpool
+  url: https://https://www.liverpool.ac.uk/population-health/
+  role: Professor of Connected Mental Health
 
 social:
 - icon: envelope
@@ -55,4 +55,4 @@ title: Dan W Joyce
 ---
 
 This site is for hosting technical content that won't work on [my home site](https://www.danwjoyce.com).  
-I split my time between clinical work as a consultant psychiatrist and a clinical research fellow at the Department of Psychiatry, where I work on computational methods for modeling clinical state, trajectories and decision support with the intention of using these tools to better understand how treatments and interventions can be targeted to, or made more effective for, individuals.  This work draws on principles from computation, applied multivariate statistics and artificial intelligence / machine learning.  While I'm generally optimistic about the potential of these approaches, I'm more cautious about the current AI/ML hype. 
+I am a consultant psychiatrist and Professor of Connected Mental Health at the Institute of Population Health, University of Liverpool, where I work on using data to better inform how treatments and interventions can be targeted to, or made more effective for, individuals.  I am particularly interested in methods for delivering "actionable data" -- for example, modeling clinical state and trajectories -- that directly informs interventions/management and how to use this data build decision support tools.  This work draws on principles from computation, applied multivariate statistics and artificial intelligence / machine learning.  While I'm generally optimistic about the potential of these approaches, I'm more cautious about the current AI/ML hype. 

@@ -39,7 +39,8 @@ bibliography: [./biblio.bib]
 <li><a href="#law-of-total-probability"><span class="toc-section-number">2.2</span> Law of Total Probability</a></li>
 <li><a href="#conditional-independence"><span class="toc-section-number">2.3</span> Conditional Independence</a></li>
 <li><a href="#bayes-theorem"><span class="toc-section-number">2.4</span> Bayes Theorem</a></li>
-<li><a href="#deriving-the-ppd"><span class="toc-section-number">2.5</span> Deriving the PPD</a></li>
+<li><a href="#bayes-with-extra-conditioning"><span class="toc-section-number">2.5</span> Bayes with Extra Conditioning</a></li>
+<li><a href="#deriving-the-ppd"><span class="toc-section-number">2.6</span> Deriving the PPD</a></li>
 </ul></li>
 <li><a href="#sampling-and-integration"><span class="toc-section-number">3</span> Sampling and Integration</a></li>
 <li><a href="#logits-probabilities-and-odds"><span class="toc-section-number">4</span> Logits, Probabilities and Odds</a>
@@ -87,7 +88,7 @@ p(a,b | c) = \frac{p(a,b,c)}{p(c)} \tag{2.4}
 <span class="math display">\[\begin{equation}
 p(a,b,c) =  p(a,b | c) p(c)
 \end{equation}\]</span></p>
-<p>Applying the <a href="https://en.wikipedia.org/wiki/Chain_rule_(probability)">chain rule of probability</a>, <span class="math inline">\(p(a,b,c)\)</span> can also be factorised as <em>any</em> of the following:
+<p>Note that <span class="math inline">\(p(a,b,c)\)</span> can also be factorised as <em>any</em> of the following (depending on what we want to achieve):
 <span class="math display" id="eq:factors3" id="eq:factors2" id="eq:factors1">\[\begin{align}
   p(a,b,c) &amp;= p(b,c|a) p(a) \tag{2.5} \\
           &amp;= p(a,c|b) p(b) \tag{2.6} \\
@@ -127,8 +128,78 @@ p \left( a|c \right) &amp;= \int p \left( a,b | c \right) db \\
 p(a|b) = \frac{p(b|a)p(a)}{p(b)} \tag{2.11}
 \end{equation}\]</span></p>
 </div>
-<div id="deriving-the-ppd" class="section level2" number="2.5">
-<h2><span class="header-section-number">2.5</span> Deriving the PPD</h2>
+<div id="bayes-with-extra-conditioning" class="section level2" number="2.5">
+<h2><span class="header-section-number">2.5</span> Bayes with Extra Conditioning</h2>
+<p>I frequently have to remind myself how to rewrite this form: <span class="math inline">\(p(a | b, c)\)</span> – this is covered in <span class="citation">(<a href="#ref-blitzstein2014introduction" role="doc-biblioref">Blitzstein and Hwang 2019</a>)</span> Theorem 2.4.2 on pp. 54-56.</p>
+<p>There are a few useful ways to re-write.</p>
+<p><strong>Using Conditional Probability</strong></p>
+<p>Assume it makes sense (in the problem we’re trying to solve) to view <span class="math inline">\(b\)</span> and <span class="math inline">\(c\)</span> as “one thing together” then using the formula for conditional probability we get:
+<span class="math display" id="eq:bayesrewritecond">\[\begin{equation}
+  p( a | b, c ) = \frac{p(a,b,c)}{p(b,c)}  \tag{2.12}
+\end{equation}\]</span></p>
+<p>Applying conditional probability again – equation <a href="#eq:condprob3">(2.4)</a> and the different factorisations in <a href="#eq:factors1">(2.5)</a> through <a href="#eq:factors3">(2.7)</a> – to rewrite <span class="math inline">\(p(a,b,c)\)</span>:
+<span class="math display">\[\begin{align}
+  p(a,b,c) &amp;= p(b,c|a) p(a)  \\
+          &amp;= p(a,c|b) p(b)  \\
+          &amp;= p(a,b|c) p(c)
+\end{align}\]</span></p>
+<p>Choosing the RHS as suited to the problem - here, we take <span class="math inline">\(p(b,c|a) p(a)\)</span> as we are treating <span class="math inline">\(b\)</span> and <span class="math inline">\(c\)</span> as “one event” (we want to keep them together) and substitute in <a href="#eq:bayesrewritecond">(2.12)</a>:
+<span class="math display" id="eq:bayesrewritecond2">\[\begin{equation}
+  p( a | b, c ) = \frac{ p(b,c|a) p(a) }{ p( b,c ) } \tag{2.13}
+\end{equation}\]</span></p>
+<p>Now, we have to find an expression for the denominator <span class="math inline">\(p( b,c )\)</span> and we have options including another application of conditional probability so <span class="math inline">\(p( b, c ) = p(b|c) p(c)\)</span> resulting in:
+<span class="math display" id="eq:bayesrewritecond2">\[\begin{equation}
+  p( a | b, c ) = \frac{ p(b,c|a) p(a) }{ p(b|c) p(c) } \tag{2.13}
+\end{equation}\]</span></p>
+<p><strong>Using the Chain Rule of Probability</strong></p>
+<p>Start, as before, with:
+<span class="math display" id="eq:bayesrewritecond3">\[\begin{equation}
+  p( a | b, c ) = \frac{p(a,b,c)}{p(b,c)} \tag{2.14}
+\end{equation}\]</span></p>
+<p>This time, decompose <span class="math inline">\(p(a,b,c)\)</span> differently, using the chain rule:
+<span class="math display">\[\begin{align}
+  p(a,b,c) &amp;= p(a|b,c)p(b,c)  \\
+           &amp;= p(b|a,c)p(a,c)  \\
+           &amp;= p(c|a,b)p(a,b)
+\end{align}\]</span>
+Obviously, the first re-write gets us nowhere – it merely restates <span class="math inline">\(p(a|b,c)\)</span>. Lets say the second factorisation is helpful for our problem <span class="math inline">\(p(b|a,c)p(a,c)\)</span>, then we substitute in <a href="#eq:bayesrewritecond3">(2.14)</a>:</p>
+<p><span class="math display" id="eq:bayesrewritecond4">\[\begin{equation}
+  p( a | b, c ) = \frac{p(b|a,c)p(a,c)}{p(b,c)} \tag{2.15}
+\end{equation}\]</span></p>
+<p>We now have to deal with <span class="math inline">\(p(a,c)\)</span> in the numerator and <span class="math inline">\(p(b,c)\)</span> in the denominator. Starting with the numerator, apply conditional probability again:
+<span class="math display">\[\begin{equation}
+  p( a, c ) = p(a|c)p(c)
+\end{equation}\]</span></p>
+<p>For the denominator:
+<span class="math display">\[\begin{equation}
+  p( b, c ) = p(b|c)p(c)
+\end{equation}\]</span></p>
+<p>What we end up with is Bayes theorem with extra conditioning on <span class="math inline">\(c\)</span> …</p>
+<p><strong>Bayes Theorem with Extra Conditioning on <span class="math inline">\(c\)</span></strong></p>
+<p>Substitute both into <a href="#eq:bayesrewritecond4">(2.15)</a>:
+<span class="math display">\[\begin{align}
+  p( a | b, c ) &amp;= \frac{p(b|a,c) p(a|c)p(c)} {p(b|c)p(c)} \\
+                &amp;= \frac{p(b|a,c) p(a|c)} {p(b|c)}
+\end{align}\]</span></p>
+<p><strong>Bayes Theorem with Extra Conditioning on <span class="math inline">\(b\)</span></strong></p>
+<p>Had we chosen, instead, to use <span class="math inline">\(p(c|a,b)p(a,b)\)</span>, we end up with:
+<span class="math display">\[\begin{align}
+  p( a | b, c ) &amp;= \frac{p(a,b,c)}{p(b,c)} \\
+                &amp;= \frac{p(c|a,b)p(a,b)}{p(b,c)}
+\end{align}\]</span></p>
+<p>with <span class="math inline">\(p(a,b) = p(a|b)p(b)\)</span>:
+<span class="math display">\[\begin{equation}
+  p( a | b, c ) = \frac{p(c|a,b)p(a|b)p(b)}{p(b,c)}
+\end{equation}\]</span></p>
+<p>Of course, <span class="math inline">\(p(b,c) = p(c,b) = p(c|b)p(b)\)</span> in the denominator:
+<span class="math display">\[\begin{align}
+  p( a | b, c ) &amp;= \frac{p(c|a,b)p(a|b)p(b)}{p(c|b)p(b)} \\
+                &amp;= \frac{p(c|a,b)p(a|b)}{p(c|b)}
+\end{align}\]</span></p>
+<p>We chose between conditioning on <span class="math inline">\(c\)</span> or <span class="math inline">\(b\)</span> depending on the problem we are trying to solve (i.e. does it make sense to consider everything being conditioned on <span class="math inline">\(c\)</span> or <span class="math inline">\(b\)</span> ?)</p>
+</div>
+<div id="deriving-the-ppd" class="section level2" number="2.6">
+<h2><span class="header-section-number">2.6</span> Deriving the PPD</h2>
 <p>Starting with the fundamental Bayesian modelling framework:</p>
 <ol style="list-style-type: decimal">
 <li>before observing the data, <span class="math inline">\(y\)</span>, the <em>prior distribution</em> of the parameters is <span class="math inline">\(p(\theta)\)</span></li>
@@ -144,41 +215,41 @@ p(a|b) = \frac{p(b|a)p(a)}{p(b)} \tag{2.11}
 <p>We want to obtain a distribution for future values <span class="math inline">\(\tilde{y}\)</span> given the observed (and modelled) data <span class="math inline">\(y\)</span> which is <span class="math inline">\(p(\tilde{y}|y)\)</span> using what we know about the posterior distribution arising from parameter estimation <span class="math inline">\(p(\theta | y)\)</span>.</p>
 <p>The first step is to write <span class="math inline">\(p(\tilde{y}|y)\)</span> using the law of total probability (with conditioning): equation <a href="#eq:lotp-cond">(2.9)</a>:
 <span class="math display" id="eq:step1">\[\begin{equation}
-    p( \tilde{y} | y ) = \int p\left(\tilde{y},\theta | y \right) d\theta \tag{2.12}
+    p( \tilde{y} | y ) = \int p\left(\tilde{y},\theta | y \right) d\theta \tag{2.16}
 \end{equation}\]</span></p>
 <p><strong>Step 2</strong></p>
 <p>Re-write the integrand <span class="math inline">\(p\left(\tilde{y},\theta | y \right)\)</span> using equation <a href="#eq:condprob3">(2.4)</a>:</p>
 <p><span class="math display" id="eq:step2">\[\begin{equation}
-    p( \tilde{y} | y ) = \int \frac{p(\tilde{y},\theta,y)}{p(y)} d\theta \tag{2.13}
+    p( \tilde{y} | y ) = \int \frac{p(\tilde{y},\theta,y)}{p(y)} d\theta \tag{2.17}
 \end{equation}\]</span></p>
 <p><strong>Step 3</strong></p>
 <p>We assert that <span class="math inline">\(\tilde{y}\)</span> is conditionally independent of <span class="math inline">\(y\)</span> <em>given</em> the model parameters <span class="math inline">\(\theta\)</span>:
 <span class="math display" id="eq:condind-ppd">\[\begin{equation}
-  ( \tilde{y} \perp\!\!\!\perp y ) | \theta \iff p( \tilde{y}, y | \theta) = p( \tilde{y} | \theta ) p( y | \theta) \tag{2.14}
+  ( \tilde{y} \perp\!\!\!\perp y ) | \theta \iff p( \tilde{y}, y | \theta) = p( \tilde{y} | \theta ) p( y | \theta) \tag{2.18}
 \end{equation}\]</span></p>
-<p>To make use of the conditional independence <span class="math inline">\(p( \tilde{y}, y | \theta)\)</span>, we have to factorise <span class="math inline">\(p(\tilde{y},\theta,y)\)</span> in equation <a href="#eq:step2">(2.13)</a>.</p>
+<p>To make use of the conditional independence <span class="math inline">\(p( \tilde{y}, y | \theta)\)</span>, we have to factorise <span class="math inline">\(p(\tilde{y},\theta,y)\)</span> in equation <a href="#eq:step2">(2.17)</a>.</p>
 <p>Let <span class="math inline">\(a = \tilde{y}\)</span>, <span class="math inline">\(b = \theta\)</span> and <span class="math inline">\(c = y\)</span>; we are seeking a factorisation of <span class="math inline">\(p(a,b,c)\)</span> as <span class="math inline">\(p(a,c|b)\)</span> and inspecting the factorisations <a href="#eq:factors1">(2.5)</a> through <a href="#eq:factors3">(2.7)</a> we find that <a href="#eq:factors2">(2.6)</a> matches:</p>
 <p><span class="math display" id="eq:factor-cond-ind">\[\begin{align}
   p(a,b,c) &amp;= p(a,c|b) p(b) \\
-  p( \tilde{y}, \theta, y) &amp;= p( \tilde{y}, y | \theta) p(\theta) \tag{2.15}
+  p( \tilde{y}, \theta, y) &amp;= p( \tilde{y}, y | \theta) p(\theta) \tag{2.19}
 \end{align}\]</span></p>
-<p>Substitution <a href="#eq:factor-cond-ind">(2.15)</a> into <a href="#eq:step2">(2.13)</a> we have:</p>
+<p>Substitution <a href="#eq:factor-cond-ind">(2.19)</a> into <a href="#eq:step2">(2.17)</a> we have:</p>
 <p><span class="math display" id="eq:step3a">\[\begin{equation}
-p(\tilde{y} | y ) = \int \frac{p(\tilde{y},y | \theta) p(\theta)}{p(y)} d \theta \tag{2.16}
+p(\tilde{y} | y ) = \int \frac{p(\tilde{y},y | \theta) p(\theta)}{p(y)} d \theta \tag{2.20}
 \end{equation}\]</span></p>
-<p>We make use of the equality from equation <a href="#eq:condind-ppd">(2.14)</a> i.e. that <span class="math inline">\(p( \tilde{y}, y | \theta) = p( \tilde{y} | \theta ) p( y | \theta)\)</span> and substitute into <a href="#eq:step3a">(2.16)</a>:</p>
+<p>We make use of the equality from equation <a href="#eq:condind-ppd">(2.18)</a> i.e. that <span class="math inline">\(p( \tilde{y}, y | \theta) = p( \tilde{y} | \theta ) p( y | \theta)\)</span> and substitute into <a href="#eq:step3a">(2.20)</a>:</p>
 <p><span class="math display" id="eq:step3b">\[\begin{equation}
-p(\tilde{y} | y ) = \int \frac{ p( \tilde{y} | \theta ) p( y | \theta)  p(\theta)}{p(y)} d \theta \tag{2.17}
+p(\tilde{y} | y ) = \int \frac{ p( \tilde{y} | \theta ) p( y | \theta)  p(\theta)}{p(y)} d \theta \tag{2.21}
 \end{equation}\]</span></p>
 <p><strong>Step 4</strong></p>
-<p>Recall that we want to make use of the ‘output’ of parameter estimation, the posterior distribution of the model parameters given the observed data <span class="math inline">\(p(\theta|y)\)</span>, and in equation <a href="#eq:step3b">(2.17)</a> we see the term <span class="math inline">\(p(y|\theta)\)</span>. All we need to do is re-write <span class="math inline">\(p(y|\theta)\)</span> using Bayes rule, equation <a href="#eq:bayes">(2.11)</a>:</p>
+<p>Recall that we want to make use of the ‘output’ of parameter estimation, the posterior distribution of the model parameters given the observed data <span class="math inline">\(p(\theta|y)\)</span>, and in equation <a href="#eq:step3b">(2.21)</a> we see the term <span class="math inline">\(p(y|\theta)\)</span>. All we need to do is re-write <span class="math inline">\(p(y|\theta)\)</span> using Bayes rule, equation <a href="#eq:bayes">(2.11)</a>:</p>
 <p><span class="math display">\[\begin{equation}
 p(y|\theta) = \frac{p(\theta|y) p(y)}{p(\theta)}
 \end{equation}\]</span></p>
-<p>And substitute into equation <a href="#eq:step3b">(2.17)</a>:
+<p>And substitute into equation <a href="#eq:step3b">(2.21)</a>:
 <span class="math display" id="eq:step4">\[\begin{align}
 p(\tilde{y} | y ) &amp;= \int \frac{ p( \tilde{y} | \theta ) p(\theta|y) p(y)   p(\theta)}{p(y)p(\theta)} d \theta  \\
-                  &amp;= \int p( \tilde{y} | \theta ) p(\theta|y) d \theta \tag{2.18} \\
+                  &amp;= \int p( \tilde{y} | \theta ) p(\theta|y) d \theta \tag{2.22} \\
 
 \end{align}\]</span></p>
 <p>… and there we have it, the expression for the PPD, equation <a href="#eq:PPD">(2.1)</a></p>
